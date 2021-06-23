@@ -1,2 +1,7 @@
-package com.alkemy.ong.controller;public class testimonialsController {
+package com.alkemy.ong.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class testimonialsController {
 }
