@@ -20,7 +20,9 @@ import javax.persistence.OneToOne;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -41,19 +43,24 @@ public class UsersEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "El Nombre es requerido.")
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 	
+	@NotBlank(message = "El Apellido es requerido.")
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 	
+	@NotBlank(message = "El Email es requerido.")
+	@Email(message = "Email invalido.")
 	@Column(nullable = false)
 	private String email;
 	
-	@NotBlank(message = "Password is required.")
+	@NotBlank(message = "La contraseña es requerida.")
+	@Size(min = 8, max = 15)
 	private String password;
 
 	@Column(nullable = true)
