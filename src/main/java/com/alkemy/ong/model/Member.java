@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alkemy.ong.model;
 
 import java.util.Date;
@@ -13,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,9 +37,10 @@ import org.hibernate.annotations.Where;
 
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
+    @NotEmpty(message = "El campo Name no puede estar vacío.")
     private String name;
     private String facebookUrl;
     private String instagramUrl;
@@ -51,6 +48,7 @@ public class Member {
     private String image;
     private String description;
     /*timestamps*/
+    @NotEmpty(message = "El campo createDate no puede estar vacío.")
     @Column(name = "create_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
