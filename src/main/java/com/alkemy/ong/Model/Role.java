@@ -16,13 +16,13 @@ import java.util.Date;
 
 @Entity
 @Table(name = "roles")
-@SQLDelete(sql = "UPDATE Rol SET deleted=true WHERE id = ?")
+@SQLDelete(sql = "UPDATE Role SET deleted=true WHERE id = ?")
 @Where(clause = "deleted = false")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rol implements Serializable {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +43,10 @@ public class Rol implements Serializable {
     private Date edited;
 
     private boolean deleted;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole roleName;
 
 
 }
