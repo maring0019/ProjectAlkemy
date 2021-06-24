@@ -17,7 +17,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "roles")
-@SQLDelete(sql = "UPDATE Role SET deleted=true WHERE id = ?")
+@SQLDelete(sql = "UPDATE Roles SET deleted=true WHERE id = ?")
 @Where(clause = "deleted = false")
 @Setter
 @Getter
