@@ -2,6 +2,7 @@ package com.alkemy.ong.model;
 
 
 
+import com.alkemy.ong.Enum.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,7 @@ public class Role implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
 
-    private boolean deleted;
+    private boolean deleted = Boolean.FALSE;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

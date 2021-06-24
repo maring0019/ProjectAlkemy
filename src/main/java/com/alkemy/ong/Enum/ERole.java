@@ -1,4 +1,4 @@
-package com.alkemy.ong.model;
+package com.alkemy.ong.Enum;
 
 public enum ERole {
     ROLE_USER,
