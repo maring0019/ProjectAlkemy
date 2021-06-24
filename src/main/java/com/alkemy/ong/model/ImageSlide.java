@@ -21,12 +21,12 @@ public class ImageSlide implements Comparable<ImageSlide>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank(message = "La url de imágen no puede estar vacía")
     private String imageUrl;
     private String text;
-    @NotNull
+    @NotNull(message = "Es necesario un valor entero para ordenar las imágenes")
     private Long ordered;
-    @NotNull
+    @NotNull(message = "Es necesaria una Id de organización")
     private Long organizationId;
     private Date createdAt;
     private boolean deleted = false;
