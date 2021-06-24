@@ -36,7 +36,6 @@ build/
 ### ONG ###
 pom.xml
 src/main/resources/application.properties
-src/main/java/com/alkemy/ong/security
 mvnw
 mvnw.cmd
 ong.iml
