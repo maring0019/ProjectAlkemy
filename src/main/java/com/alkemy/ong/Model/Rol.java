@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +14,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "roles")
+@SQLDelete(sql = "UPDATE Rol SET deleted=true WHERE id = ?")
+@Where(clause = "deleted = false")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -34,6 +38,8 @@ public class Rol implements Serializable {
     @Column(name = "edited_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
+
+    private boolean deleted;
 
 
 }
