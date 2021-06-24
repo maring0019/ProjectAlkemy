@@ -7,6 +7,8 @@ import org.hibernate.annotations.*;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -21,12 +23,16 @@ public class NewsEntity {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Complete el campo nombre")
+    @Size(min = 2, max = 20, message = "El nombre debe contener entre 2 y 20 caracteres")
     private String name;
 
     @Column(nullable = false)
+    @NotBlank(message = "Complete el campo contenido")
     private String content;
 
     @Column(nullable = false)
+    @NotBlank(message = "Complete el campo imagen")
     private String image;
 
     /*@OneToOne

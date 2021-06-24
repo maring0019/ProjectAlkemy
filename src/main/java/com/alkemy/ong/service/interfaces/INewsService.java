@@ -6,7 +6,7 @@ import com.alkemy.ong.model.NewsEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface NewsService {
+public interface INewsService {
     public Optional<NewsEntity>findById(Long id);
     public List<NewsEntity> findAll();
     public NewsEntity save(NewsDto newsDto);
