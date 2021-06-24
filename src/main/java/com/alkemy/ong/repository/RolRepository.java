@@ -1,6 +1,6 @@
-package com.alkemy.ong.Repository;
+package com.alkemy.ong.repository;
 
-import com.alkemy.ong.Model.Role;
+import com.alkemy.ong.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RolRepository extends JpaRepository<Role,Long> {

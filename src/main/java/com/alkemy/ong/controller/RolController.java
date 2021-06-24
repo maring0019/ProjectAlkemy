@@ -1,4 +1,4 @@
-package com.alkemy.ong.Controller;
+package com.alkemy.ong.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

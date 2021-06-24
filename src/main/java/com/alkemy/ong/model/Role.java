@@ -1,4 +1,4 @@
-package com.alkemy.ong.Model;
+package com.alkemy.ong.model;
 
 
 
