@@ -33,11 +33,8 @@ build/
 .vscode/
 
 ### ONG ###
-pom.xml
 src/main/resources/application.properties
 mvnw
 mvnw.cmd
 ong.iml
-.idea/
-.mvn/
 
