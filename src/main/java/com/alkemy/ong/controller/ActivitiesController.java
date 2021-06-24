@@ -2,6 +2,9 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.ActivitiesDto;
 import com.alkemy.ong.service.impl.ActivitiesServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,13 +16,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/activities")
+@AllArgsConstructor
 public class ActivitiesController {
 
     @Autowired
-    ActivitiesServiceImpl activitiesService;
+    private ActivitiesServiceImpl activitiesService;
 
     @Autowired
-    ModelMapper mapper;
+    private ModelMapper mapper;
 
     @GetMapping
     public ResponseEntity<List<ActivitiesDto>> getAllActivities() {

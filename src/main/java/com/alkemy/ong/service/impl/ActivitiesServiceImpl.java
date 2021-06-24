@@ -4,6 +4,7 @@ import com.alkemy.ong.dto.ActivitiesDto;
 import com.alkemy.ong.model.ActivitiesEntity;
 import com.alkemy.ong.repository.ActivitiesRepository;
 import com.alkemy.ong.service.Interface.IActivitiesService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,14 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ActivitiesServiceImpl implements IActivitiesService {
 
     @Autowired
-    ActivitiesRepository activitiesRepository;
+    private ActivitiesRepository activitiesRepository;
 
     @Autowired
-    ModelMapper mapper;
+    private ModelMapper mapper;
 
     @Override
     public ActivitiesDto createActivity(ActivitiesDto activitiesDto) {
@@ -40,8 +42,8 @@ public class ActivitiesServiceImpl implements IActivitiesService {
         ActivitiesEntity activitiesEntity = getActivityById(id);
 
         activitiesEntity.setName(activitiesDto.getName());
-        activitiesEntity.setContent(activitiesEntity.getContent());
-        activitiesEntity.setImage(activitiesEntity.getImage());
+        activitiesEntity.setContent(activitiesDto.getContent());
+        activitiesEntity.setImage(activitiesDto.getImage());
         activitiesEntity.setEdited(new Date());
         return mapper.map(activitiesRepository.save(activitiesEntity), ActivitiesDto.class);
     }
