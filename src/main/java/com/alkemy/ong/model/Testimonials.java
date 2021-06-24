@@ -24,7 +24,7 @@ public class Testimonials {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_testimonials")
+    @Column(name = "id")
     private long id;
 
     @NotBlank(message = "El campo Nombre no debe estar vacío")
