@@ -6,7 +6,7 @@ import com.alkemy.ong.model.ImageSlide;
 
 import java.util.List;
 
-public interface ImageSlideInterface {
+public interface IImgSlideService {
     ImageSlide addImage(ImageSlide image) throws InvalidImageException, InvalidUserException;
     List<ImageSlide> getAll();
     ImageSlide updateImage(ImageSlide image) throws InvalidImageException;
