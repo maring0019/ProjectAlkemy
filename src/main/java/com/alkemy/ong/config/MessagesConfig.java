@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Configuration
-public class ImgSlideConfig {
+public class MessagesConfig {
 
     @Bean
     public MessageSource messageSource(){
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
-                "classpath:/messages/slide_error_messages"
+                "classpath:/messages/error_messages"
         );
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
