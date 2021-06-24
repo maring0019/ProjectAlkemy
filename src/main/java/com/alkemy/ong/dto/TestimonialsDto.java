@@ -9,10 +9,9 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class testimonialsDto {
+public class TestimonialsDto {
 
     @Getter @Setter
-    @NotBlank(message = "Nombre no puede estar vacío")
     private String name;
 
     @Getter @Setter
