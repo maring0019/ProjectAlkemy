@@ -1,19 +1,18 @@
 package com.alkemy.ong.model;
 
 import lombok.*;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity(name = "activities")
-@SQLDelete(sql = "UPDATE activities SET deleted = true WHERE id=?")
-@FilterDef(name = "deletedActivitiesFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean")) //Define los requerimientos, los cuales, serán usados por @Filter
-@Filter(name = "deletedActivitiesFilter", condition = "deleted = :isDeleted") //Condición para aplicar el filtro en función del parámetro
+@DynamicUpdate
+@SQLDelete(sql = "UPDATE activities SET deleted=true WHERE id=?")
+@Where(clause = "deleted = false")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
@@ -25,12 +24,15 @@ public class ActivitiesEntity implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "El nombre de la actividad es obligatorio.")
+    @Column(nullable = false, length = 120)
     private String name;
 
+    @NotBlank(message = "El contenido de la actividad es obligatorio.")
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @NotBlank(message = "La imágen de la activdad es olbitoria.")
     @Column(nullable = false)
     private String image;
 
@@ -43,5 +45,9 @@ public class ActivitiesEntity implements Serializable {
     @Column(name = "edited_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
+
+    @Column(name = "deleted_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedAt;
 
 }
