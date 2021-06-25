@@ -41,7 +41,7 @@ public class Organization implements Serializable {
 
     @Column(nullable = false ,length = 80)
     @NotNull(message = "El campo email no puede estar vacío")
-    @Email(message = "El formato no es valido")
+    @Email(message = "El formato no es válido")
     private String email;
 
 
