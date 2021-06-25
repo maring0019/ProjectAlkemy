@@ -37,5 +37,10 @@ src/main/resources/application.properties
 mvnw
 mvnw.cmd
 ong.iml
+<<<<<<< HEAD
 .idea/
 .mvn/
+=======
+
+>>>>>>> develop
+/pom.xml

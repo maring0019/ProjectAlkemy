@@ -1,4 +1,4 @@
-package com.alkemy.ong.services.impl;
+package com.alkemy.ong.service.impl;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.model.UsersEntity;
 import com.alkemy.ong.model.UsersMain;
 import com.alkemy.ong.repository.UsersRepository;
-import com.alkemy.ong.services.Interface.UsersService;
+import com.alkemy.ong.service.Interface.UsersService;
 
 @Transactional
 public class UsersServiceImpl implements UsersService, UserDetailsService{

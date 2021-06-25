@@ -1,4 +1,4 @@
-package com.alkemy.ong.services.Interface;
+package com.alkemy.ong.service.Interface;
 
 import org.springframework.stereotype.Service;
 
