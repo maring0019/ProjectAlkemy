@@ -1,7 +1,6 @@
 package com.alkemy.ong.model;
 
 
-
 import com.alkemy.ong.Enum.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
