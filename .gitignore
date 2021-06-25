@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ONG ###
+
+src/main/resources/application.properties
+mvnw
+mvnw.cmd
+ong.iml
+.idea/
+.mvn/
