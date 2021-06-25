@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class Activities implements Serializable {
+public class Activity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
