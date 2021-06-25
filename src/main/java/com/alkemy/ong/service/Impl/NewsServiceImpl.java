@@ -1,7 +1,7 @@
-package com.alkemy.ong.service.implementation;
+package com.alkemy.ong.service.Impl;
 
 import com.alkemy.ong.dto.NewsDto;
-import com.alkemy.ong.model.NewsEntity;
+import com.alkemy.ong.model.News;
 import com.alkemy.ong.service.interfaces.INewsService;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +11,17 @@ import java.util.Optional;
 @Service
 public class NewsServiceImpl implements INewsService {
     @Override
-    public Optional<NewsEntity> findById(Long id) {
+    public Optional<News> findById(Long id) {
         return Optional.empty();
     }
 
     @Override
-    public List<NewsEntity> findAll() {
+    public List<News> findAll() {
         return null;
     }
 
     @Override
-    public NewsEntity save(NewsDto newsDto) {
+    public News save(NewsDto newsDto) {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class NewsServiceImpl implements INewsService {
     }
 
     @Override
-    public NewsEntity updateNews(Long id, NewsDto newsDto) {
+    public News updateNews(Long id, NewsDto newsDto) {
         return null;
     }
 }

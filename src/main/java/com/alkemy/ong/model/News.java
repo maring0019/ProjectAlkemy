@@ -17,7 +17,7 @@ import java.util.Date;
 @SQLDelete(sql = "UPDATE NewsEntity SET deleted = true WHERE id=?")
 @FilterDef(name = "deletedNewsFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedProductFilter", condition = "deleted = :isDeleted")
-public class NewsEntity {
+public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,8 +35,8 @@ public class NewsEntity {
     @NotBlank(message = "Complete el campo imagen")
     private String image;
 
-    /*@OneToOne
-    private CategoryEntity category;*/
+    @OneToOne
+    private Categories category;
 
     private boolean deleted = Boolean.FALSE;
 

@@ -21,6 +21,8 @@ src/main/resources/application.properties
 *.iws
 *.iml
 *.ipr
+application.properties
+
 
 ### NetBeans ###
 /nbproject/private/
@@ -34,3 +36,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ONG ###
+src/main/resources/application.properties
+mvnw
+mvnw.cmd
+ong.iml
+

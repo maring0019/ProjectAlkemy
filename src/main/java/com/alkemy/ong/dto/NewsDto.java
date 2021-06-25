@@ -13,5 +13,5 @@ public class NewsDto  implements Serializable {
     private String name;
     private String content;
     private String image;
-    /*private CategoryDto category;*/
+    private CategoriesDto category;
 }
