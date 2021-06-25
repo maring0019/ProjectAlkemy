@@ -1,18 +1,18 @@
 package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.ActivitiesDto;
-import com.alkemy.ong.service.impl.ActivitiesServiceImpl;
+import com.alkemy.ong.service.Interface.IActivities;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/activities")
@@ -20,10 +20,13 @@ import java.util.List;
 public class ActivitiesController {
 
     @Autowired
-    private ActivitiesServiceImpl activitiesService;
+    private final IActivities activitiesService;
 
     @Autowired
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
+
+    @Autowired
+    private final MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<List<ActivitiesDto>> getAllActivities() {
@@ -31,9 +34,13 @@ public class ActivitiesController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ActivitiesDto> getActivityById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(mapper.map(activitiesService.getActivityById(id), ActivitiesDto.class));
+    public ResponseEntity<Object> getActivityById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(mapper.map(activitiesService.getActivityById(id), ActivitiesDto.class));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PostMapping
@@ -42,15 +49,24 @@ public class ActivitiesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ActivitiesDto> updateActivity(@PathVariable Long id, @Valid @RequestBody ActivitiesDto activitiesDto) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(activitiesService.updateActivity(id, activitiesDto));
+    public ResponseEntity<Object> updateActivity(@PathVariable Long id, @Valid @RequestBody ActivitiesDto activitiesDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(activitiesService.updateActivity(id, activitiesDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<String> deleteActivityById(@PathVariable Long id) {
-        activitiesService.deleteActivity(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Actividad eliminada correctamente.");
+        try {
+            activitiesService.deleteActivity(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(messageSource.getMessage("activity.delete.successful", null, Locale.getDefault()));
+        } catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
