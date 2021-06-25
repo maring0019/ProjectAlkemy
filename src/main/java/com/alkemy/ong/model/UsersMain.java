@@ -33,7 +33,7 @@ public class UsersMain implements UserDetails{
 	public static UsersMain build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
-				.map(rol -> new SimpleGrantedAuthority(rol.getName().name()))
+				.map(rol -> new SimpleGrantedAuthority(rol.getName()))
 				.collect(Collectors.toList());
 		
 		return new UsersMain(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), authorities);

@@ -77,7 +77,7 @@ public class User implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "user_rol", joinColumns = @JoinColumn(name = "users_id"),
 	inverseJoinColumns = @JoinColumn(name = "rol_id"))
-	private Set<Rol> roles = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	
 	private Boolean deleted = Boolean.FALSE;
 

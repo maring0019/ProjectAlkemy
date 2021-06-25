@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.alkemy.ong.model.Role;
+
 import lombok.Data;
 
 @Data
@@ -23,7 +25,7 @@ public class UsersDto implements Serializable{
 	
 	private String photo;
 	
-	private Set<Rol> roles = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	
 
 }
