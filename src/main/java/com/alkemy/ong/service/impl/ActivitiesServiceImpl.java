@@ -1,73 +1,81 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.ActivitiesDto;
-import com.alkemy.ong.model.ActivitiesEntity;
+import com.alkemy.ong.model.Activity;
 import com.alkemy.ong.repository.ActivitiesRepository;
 import com.alkemy.ong.service.Interface.IActivities;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
-public class ActivitiesImpl implements IActivities {
+public class ActivitiesServiceImpl implements IActivities {
 
     @Autowired
-    private ActivitiesRepository activitiesRepository;
+    private final ActivitiesRepository activitiesRepository;
 
     @Autowired
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
+
+    @Autowired
+    private final MessageSource messageSource;
 
     @Override
     public ActivitiesDto createActivity(ActivitiesDto activitiesDto) {
 
-        ActivitiesEntity activitiesEntity = ActivitiesEntity.builder()
+        Activity activity = Activity.builder()
                 .name(activitiesDto.getName())
                 .content(activitiesDto.getContent())
                 .image(activitiesDto.getImage())
                 .created(new Date())
                 .build();
 
-        return mapper.map(activitiesRepository.save(activitiesEntity), ActivitiesDto.class);
+        return mapper.map(activitiesRepository.save(activity), ActivitiesDto.class);
     }
 
     @Override
     public ActivitiesDto updateActivity(Long id, ActivitiesDto activitiesDto) {
-        ActivitiesEntity activitiesEntity = getActivityById(id);
+        Activity activity = getActivityById(id);
 
-        activitiesEntity.setName(activitiesDto.getName());
-        activitiesEntity.setContent(activitiesDto.getContent());
-        activitiesEntity.setImage(activitiesDto.getImage());
-        activitiesEntity.setEdited(new Date());
-        return mapper.map(activitiesRepository.save(activitiesEntity), ActivitiesDto.class);
+        activity.setName(activitiesDto.getName());
+        activity.setContent(activitiesDto.getContent());
+        activity.setImage(activitiesDto.getImage());
+        activity.setEdited(new Date());
+        return mapper.map(activitiesRepository.save(activity), ActivitiesDto.class);
     }
 
     @Override
     public List<ActivitiesDto> getAllActivities() {
-        List<ActivitiesEntity> activitiesEntities = activitiesRepository.findAll();
+        List<Activity> activityEntities = activitiesRepository.findAll();
         List<ActivitiesDto> activitiesDto = new ArrayList<>();
-        activitiesEntities.forEach(a -> activitiesDto.add(mapper.map(a, ActivitiesDto.class)));
+        activityEntities.forEach(a -> activitiesDto.add(mapper.map(a, ActivitiesDto.class)));
         return activitiesDto;
     }
 
     @Override
     public void deleteActivity(Long id) {
-        ActivitiesEntity activitiesEntity = getActivityById(id);
-        activitiesEntity.setDeletedAt(new Date());
-        activitiesRepository.save(activitiesEntity);
-        activitiesRepository.delete(activitiesEntity);
+        Activity activity = getActivityById(id);
+        activity.setDeletedAt(new Date());
+        activitiesRepository.save(activity);
+        activitiesRepository.delete(activity);
     }
 
     @Override
-    public ActivitiesEntity getActivityById(Long id) {
-        return activitiesRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("La actividad no existe."));
+    public Activity getActivityById(Long id) {
+        return activitiesRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        messageSource.getMessage("activity.error.not.found", null, Locale.getDefault())
+                )
+        );
     }
 
 }

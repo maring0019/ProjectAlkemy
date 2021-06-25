@@ -1,11 +1,11 @@
 package com.alkemy.ong.service.Interface;
 
 import com.alkemy.ong.dto.ActivitiesDto;
-import com.alkemy.ong.model.ActivitiesEntity;
+import com.alkemy.ong.model.Activity;
 
 import java.util.List;
 
-public interface IActivitiesService {
+public interface IActivities {
 
     ActivitiesDto createActivity(ActivitiesDto activitiesDto);
 
@@ -15,6 +15,6 @@ public interface IActivitiesService {
 
     void deleteActivity(Long id);
 
-    ActivitiesEntity getActivityById(Long id);
+    Activity getActivityById(Long id);
 
 }
