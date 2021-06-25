@@ -54,6 +54,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<<<<<<< HEAD
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -65,6 +66,14 @@
 			<version>2.4.0</version>
 		</dependency>
     </dependencies>
+=======
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.0.Final</version>
+		</dependency>
+	</dependencies>
+>>>>>>> d07efb09e998ea7bc17275d40d2dcaf771e1a47a
 
 	<build>
 		<plugins>
