@@ -6,4 +6,6 @@ public class EmailConstants {
     public static final String EMAIL_SUBJECT = "¡Registro Exitoso!";
     public static final String EMAIL_FROM = "contacto@alkemy.com";
     public static final String API_KEY = "${app.sendgrid.key}";
+    public static final String EMAIL_TYPE = "html";
+    public static final String EMAIL_ENDPOINT = "mail/send";
 }
