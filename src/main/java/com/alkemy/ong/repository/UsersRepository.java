@@ -5,14 +5,14 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.alkemy.ong.model.UsersEntity;
+import com.alkemy.ong.model.User;
 
 @Repository
-public interface UsersRepository extends JpaRepository<UsersEntity, Long> {
+public interface UsersRepository extends JpaRepository<User, Long> {
 	
-	Optional<UsersEntity> findById(Long id);
+	Optional<User> findById(Long id);
 	
-	Optional<UsersEntity> findByEmail(String email);
+	Optional<User> findByEmail(String email);
 	
 	boolean existsByEmail(String email);
 

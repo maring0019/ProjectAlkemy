@@ -38,7 +38,7 @@ import lombok.Setter;
 @Getter @Setter
 @SQLDelete(sql = "UPDATE users SET deleted=true WHERE id=?")
 @Where(clause = "deleted = false")
-public class UsersEntity implements Serializable {
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -82,7 +82,7 @@ public class UsersEntity implements Serializable {
 	private Boolean deleted = Boolean.FALSE;
 
 	@Builder
-	public UsersEntity(String firstName, String lastName, String email,
+	public User(String firstName, String lastName, String email,
 			@NotBlank(message = "Password is required.") String password, String photo) {
 		super();
 		this.firstName = firstName;

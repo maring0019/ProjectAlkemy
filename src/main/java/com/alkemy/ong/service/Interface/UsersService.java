@@ -3,13 +3,13 @@ package com.alkemy.ong.service.Interface;
 import org.springframework.stereotype.Service;
 
 import com.alkemy.ong.dto.UsersDto;
-import com.alkemy.ong.model.UsersEntity;
+import com.alkemy.ong.model.User;
 
 
 @Service
 public interface UsersService {
 	
-	public UsersEntity save(UsersEntity user);
+	public User save(User user);
 	
 	public UsersDto createUser(UsersDto user);
 	

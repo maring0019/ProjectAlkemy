@@ -6,14 +6,13 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.alkemy.ong.dto.UsersDto;
-import com.alkemy.ong.model.UsersEntity;
+import com.alkemy.ong.model.User;
 import com.alkemy.ong.model.UsersMain;
 import com.alkemy.ong.repository.UsersRepository;
 import com.alkemy.ong.service.Interface.UsersService;
@@ -32,7 +31,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService{
 	
 
 	@Override
-	public UsersEntity save(UsersEntity user) {
+	public User save(com.alkemy.ong.model.User user) {
 		
 		return null;
 	}
@@ -42,7 +41,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService{
 		
 		if(usersRepository.findByEmail(user.getEmail()).isPresent()) throw new RuntimeException("Email is already registered.");
 		
-		UsersEntity userEntity = UsersEntity.builder()
+		User userEntity = User.builder()
 				.email(user.getEmail())
 				.firstName(user.getFirstName())
 				.lastName(user.getLastName())
@@ -60,20 +59,20 @@ public class UsersServiceImpl implements UsersService, UserDetailsService{
 
 	@Override
 	public UsersDto updateUser(Long id, UsersDto user) {
-		UsersEntity userEntity = usersRepository.getById(id);
+		User userEntity = usersRepository.getById(id);
 		userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
 	}
 
 	@Override
 	public void deleteUser(Long id) {
-		UsersEntity userEntity = usersRepository.getById(id);
+		User userEntity = usersRepository.getById(id);
 		usersRepository.delete(userEntity);		
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		UsersEntity user = usersRepository.findByEmail(email).get();
+		User user = usersRepository.findByEmail(email).get();
 		return UsersMain.build(user);
 	}
 

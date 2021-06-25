@@ -30,7 +30,7 @@ public class UsersMain implements UserDetails{
 		this.authorities = authorities;
 	}
 
-	public static UsersMain build(UsersEntity user) {
+	public static UsersMain build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
 				.map(rol -> new SimpleGrantedAuthority(rol.getName().name()))
