@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,18 +16,14 @@ import com.alkemy.ong.repository.CategoriesRepository;
 import com.alkemy.ong.service.Interface.ICategoriesService;
 
 @Service
+@AllArgsConstructor
 public class CategoriesServiceImpl implements ICategoriesService {
 
 	@Autowired
-	private CategoriesRepository ctgRepo;
+	private final CategoriesRepository ctgRepo;
 
-	private ModelMapper mapper = modelMapper();
-
-	@Bean
-	public ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		return modelMapper;
-	}
+	@Autowired
+	private final ModelMapper mapper;
 
 	@Override
 	public CategoriesDto createCategory(CategoriesDto dto) {
