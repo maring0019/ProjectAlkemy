@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import com.alkemy.ong.util.EmailConstants;
 
 @Service
 @AllArgsConstructor
@@ -28,11 +29,11 @@ public class EmailServiceImpl implements IEmailService {
     public void send(String sendTo) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, EmailConstants.ENCODING );
             helper.setText(getEmailFromResources(), true);
             helper.setTo(sendTo);
-            helper.setSubject("¡Registro exitoso!");
-            helper.setFrom("contacto@alkemy.com");
+            helper.setSubject(EmailConstants.SUCCESS);
+            helper.setFrom(EmailConstants.SENT_FROM);
             mailSender.send(mimeMessage);
         } catch (MessagingException | IOException e) {
             throw new IllegalStateException(messageSource.getMessage("email.error.cant.send", null, Locale.getDefault()));
