@@ -1,6 +1,6 @@
 package com.alkemy.ong.repository;
 
-import com.alkemy.ong.model.ActivitiesEntity;
+import com.alkemy.ong.model.Activity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ActivitiesRepository extends CrudRepository<ActivitiesEntity, Long> {
+public interface ActivitiesRepository extends CrudRepository<Activity, Long> {
 
-    Optional<ActivitiesEntity> findById(Long id);
+    Optional<Activity> findById(Long id);
 
-    List<ActivitiesEntity> findAll();
+    List<Activity> findAll();
 
 }
