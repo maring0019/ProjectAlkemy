@@ -30,7 +30,7 @@ public class Role implements Serializable {
     private Long id;
 
     @Column(nullable = false,length = 80)
-    @NotEmpty(message = "el campo name no puede estar vacio")
+    @NotEmpty(message = "El campo name no puede estar vacío")
     private String name;
 
     private String description;
