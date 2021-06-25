@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/activities")
@@ -25,8 +24,6 @@ public class ActivitiesController {
     @Autowired
     private final ModelMapper mapper;
 
-    @Autowired
-    private final MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<List<ActivitiesDto>> getAllActivities() {
@@ -62,8 +59,7 @@ public class ActivitiesController {
     public ResponseEntity<String> deleteActivityById(@PathVariable Long id) {
         try {
             activitiesService.deleteActivity(id);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(messageSource.getMessage("activity.delete.successful", null, Locale.getDefault()));
+            return ResponseEntity.status(HttpStatus.OK).body("Actividad eliminada satisfactoriamente.");
         } catch (Exception e) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
