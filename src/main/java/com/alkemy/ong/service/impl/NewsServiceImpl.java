@@ -2,7 +2,8 @@ package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.NewsDto;
 import com.alkemy.ong.model.News;
-import com.alkemy.ong.service.interfaces.INewsService;
+import com.alkemy.ong.service.Interface.INewsService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
