@@ -41,7 +41,7 @@ public class EmailServiceImpl implements IEmailService {
         String line;
         ClassLoader classLoader = getClass().getClassLoader();
         try {
-            InputStream inputStream = classLoader.getResourceAsStream("templates/email_template.html");
+            InputStream inputStream = classLoader.getResourceAsStream("templates/register_email.html");
             assert inputStream != null;
             InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(streamReader);
