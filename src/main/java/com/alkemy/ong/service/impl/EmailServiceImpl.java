@@ -9,7 +9,6 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +31,14 @@ public class EmailServiceImpl implements IEmailService {
         Email from = new Email(EmailConstants.EMAIL_FROM);
         Email to = new Email(sendTo);
         String subject = EmailConstants.EMAIL_SUBJECT;
-        Content content = new Content("html", getEmailFromResources());
+        Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources());
         Mail mail = new Mail(from, subject, to, content);
         SendGrid sg = new SendGrid(EmailConstants.API_KEY);
         Request request = new Request();
 
         try{
             request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
+            request.setEndpoint(EmailConstants.EMAIL_ENDPOINT);
             request.setBody(mail.build());
             Response response = sg.api(request);
             System.out.println(response.getStatusCode());
