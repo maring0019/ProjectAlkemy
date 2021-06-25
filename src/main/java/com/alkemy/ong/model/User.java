@@ -24,6 +24,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,7 @@ import lombok.Setter;
 @Getter @Setter
 @SQLDelete(sql = "UPDATE users SET deleted=true WHERE id=?")
 @Where(clause = "deleted = false")
+@NoArgsConstructor
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -60,10 +62,8 @@ public class User implements Serializable {
 	private String email;
 	
 	@NotBlank(message = "La contraseña es requerida.")
-	@Size(min = 8, max = 15)
 	private String password;
 
-	@Column(nullable = true)
 	private String photo;
 	
 	@Column(name = "create_date", updatable = false, nullable = false)
@@ -73,11 +73,15 @@ public class User implements Serializable {
 	@Column(name = "edited_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date edited;
-	
+
 	@ManyToMany
-	@JoinTable(name = "user_rol", joinColumns = @JoinColumn(name = "users_id"),
-	inverseJoinColumns = @JoinColumn(name = "rol_id"))
-	private Set<Role> roles = new HashSet<>();
+	@JoinTable(
+			name = "user_role",
+			joinColumns = @JoinColumn(
+					name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(
+					name = "role_id", referencedColumnName = "id"))
+	private Set<Role> roles;
 	
 	private Boolean deleted = Boolean.FALSE;
 
@@ -90,6 +94,7 @@ public class User implements Serializable {
 		this.email = email;
 		this.password = password;
 		this.photo = photo;
+		this.created = new Date();
 	}
 	
 
