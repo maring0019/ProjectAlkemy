@@ -1,7 +1,8 @@
-package com.alkemy.ong.service.impl;
+package com.alkemy.ong.service.Impl;
 
 import com.alkemy.ong.service.Interface.IEmailService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,12 +15,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
 public class EmailServiceImpl implements IEmailService {
 
     private final JavaMailSender mailSender;
+    private final MessageSource messageSource;
 
     @Async
     public void send(String sendTo) {
@@ -28,11 +31,11 @@ public class EmailServiceImpl implements IEmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(getEmailFromResources(), true);
             helper.setTo(sendTo);
-            helper.setSubject("¡Registro exitóso!");
+            helper.setSubject("¡Registro exitoso!");
             helper.setFrom("contacto@alkemy.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException | IOException e) {
-            throw new IllegalStateException("failed to send email");
+            throw new IllegalStateException(messageSource.getMessage("email.error.cant.send", null, Locale.getDefault()));
         }
     }
 
@@ -49,7 +52,7 @@ public class EmailServiceImpl implements IEmailService {
                 email = email.concat(line);
             }
         } catch (IOException e) {
-            e.getMessage();
+           throw new IOException(messageSource.getMessage("email.error.cant.get.email", null, Locale.getDefault()));
         }
         return email;
     }
