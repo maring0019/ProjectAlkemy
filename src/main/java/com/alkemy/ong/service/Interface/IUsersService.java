@@ -1,26 +1,27 @@
 package com.alkemy.ong.service.Interface;
 
-import org.springframework.stereotype.Service;
-
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import javax.json.JsonPatch;
 
 
-@Service
-public interface UsersService {
-	
-	public User save(User user);
-	
-	public UsersDto createUser(UsersDto user);
-	
-	public UsersDto getUser(String email);
-	
-	public UsersDto updateUser(Long id, UsersDto user);
-	
-	public void deleteUser(Long id);
-	
-	
-	
+public interface IUsersService extends UserDetailsService {
 
+	UsersDto createUser(UsersDto user);
+	
+	UsersDto getUser(String email);
+	
+	UsersDto updateUser(Long id, UsersDto user);
+	
+	void deleteUser(Long id);
+	
+	User getUserById(Long id);
+
+	UsersDto patchUpdate(Long id, JsonPatch patchDocument);
+
+	UserDetails loadUserByUsername(String email);
 	
 }
