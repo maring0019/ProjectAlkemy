@@ -16,12 +16,12 @@ import java.util.Date;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class ActivitiesEntity implements Serializable {
+public class Activities implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "El nombre de la actividad es obligatorio.")
@@ -32,7 +32,7 @@ public class ActivitiesEntity implements Serializable {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @NotBlank(message = "La imágen de la activdad es olbitoria.")
+    @NotBlank(message = "La imagen de la activdad es olbitoria.")
     @Column(nullable = false)
     private String image;
 

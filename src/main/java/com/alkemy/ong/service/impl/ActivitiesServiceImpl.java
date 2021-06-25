@@ -3,7 +3,7 @@ package com.alkemy.ong.service.impl;
 import com.alkemy.ong.dto.ActivitiesDto;
 import com.alkemy.ong.model.ActivitiesEntity;
 import com.alkemy.ong.repository.ActivitiesRepository;
-import com.alkemy.ong.service.Interface.IActivitiesService;
+import com.alkemy.ong.service.Interface.IActivities;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class ActivitiesServiceImpl implements IActivitiesService {
+public class ActivitiesImpl implements IActivities {
 
     @Autowired
     private ActivitiesRepository activitiesRepository;
