@@ -1,4 +1,4 @@
-package com.alkemy.ong.service.interfaces;
+package com.alkemy.ong.service.Interface;
 
 import com.alkemy.ong.dto.NewsDto;
 import com.alkemy.ong.model.News;
