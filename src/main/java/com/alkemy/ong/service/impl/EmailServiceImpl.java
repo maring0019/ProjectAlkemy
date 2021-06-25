@@ -32,7 +32,7 @@ public class EmailServiceImpl implements IEmailService {
         Email from = new Email(EmailConstants.EMAIL_FROM);
         Email to = new Email(sendTo);
         String subject = EmailConstants.EMAIL_SUBJECT;
-        Content content = new Content("html", getEmailFromResources());
+        Content content = new Content("text/html", getEmailFromResources());
         Mail mail = new Mail(from, subject, to, content);
         SendGrid sg = new SendGrid(EmailConstants.API_KEY);
         Request request = new Request();
