@@ -58,8 +58,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sendgrid</groupId>
-			<artifactId>sendgrid-java</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>5.3.8</version>
 		</dependency>
 	</dependencies>
 
