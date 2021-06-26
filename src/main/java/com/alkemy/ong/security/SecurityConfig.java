@@ -1,6 +1,5 @@
 package com.alkemy.ong.security;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -20,11 +19,6 @@ import com.alkemy.ong.service.impl.UsersServiceImpl;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Bean
-	public ModelMapper modelMapper(){
-		return new ModelMapper();
-	}
 
 	@Autowired
 	private UsersServiceImpl userServiceImpl;
@@ -46,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return super.authenticationManager();
 	}
 
-	@Bean
 	@Override
+	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
