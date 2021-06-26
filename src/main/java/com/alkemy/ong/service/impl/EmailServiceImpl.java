@@ -26,6 +26,7 @@ import com.alkemy.ong.util.EmailConstants;
 public class EmailServiceImpl implements IEmailService {
 
     private final MessageSource messageSource;
+    @Autowired
     private final SendGrid sendGrid;
 
     @Override
