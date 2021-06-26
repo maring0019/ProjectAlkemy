@@ -13,17 +13,15 @@ import javax.json.JsonPatch;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class UsersController {
 
     @Autowired
     private final IUsersService usersService;
 
-    @Autowired
-    private final ModelMapper mapper;
 
-    @PostMapping
+    @PostMapping(path = "/register")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UsersDto usersDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
