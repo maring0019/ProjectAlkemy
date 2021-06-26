@@ -21,7 +21,7 @@ public class CategoriesServiceImpl implements ICategoriesService {
 	private CategoriesRepository ctgRepo;
 
 	@Autowired
-	ModelMapper mapper;
+	private ModelMapper mapper;
 
 	@Override
 	public CategoriesDto createCategory(CategoriesDto dto) {
