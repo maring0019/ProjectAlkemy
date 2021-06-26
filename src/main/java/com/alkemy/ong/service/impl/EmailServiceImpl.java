@@ -9,6 +9,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import com.alkemy.ong.util.EmailConstants;
 public class EmailServiceImpl implements IEmailService {
 
     private final MessageSource messageSource;
+    private final SendGrid sendGrid;
 
     @Override
     public void send(String sendTo) throws IOException {
@@ -33,14 +35,12 @@ public class EmailServiceImpl implements IEmailService {
         String subject = EmailConstants.EMAIL_SUBJECT;
         Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources());
         Mail mail = new Mail(from, subject, to, content);
-        SendGrid sg = new SendGrid(EmailConstants.API_KEY);
         Request request = new Request();
-
         try{
             request.setMethod(Method.POST);
             request.setEndpoint(EmailConstants.EMAIL_ENDPOINT);
             request.setBody(mail.build());
-            Response response = sg.api(request);
+            Response response = this.sendGrid.api(request);
             System.out.println(response.getStatusCode());
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
@@ -48,8 +48,6 @@ public class EmailServiceImpl implements IEmailService {
             throw new IOException(messageSource.getMessage("email.error.cant.send", null, Locale.getDefault()));
         }
     }
-
-
 
     private String getEmailFromResources() throws IOException {
         String email = "";
