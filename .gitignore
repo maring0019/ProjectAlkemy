@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+src/main/resources/application.properties
+
+
 ### STS ###
 .apt_generated
 .classpath
@@ -34,9 +37,25 @@ build/
 ### VS Code ###
 .vscode/
 
+<<<<<<< HEAD
+
 ### ONG ###
+pom.xml
+=======
+### ONG ###
+>>>>>>> d07efb09e998ea7bc17275d40d2dcaf771e1a47a
 src/main/resources/application.properties
 mvnw
 mvnw.cmd
 ong.iml
+<<<<<<< HEAD
+.idea/
+.mvn/
+=======
 
+<<<<<<< HEAD
+>>>>>>> d07efb09e998ea7bc17275d40d2dcaf771e1a47a
+=======
+>>>>>>> develop
+/pom.xml
+>>>>>>> 086fe8c30a0132a1ed34ca997f23def4029db582
