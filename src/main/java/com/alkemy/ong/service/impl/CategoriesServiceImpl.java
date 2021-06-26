@@ -20,7 +20,8 @@ public class CategoriesServiceImpl implements ICategoriesService {
 	@Autowired
 	private CategoriesRepository ctgRepo;
 
-	private ModelMapper mapper = modelMapper();
+	@Autowired
+	ModelMapper mapper;
 
 	@Bean
 	public ModelMapper modelMapper() {
