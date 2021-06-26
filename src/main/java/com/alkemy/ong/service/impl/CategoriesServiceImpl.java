@@ -23,12 +23,6 @@ public class CategoriesServiceImpl implements ICategoriesService {
 	@Autowired
 	ModelMapper mapper;
 
-	@Bean
-	public ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		return modelMapper;
-	}
-
 	@Override
 	public CategoriesDto createCategory(CategoriesDto dto) {
 
