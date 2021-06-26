@@ -1,0 +1,67 @@
+package com.alkemy.ong.jwt;
+
+import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import com.alkemy.ong.model.UsersMain;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.AllArgsConstructor;
+
+@Component
+@AllArgsConstructor
+public class JwtProvider {
+
+	private final static Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+	private final MessageSource messageSource;
+
+	@Value("${jwt.secret}")
+	private String secret;
+
+	@Value("${jwt.expiration}")
+	private int expiration;
+
+	public String generatedToken(Authentication auth) {
+		UsersMain userMain = (UsersMain) auth.getPrincipal();
+		return Jwts.builder().setSubject(userMain.getUsername()).setIssuedAt(new Date())
+				.setExpiration(new Date(new Date().getTime() + expiration * 1000))
+				.signWith(SignatureAlgorithm.HS256, secret).compact();
+	}
+
+	public String getEmailFromToken(String token) {
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+	}
+
+	public Boolean validateToken(String token) throws Exception {
+
+		try {
+			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+			return true;
+		} catch (MalformedJwtException e) {
+			logger.error(messageSource.getMessage("jwt.error.token.malformed", null, Locale.getDefault()));
+		} catch (UnsupportedJwtException e) {
+			logger.error(messageSource.getMessage("jwt.error.token.unsupport", null, Locale.getDefault()));
+		} catch (ExpiredJwtException e) {
+			logger.error(messageSource.getMessage("jwt.error.token.expired", null, Locale.getDefault()));
+		} catch (IllegalArgumentException e) {
+			logger.error(messageSource.getMessage("jwt.error.token.notFound", null, Locale.getDefault()));
+		} catch (SignatureException e) {
+			logger.error(messageSource.getMessage("jwt.error.token.failure", null, Locale.getDefault()));
+		}
+
+		return false;
+
+	}
+}
