@@ -15,19 +15,17 @@ import java.util.List;
 public class OrganizationServiceImpl implements IOrganization {
 
     @Autowired
-    OrganizationRepository repository;
+    private OrganizationRepository repository;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public List<OrganizationDto> getAll() {
         List<Organization> organizations = repository.findAll();
         List<OrganizationDto> organizationDto = new ArrayList<OrganizationDto>();
 
-        for(Organization org : organizations){
-            organizationDto.add(modelMapper.map(org, OrganizationDto.class));
-        }
+        organizations.forEach(org -> organizationDto.add(modelMapper.map(org, OrganizationDto.class)));
         return organizationDto;
     }
 }
