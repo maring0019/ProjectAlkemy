@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Size;
+
 @Getter @Setter
 public class UsersDto implements Serializable{
 	
@@ -25,6 +27,7 @@ public class UsersDto implements Serializable{
 	
 	private String email;
 
+	@Size(min = 8, max = 30, message = "La contraseña debe tener entre 8 y 30 caracteres.")
 	private String password;
 	
 	private String photo;
