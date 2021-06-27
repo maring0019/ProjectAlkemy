@@ -30,7 +30,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 		logger.error(messageSource.getMessage("jwt.error.method.commence.fail", null, Locale.getDefault()));
 
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-				messageSource.getMessage("jwt.error.response.unauthorized ", null, Locale.getDefault()));
+				messageSource.getMessage("jwt.error.response.unauthorized", null, Locale.getDefault()));
 
 	}
 
