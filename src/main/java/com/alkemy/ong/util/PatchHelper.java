@@ -1,4 +1,4 @@
-package com.alkemy.ong.utils;
+package com.alkemy.ong.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

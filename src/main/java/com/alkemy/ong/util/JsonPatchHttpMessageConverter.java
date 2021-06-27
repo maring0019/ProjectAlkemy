@@ -1,4 +1,4 @@
-package com.alkemy.ong.utils;
+package com.alkemy.ong.util;
 
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
