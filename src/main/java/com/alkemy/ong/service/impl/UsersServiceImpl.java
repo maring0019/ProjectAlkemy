@@ -2,23 +2,20 @@ package com.alkemy.ong.service.impl;
 
 import javax.json.JsonPatch;
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
-import com.alkemy.ong.utils.PatchHelper;
+import com.alkemy.ong.util.PatchHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.model.User;
-import com.alkemy.ong.model.UsersMain;
 import com.alkemy.ong.repository.UsersRepository;
 import com.alkemy.ong.service.Interface.IUsersService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,7 +29,7 @@ public class UsersServiceImpl implements IUsersService {
 	private final UsersRepository usersRepository;
 	
 	@Autowired
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private final ModelMapper mapper;
@@ -47,12 +44,14 @@ public class UsersServiceImpl implements IUsersService {
 	@Override
 	public UsersDto createUser(UsersDto user) {
 		
-		if(usersRepository.findByEmail(user.getEmail()).isPresent()) throw new RuntimeException("Email is already registered.");
+		if(usersRepository.findByEmail(user.getEmail()).isPresent())
+			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
+
 		User userEntity = User.builder()
 				.email(user.getEmail())
 				.firstName(user.getFirstName())
 				.lastName(user.getLastName())
-				.password(bCryptPasswordEncoder.encode(user.getPassword()))
+				.password(passwordEncoder.encode(user.getPassword()))
 				.photo(user.getPhoto())
 				.build();
 		
@@ -67,7 +66,7 @@ public class UsersServiceImpl implements IUsersService {
 	@Override
 	public UsersDto updateUser(Long id, UsersDto user) {
 		User userEntity = getUserById(id);
-		userEntity.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
 	}
 
@@ -97,7 +96,7 @@ public class UsersServiceImpl implements IUsersService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = usersRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException(email));
-		return UsersMain.build(user);
+		return User.build(user);
 	}
 
 
