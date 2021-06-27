@@ -1,25 +1,11 @@
 package com.alkemy.ong.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -28,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Builder;
@@ -40,7 +27,7 @@ import lombok.Setter;
 @SQLDelete(sql = "UPDATE users SET deleted=true WHERE id=?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor
-public class User implements Serializable {
+public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +47,8 @@ public class User implements Serializable {
 	@Email(message = "Email invalido.")
 	@Column(nullable = false)
 	private String email;
-	
+
+	@Column(nullable = false, length = 30)
 	@NotBlank(message = "La contraseña es requerida.")
 	private String password;
 
@@ -85,20 +73,60 @@ public class User implements Serializable {
 	
 	private Boolean deleted = Boolean.FALSE;
 
+	@ElementCollection(targetClass=GrantedAuthority.class)
+	private Collection<? extends GrantedAuthority> authorities;
+
+
 	@Builder
-	public User(String firstName, String lastName, String email,
-			@NotBlank(message = "Password is required.") String password, String photo) {
+	public User(String firstName, String lastName, String email, String photo, String password,
+					 Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.password = password;
 		this.photo = photo;
+		this.password = password;
+		this.authorities = authorities;
 		this.created = new Date();
 	}
-	
 
-	
+	public static User build(User user) {
+		List<GrantedAuthority> authorities = user.getRoles()
+				.stream()
+				.map(rol -> new SimpleGrantedAuthority(rol.getName()))
+				.collect(Collectors.toList());
+
+		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), authorities);
+	}
 
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }
