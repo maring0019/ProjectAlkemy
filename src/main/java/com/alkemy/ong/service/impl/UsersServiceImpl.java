@@ -1,6 +1,5 @@
 package com.alkemy.ong.service.impl;
 
-import java.util.ArrayList;
 
 import javax.transaction.Transactional;
 
@@ -9,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.model.User;
@@ -24,7 +23,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService{
 	private UsersRepository usersRepository;
 	
 	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
 	private ModelMapper mapper;
