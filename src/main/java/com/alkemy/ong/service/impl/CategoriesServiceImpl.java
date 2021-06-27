@@ -10,7 +10,6 @@ import javax.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.alkemy.ong.dto.CategoriesDto;
@@ -21,18 +20,15 @@ import com.alkemy.ong.service.Interface.ICategoriesService;
 @Service
 public class CategoriesServiceImpl implements ICategoriesService {
 
-	@Autowired
 	private CategoriesRepository ctgRepo;
+	private MessageSource messageSource;
+	private ModelMapper mapper;
 
 	@Autowired
-	private MessageSource messageSource;
-
-	private ModelMapper mapper = modelMapper();
-
-	@Bean
-	public ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		return modelMapper;
+	public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
+		this.ctgRepo = repo;
+		this.mapper = model;
+		this.messageSource = msg;
 	}
 
 	@Override
