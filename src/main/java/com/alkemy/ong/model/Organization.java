@@ -5,16 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import org.hibernate.annotations.Where;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "organizations")
 @SQLDelete(sql = "UPDATE Organizations SET deleted=true WHERE id = ?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor
