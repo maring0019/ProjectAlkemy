@@ -20,9 +20,9 @@ import com.alkemy.ong.service.Interface.ICategoriesService;
 @Service
 public class CategoriesServiceImpl implements ICategoriesService {
 
-	private CategoriesRepository ctgRepo;
-	private MessageSource messageSource;
-	private ModelMapper mapper;
+	private final CategoriesRepository ctgRepo;
+	private final MessageSource messageSource;
+	private final ModelMapper mapper;
 
 	@Autowired
 	public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
