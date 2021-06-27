@@ -3,11 +3,13 @@ package com.alkemy.ong.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import lombok.AllArgsConstructor;
+import javax.persistence.EntityNotFoundException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.alkemy.ong.dto.CategoriesDto;
@@ -16,14 +18,18 @@ import com.alkemy.ong.repository.CategoriesRepository;
 import com.alkemy.ong.service.Interface.ICategoriesService;
 
 @Service
-@AllArgsConstructor
 public class CategoriesServiceImpl implements ICategoriesService {
 
-	@Autowired
 	private final CategoriesRepository ctgRepo;
+	private final MessageSource messageSource;
+	private final ModelMapper mapper;
 
 	@Autowired
-	private final ModelMapper mapper;
+	public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
+		this.ctgRepo = repo;
+		this.mapper = model;
+		this.messageSource = msg;
+	}
 
 	@Override
 	public CategoriesDto createCategory(CategoriesDto dto) {
@@ -39,7 +45,8 @@ public class CategoriesServiceImpl implements ICategoriesService {
 	@Override
 	public CategoriesDto updateCategoryById(Long id, CategoriesDto dto) {
 
-		Categories updateCategory = ctgRepo.findById(id).get();
+		Categories updateCategory = findCategoriesById(id);
+
 		if (!dto.getName().isBlank()) {
 			updateCategory.setName(dto.getName());
 		} else {
@@ -79,5 +86,11 @@ public class CategoriesServiceImpl implements ICategoriesService {
 	@Override
 	public void deleteById(Long id) {
 		ctgRepo.deleteById(id);
+	}
+
+	@Override
+	public Categories findCategoriesById(Long id) {
+		return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
+				messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
 	}
 }
