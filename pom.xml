@@ -60,7 +60,6 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.1.Final</version>
         </dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -97,7 +96,13 @@
 			<artifactId>jackson-datatype-jsr353</artifactId>
 			<version>2.9.8</version>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>4.7.2</version>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>
