@@ -1,4 +1,4 @@
-package com.alkemy.ong.service.Impl;
+package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.service.Interface.IEmailService;
 import com.sendgrid.Method;
@@ -31,6 +31,7 @@ public class EmailServiceImpl implements IEmailService {
         Email from = new Email(EmailConstants.EMAIL_FROM);
         Email to = new Email(sendTo);
         String subject = EmailConstants.EMAIL_SUBJECT;
+
         Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources());
         Mail mail = new Mail(from, subject, to, content);
         SendGrid sg = new SendGrid(EmailConstants.API_KEY);

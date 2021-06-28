@@ -24,13 +24,13 @@ import java.util.Locale;
 @Service
 @AllArgsConstructor
 public class UsersServiceImpl implements IUsersService {
-	
+
 	@Autowired
 	private final UsersRepository usersRepository;
-	
+
 	@Autowired
 	private final PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private final ModelMapper mapper;
 
@@ -39,11 +39,11 @@ public class UsersServiceImpl implements IUsersService {
 
 	@Autowired
 	private final PatchHelper patchHelper;
-	
+
 
 	@Override
 	public UsersDto createUser(UsersDto user) {
-		
+
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
 
@@ -54,7 +54,7 @@ public class UsersServiceImpl implements IUsersService {
 				.password(passwordEncoder.encode(user.getPassword()))
 				.photo(user.getPhoto())
 				.build();
-		
+
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
 	}
 
@@ -73,7 +73,7 @@ public class UsersServiceImpl implements IUsersService {
 	@Override
 	public void deleteUser(Long id) {
 		User userEntity = getUserById(id);
-		usersRepository.delete(userEntity);		
+		usersRepository.delete(userEntity);
 	}
 
 	@Override
