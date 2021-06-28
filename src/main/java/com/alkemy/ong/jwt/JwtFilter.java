@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.alkemy.ong.service.Interface.UsersService;
+import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.NoArgsConstructor;
 
@@ -28,10 +28,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private MessageSource messageSource;
 	private JwtProvider jwtProvider;
-	private UsersService iUserService;
+	private IUsersService iUserService;
 
 	@Autowired
-	public JwtFilter(UsersService iUserService, JwtProvider jwtProvider, MessageSource msg) {
+	public JwtFilter(IUsersService iUserService, JwtProvider jwtProvider, MessageSource msg) {
 		this.jwtProvider = jwtProvider;
 		this.iUserService = iUserService;
 		this.messageSource = msg;
