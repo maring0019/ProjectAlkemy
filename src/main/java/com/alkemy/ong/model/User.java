@@ -48,7 +48,7 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false)//, length = 30)
 	@NotBlank(message = "La contraseña es requerida.")
 	private String password;
 
@@ -78,7 +78,7 @@ public class User implements UserDetails {
 
 
 	@Builder
-	public User(String firstName, String lastName, String email, String photo, String password,
+	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
 					 Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.firstName = firstName;
@@ -88,6 +88,7 @@ public class User implements UserDetails {
 		this.password = password;
 		this.authorities = authorities;
 		this.created = new Date();
+		this.roles= roles;
 	}
 
 	public static User build(User user) {
@@ -96,7 +97,7 @@ public class User implements UserDetails {
 				.map(rol -> new SimpleGrantedAuthority(rol.getName()))
 				.collect(Collectors.toList());
 
-		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), authorities);
+		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(),user.getRoles(), authorities);
 	}
 
 
