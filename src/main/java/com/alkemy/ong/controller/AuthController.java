@@ -19,7 +19,7 @@ public class AuthController {
     @Autowired
     private final IUsersService usersService;
 
-    /* Otro issue
+
     @PostMapping(path = "/register")
     public ResponseEntity<Object> createUser(@Valid @RequestBody UsersDto usersDto) {
         try {
@@ -28,7 +28,7 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-    } */
+    }
 
     @PatchMapping(path = "/users/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) {
