@@ -60,7 +60,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 
     private boolean userIsAuthorized(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         return((UserDetails) principal).getAuthorities().stream()
+        return((UserDetails) principal).getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority()
                         .equals("ROLE_ADMIN"));
     }
