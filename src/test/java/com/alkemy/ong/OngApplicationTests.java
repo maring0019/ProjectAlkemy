@@ -1,6 +1,6 @@
 package com.alkemy.ong;
 
-import com.alkemy.ong.service.interfaces.IEmailService;
+import com.alkemy.ong.service.Interface.IEmailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +14,7 @@ class OngApplicationTests {
 
 	@Test
 	void contextLoads() throws IOException {
-		emailService.sendEmail("maxy_093@hotmail.com");
+		emailService.send("maxy_093@hotmail.com");
 	}
 
 }
