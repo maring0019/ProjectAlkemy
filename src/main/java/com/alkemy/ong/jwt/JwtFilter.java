@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.alkemy.ong.service.Interface.IUsersService;
+import com.alkemy.ong.service.impl.UsersServiceImpl;
 
 import lombok.NoArgsConstructor;
 
@@ -28,13 +28,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private MessageSource messageSource;
 	private JwtProvider jwtProvider;
-	private IUsersService iUserService;
+	private UsersServiceImpl userServiceImpl;
 
 	@Autowired
-	public JwtFilter(IUsersService iUserService, JwtProvider jwtProvider, MessageSource msg) {
+	public JwtFilter(UsersServiceImpl userServiceImpl, JwtProvider jwtProvider) {
 		this.jwtProvider = jwtProvider;
-		this.iUserService = iUserService;
-		this.messageSource = msg;
+		this.userServiceImpl = userServiceImpl;
+
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 				String email = jwtProvider.getEmailFromToken(token);
 
-				UserDetails userDetails = iUserService.loadUserByUsername(email);
+				UserDetails userDetails = userServiceImpl.loadUserByUsername(email);
 
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
 						userDetails.getAuthorities());
