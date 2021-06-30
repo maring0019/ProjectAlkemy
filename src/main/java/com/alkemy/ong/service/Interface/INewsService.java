@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface INewsService {
 
-    public Optional<News>findById(Long id);
+    public News getNewById(Long id);
 
     public List<News> findAll();
 
