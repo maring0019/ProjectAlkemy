@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.json.JsonPatch;
+import java.util.List;
 
 
 public interface IUsersService extends UserDetailsService {
@@ -23,5 +24,7 @@ public interface IUsersService extends UserDetailsService {
 	UsersDto patchUpdate(Long id, JsonPatch patchDocument);
 
 	UserDetails loadUserByUsername(String email);
+
+	List<UsersDto> showAllUsers();
 	
 }
