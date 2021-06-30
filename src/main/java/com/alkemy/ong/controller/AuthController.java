@@ -40,5 +40,13 @@ public class AuthController {
         }
     }
 
-
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+    	try {
+    		usersService.deleteUser(id);
+    		return ResponseEntity.ok().build();
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
 }
