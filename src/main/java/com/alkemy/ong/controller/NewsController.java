@@ -17,6 +17,7 @@ public class NewsController {
     @DeleteMapping("/DELETE/news/{id}")
     public void deleteNews(@PathVariable Long id){
         iNewsService.deleteNews(id);
+
     }
 
 }
