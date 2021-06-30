@@ -16,7 +16,7 @@ public class NewsController {
     @Autowired
     private INewsService iNewsService;
 
-    @DeleteMapping("/DELETE/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable Long id){
         try {
             iNewsService.deleteNews(id);
