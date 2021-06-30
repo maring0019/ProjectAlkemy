@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +24,8 @@ public class FileStoreServiceImpl implements IFileStore {
 
     private final AmazonS3 s3;
 
-    //@Value("${aws.s3.bucket.name}")
-    private final String bucketName = "funerariadb-images";
+    @Value("${aws.s3.bucket.name}")
+    private final String bucketName;
 
 
     @Override
