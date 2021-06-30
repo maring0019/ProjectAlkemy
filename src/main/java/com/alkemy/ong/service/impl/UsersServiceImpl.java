@@ -3,6 +3,9 @@ package com.alkemy.ong.service.impl;
 import javax.json.JsonPatch;
 import javax.persistence.EntityNotFoundException;
 
+import com.alkemy.ong.Enum.ERole;
+import com.alkemy.ong.model.Role;
+import com.alkemy.ong.repository.RolRepository;
 import com.alkemy.ong.util.PatchHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,7 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -40,12 +45,23 @@ public class UsersServiceImpl implements IUsersService {
 	@Autowired
 	private final PatchHelper patchHelper;
 
+	@Autowired
+	private final RolRepository rolRepository;
+
+
 
 	@Override
 	public UsersDto createUser(UsersDto user) {
 
+		if(usersRepository.findByFirstName(user.getFirstName()).isPresent())
+			throw new RuntimeException(messageSource.getMessage("user.error.firstname.registered", null, Locale.getDefault()));
+
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
+
+		Set<Role> roles = new HashSet<>();
+		roles.add(rolRepository.findByRoleName(ERole.ROLE_USER).get());
+		user.setRoles(roles);
 
 		User userEntity = User.builder()
 				.email(user.getEmail())
@@ -53,6 +69,7 @@ public class UsersServiceImpl implements IUsersService {
 				.lastName(user.getLastName())
 				.password(passwordEncoder.encode(user.getPassword()))
 				.photo(user.getPhoto())
+				.roles(user.getRoles())
 				.build();
 
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
