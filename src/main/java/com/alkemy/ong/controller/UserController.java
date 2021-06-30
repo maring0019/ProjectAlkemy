@@ -3,9 +3,9 @@ package com.alkemy.ong.controller;
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.service.Interface.IUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,9 +17,17 @@ public class UserController {
     private IUsersService iUsersService;
 
     @GetMapping("/users")
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UsersDto> showAllUsers(){
         return iUsersService.showAllUsers();
     }
 
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+        try {
+            iUsersService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }
