@@ -101,6 +101,16 @@
 			<artifactId>sendgrid-java</artifactId>
 			<version>4.7.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.1009</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-core</artifactId>
+			<version>1.11.1009</version>
+		</dependency>
 	</dependencies>
 
 	<build>
