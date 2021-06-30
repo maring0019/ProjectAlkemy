@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -92,30 +91,18 @@ public class ActivitiesServiceImpl implements IActivities {
 
     @Override
     public String uploadImage(Long id, MultipartFile file) {
-        //1. Chequear si la imagen no esta vacia
-        fileStore.fileIsEmpty(file);
-        //2. Si el archivo NO es una imagen valida
-        fileStore.isAnImage(file);
-        //3. Chequear si la actividad existe en la DB
         Activity activity = getActivityById(id);
-        //4. Grabar metadata del archivo
-        Map<String, String> metadata = fileStore.extractMetadata(file);
 
-        //5. Almacenar la imagen en s3 y actualizar la db (imagen from Activity) con el link de la imagen en s3
+        //Almacenar la imagen en s3 y actualizar la db (imagen from Activity) con el link de la imagen en s3
         //El campo imagen sera: el nombre del actual bucket/el id de la actividad-nombre-de-la-actividad    <-- Asi quedara formado el directorio/folder del file
         String path = String.format("%s/%s", bucketName, activity.getId() + "-" + activity.getName().replaceAll("\\s", "-"));
         //El nombre de la imagen quedara formado por el nombre original-UUID random
         String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
-        try {
-            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
-            activity.setImage(path+filename); //Seteo el nuevo link de la imagen
-            activitiesRepository.save(activity);
-            return bucketUrl + path + filename;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        fileStore.save(path, filename, file);
+        activity.setImage(path+filename); //Seteo el nuevo link de la imagen
+        activitiesRepository.save(activity);
+        return bucketUrl + path + filename;
     }
-
 
 }
