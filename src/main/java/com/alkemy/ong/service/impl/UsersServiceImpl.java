@@ -3,11 +3,21 @@ package com.alkemy.ong.service.impl;
 import javax.json.JsonPatch;
 import javax.persistence.EntityNotFoundException;
 
+
+import com.alkemy.ong.Enum.ERole;
+import com.alkemy.ong.model.Role;
+import com.alkemy.ong.repository.RolRepository;
+
+import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.jwt.JwtProvider;
+
 import com.alkemy.ong.util.PatchHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -18,8 +28,15 @@ import com.alkemy.ong.service.Interface.IUsersService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.Date;
+
+import java.util.HashSet;
+
+import java.util.List;
+
 import java.util.Locale;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +57,14 @@ public class UsersServiceImpl implements IUsersService {
 	@Autowired
 	private final PatchHelper patchHelper;
 
+	@Autowired
+
+	private final RolRepository rolRepository;
+
+
+	private final JwtProvider jwtProvider;
+
+
 
 	@Override
 	public UsersDto createUser(UsersDto user) {
@@ -47,15 +72,29 @@ public class UsersServiceImpl implements IUsersService {
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
 
+		Set<Role> roles = new HashSet<>();
+		roles.add(rolRepository.findByRoleName(ERole.ROLE_USER).get());
+		user.setRoles(roles);
+
 		User userEntity = User.builder()
 				.email(user.getEmail())
 				.firstName(user.getFirstName())
 				.lastName(user.getLastName())
 				.password(passwordEncoder.encode(user.getPassword()))
 				.photo(user.getPhoto())
+				.roles(user.getRoles())
 				.build();
 
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
+	}
+
+	@Override
+	public String loginUser(LoginUsersDto user) throws NotRegisteredException {
+		boolean isRegistered = loadUserByUsername(user.getEmail()).getUsername().equals(user.getEmail());
+		if(isRegistered)
+			return jwtProvider.generatedToken((User) loadUserByUsername(user.getEmail()));
+		else
+			throw new NotRegisteredException(messageSource.getMessage("login.error.email.not.registered", null, Locale.getDefault()));
 	}
 
 	@Override
@@ -99,6 +138,10 @@ public class UsersServiceImpl implements IUsersService {
 		return User.build(user);
 	}
 
+	@Override
+	public List<UsersDto> showAllUsers() {
+		return mapper.map(usersRepository.findAll(), (Type) UsersDto.class);
+	}
 
 
 }
