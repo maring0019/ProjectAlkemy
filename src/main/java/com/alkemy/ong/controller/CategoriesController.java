@@ -41,7 +41,7 @@ public class CategoriesController {
 		try {
 			return new ResponseEntity<>(iCategory.findCategoriesById(id), HttpStatus.OK);
 		}catch(EntityNotFoundException ex) {
-				return new ResponseEntity<>("No existe ese id", HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(message.getMessage("categories.error.object.notFound", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
 			}
 
 		}
