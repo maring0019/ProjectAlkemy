@@ -9,8 +9,8 @@ import java.util.Optional;
 public interface INewsService {
     public NewsDto findById(Long id);
     public List<News> findAll();
-    public News save(NewsDto newsDto);
+    public NewsDto save(NewsDto newsDto);
     public void deleteById(Long id);
-    public News updateNews(Long id, NewsDto newsDto);
+    public NewsDto updateNews(Long id, NewsDto newsDto);
 
 }

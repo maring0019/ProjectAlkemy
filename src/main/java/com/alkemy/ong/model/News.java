@@ -1,7 +1,7 @@
 package com.alkemy.ong.model;
 
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -12,7 +12,8 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter @Setter
 @Table(name = "news")
 @SQLDelete(sql = "UPDATE NewsEntity SET deleted = true WHERE id=?")
 @FilterDef(name = "deletedNewsFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
@@ -46,4 +47,14 @@ public class News {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
+
+    @Builder
+    public News(String name, String content, String image, Categories category) {
+        super();
+        this.name = name;
+        this.content = content;
+        this.image = image;
+        this.category = category;
+        this.created = new Date();
+    }
 }
