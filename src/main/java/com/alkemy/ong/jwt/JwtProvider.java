@@ -32,8 +32,7 @@ public class JwtProvider {
 	@Value("${jwt.expiration}")
 	private int expiration;
 
-	public String generatedToken(Authentication auth) {
-		User user = (User) auth.getPrincipal();
+	public String generatedToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date())
 				.setExpiration(new Date(new Date().getTime() + expiration * 1000))
 				.signWith(SignatureAlgorithm.HS256, secret).compact();
