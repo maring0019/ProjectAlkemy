@@ -30,7 +30,7 @@ public class UsersDto implements Serializable{
 	@Email
 	private String email;
 	@NotBlank
-	@Size(min = 8 , message = "La contraseña debe tener mas de 8 caracteres.")
+	@Size(min = 8 , message = "La contraseña debe tener más de 8 caracteres.")
 	private String password;
 
 	private String photo;
