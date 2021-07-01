@@ -25,7 +25,7 @@ public class NewsServiceImpl implements INewsService {
 
     @Override
     public NewsDto findById(Long id) {
-        return mapper.map(newsRepository.findById(id), NewsDto.class);
+        return mapper.map(newsRepository.findById(id).get(), NewsDto.class);
     }
 
     @Override

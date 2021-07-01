@@ -3,11 +3,13 @@ package com.alkemy.ong.controller;
 import com.alkemy.ong.dto.NewsDto;
 import com.alkemy.ong.service.impl.NewsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/news")
@@ -16,13 +18,16 @@ public class NewsController {
     @Autowired
     private NewsServiceImpl newsService;
 
+    @Autowired
+    private MessageSource message;
+
     @GetMapping("/{id}")
     public ResponseEntity<?>getNews(@PathVariable("id") Long id){
         NewsDto newsDto = newsService.findById(id);
-        try {
+        if(newsDto.getId() != null){
             return ResponseEntity.status(HttpStatus.OK).body(newsDto);
-        }catch (NullPointerException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }else{
+            return new ResponseEntity<>(message.getMessage("news.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
         }
     }
 
