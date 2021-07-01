@@ -38,12 +38,13 @@ public class CategoriesController {
 
 	@GetMapping(path="/{id}")
 	public ResponseEntity<?> shearch(@PathVariable("id") Long id) {
-		if(categoriesRepository.existByID(id)){
-			return new ResponseEntity<>(iCategory.findById(id), HttpStatus.OK);
-		}else{
-			return new ResponseEntity<>("No existe ese id",HttpStatus.BAD_REQUEST);
+		try {
+			return new ResponseEntity<>(iCategory.findCategoriesById(id), HttpStatus.OK);
+		}catch(EntityNotFoundException ex) {
+				return new ResponseEntity<>("No existe ese id", HttpStatus.BAD_REQUEST);
+			}
+
 		}
 
-	}
 
 }
