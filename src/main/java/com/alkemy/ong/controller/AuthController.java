@@ -4,6 +4,9 @@ import javax.json.JsonPatch;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.service.impl.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +50,15 @@ public class AuthController {
         }
     }
 
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginUsersDto credentials){
+        try {
+            return ResponseEntity.ok(usersService.loginUser(credentials));
+        } catch (NotRegisteredException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PatchMapping(path = "/users/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) {
         try {
@@ -57,15 +69,7 @@ public class AuthController {
         }
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-    	try {
-    		usersService.deleteUser(id);
-    		return ResponseEntity.ok().build();
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
-    }
+
     
     @GetMapping("/me")
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
