@@ -8,14 +8,14 @@ import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
-import static org.apache.http.entity.ContentType.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 @Service
@@ -26,6 +26,9 @@ public class FileStoreServiceImpl implements IFileStore {
 
     @Value("${aws.s3.bucket.name}")
     private final String bucketName;
+
+    @Autowired
+    private final MessageSource messageSource;
 
 
     @Override
@@ -39,14 +42,16 @@ public class FileStoreServiceImpl implements IFileStore {
         //Metadata extraction from the file - Grabar metadata del archivo
         extractMetadata(file).ifPresent(map -> {
             if(!map.isEmpty()) {
-                map.forEach(metadata::addUserMetadata); //map.forEach((key, value) -> objectMetadata.addUserMetadata(key, value));
+                map.forEach(metadata::addUserMetadata);
             }
         });
 
         try {
             s3.putObject(path, fileName, file.getInputStream(), metadata);
         } catch (AmazonServiceException | IOException ex) {
-            throw new IllegalStateException("Fallo al almacenar el archivo en S3: ", ex);
+            throw new IllegalStateException(messageSource.getMessage(
+                    "s3bucket.error.upload.image" + " " + ex, null, Locale.getDefault()
+            ));
         }
     }
 
