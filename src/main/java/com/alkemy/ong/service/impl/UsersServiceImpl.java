@@ -3,11 +3,15 @@ package com.alkemy.ong.service.impl;
 import javax.json.JsonPatch;
 import javax.persistence.EntityNotFoundException;
 
+import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.jwt.JwtProvider;
 import com.alkemy.ong.util.PatchHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -42,6 +46,9 @@ public class UsersServiceImpl implements IUsersService {
 	@Autowired
 	private final PatchHelper patchHelper;
 
+	@Autowired
+	private final JwtProvider jwtProvider;
+
 
 	@Override
 	public UsersDto createUser(UsersDto user) {
@@ -58,6 +65,15 @@ public class UsersServiceImpl implements IUsersService {
 				.build();
 
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
+	}
+
+	@Override
+	public String loginUser(LoginUsersDto user) throws NotRegisteredException {
+		boolean isRegistered = loadUserByUsername(user.getEmail()).getUsername().equals(user.getEmail());
+		if(isRegistered)
+			return jwtProvider.generatedToken((User) loadUserByUsername(user.getEmail()));
+		else
+			throw new NotRegisteredException(messageSource.getMessage("login.error.email.not.registered", null, Locale.getDefault()));
 	}
 
 	@Override

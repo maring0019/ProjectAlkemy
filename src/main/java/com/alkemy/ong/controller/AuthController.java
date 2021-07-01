@@ -4,6 +4,9 @@ import javax.json.JsonPatch;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.service.impl.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +47,15 @@ public class AuthController {
                     .body(usersService.createUser(usersDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginUsersDto credentials){
+        try {
+            return ResponseEntity.ok(usersService.loginUser(credentials));
+        } catch (NotRegisteredException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
