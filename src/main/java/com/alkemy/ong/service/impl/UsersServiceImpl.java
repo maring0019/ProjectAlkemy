@@ -69,9 +69,6 @@ public class UsersServiceImpl implements IUsersService {
 	@Override
 	public UsersDto createUser(UsersDto user) {
 
-		if(usersRepository.findByFirstName(user.getFirstName()).isPresent())
-			throw new RuntimeException(messageSource.getMessage("user.error.firstname.registered", null, Locale.getDefault()));
-
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
 
