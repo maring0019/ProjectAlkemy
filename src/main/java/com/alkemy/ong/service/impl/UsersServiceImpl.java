@@ -22,7 +22,9 @@ import com.alkemy.ong.service.Interface.IUsersService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -115,6 +117,10 @@ public class UsersServiceImpl implements IUsersService {
 		return User.build(user);
 	}
 
+	@Override
+	public List<UsersDto> showAllUsers() {
+		return mapper.map(usersRepository.findAll(), (Type) UsersDto.class);
+	}
 
 
 }
