@@ -7,5 +7,5 @@ import com.alkemy.ong.model.Categories;
 
 @Repository
 public interface CategoriesRepository extends JpaRepository<Categories, Long> {
-
+    Boolean existByID(Long id);
 }
