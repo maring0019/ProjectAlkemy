@@ -44,10 +44,10 @@ public class Organization implements Serializable {
 
 
     @NotNull(message = "El campo welcomeText no puede estar vacío")
-    @Column(name= "welcome_text",columnDefinition = "TEXT",nullable = false)
+    @Column(columnDefinition = "TEXT",nullable = false)
     private String welcomeText;
 
-    @Column(name= "about_us_text",columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String aboutUsText;
 
     private boolean deleted = Boolean.FALSE;

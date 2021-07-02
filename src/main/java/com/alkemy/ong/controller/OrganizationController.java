@@ -16,19 +16,19 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-@RestController("/organization")
+@RestController
 public class OrganizationController {
 
     @Autowired
     OrganizationServiceImpl organizationService;
 
-    @GetMapping(value = "/public")
+    @GetMapping(value = "organization/public")
     public ResponseEntity<?> getOrganizationData(){
         List<OrganizationDto> dto = organizationService.getAll();
         return ResponseEntity.ok(dto);
     }
     
-    @GetMapping("/public/{id}")
+    @GetMapping("organization/public/{id}")
     public ResponseEntity<Object> getOrganizationById(@PathVariable Long id) {
     	try {
     		return ResponseEntity.status(HttpStatus.OK).body(organizationService.getById(id));
@@ -37,7 +37,7 @@ public class OrganizationController {
     	}
     }
     
-    @PostMapping("/public/{id}")
+    @PostMapping("organization/public/{id}")
     public ResponseEntity<Object> updateOrganization(@Valid OrganizationDtoComp organization, @PathVariable Long id) {
         try {
         	return ResponseEntity.status(HttpStatus.OK).body(organizationService.updateOrg(id, organization));

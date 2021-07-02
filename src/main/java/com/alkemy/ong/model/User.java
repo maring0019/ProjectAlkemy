@@ -54,7 +54,7 @@ public class User implements UserDetails {
 
 	private String photo;
 	
-	@Column(name = "created_date", updatable = false, nullable = false)
+	@Column(name = "create_date", updatable = false, nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	
