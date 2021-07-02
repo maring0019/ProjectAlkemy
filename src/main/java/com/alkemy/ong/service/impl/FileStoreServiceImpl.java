@@ -7,7 +7,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -19,16 +18,20 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class FileStoreServiceImpl implements IFileStore {
 
     private final AmazonS3 s3;
 
     @Value("${aws.s3.bucket.name}")
-    private final String bucketName;
+    private String bucketName;
 
     @Autowired
     private final MessageSource messageSource;
+
+    public FileStoreServiceImpl(AmazonS3 s3, MessageSource messageSource) {
+        this.s3 = s3;
+        this.messageSource = messageSource;
+    }
 
 
     @Override
@@ -50,7 +53,7 @@ public class FileStoreServiceImpl implements IFileStore {
             s3.putObject(path, fileName, file.getInputStream(), metadata);
         } catch (AmazonServiceException | IOException ex) {
             throw new IllegalStateException(messageSource.getMessage(
-                    "s3bucket.error.upload.image" + " " + ex, null, Locale.getDefault()
+                    "s3bucket.error.upload.file" + " " + ex, null, Locale.getDefault()
             ));
         }
     }
