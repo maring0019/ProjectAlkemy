@@ -1,7 +1,5 @@
 package com.alkemy.ong.dto;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +13,11 @@ public class OrganizationDtoComp {
 
     private String image;
 
-    private String phone;
+    private Integer phone;
 
     private String address;
     
     private String welcomeText;
     
     private String aboutUsText;
-    
-    private Date edited;
 }

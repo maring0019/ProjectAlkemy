@@ -14,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,8 +51,18 @@ public class OrganizationServiceImpl implements IOrganization {
 
 	@Override
 	public OrganizationDtoComp updateOrg(Long id, OrganizationDtoComp org) {
+
 		Organization organization = getById(id);
+	
+		organization.setName(org.getName());
+		organization.setImage(org.getImage());
+		organization.setAddress(org.getAddress());
+		organization.setPhone(org.getPhone());
+		organization.setWelcomeText(org.getWelcomeText());
+		organization.setAboutUsText(org.getAboutUsText());
+		organization.setEdited(new Date());
 		
+
 		return modelMapper.map(repository.save(organization), OrganizationDtoComp.class);
 	}
 
