@@ -2,18 +2,34 @@ package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.NewsDto;
 import com.alkemy.ong.model.News;
+import com.alkemy.ong.repository.NewsRepository;
 import com.alkemy.ong.service.Interface.INewsService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
+
 
 @Service
 public class NewsServiceImpl implements INewsService {
-    @Override
-    public Optional<News> findById(Long id) {
-        return Optional.empty();
+
+    @Autowired
+    private NewsRepository newsRepository;
+
+    @Autowired
+    private MessageSource messageSource;
+
+
+    public News getNewById(Long id) {
+        return newsRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        messageSource.getMessage("new.error.not.found", null, Locale.getDefault())
+                )
+        );
     }
 
     @Override
@@ -26,9 +42,12 @@ public class NewsServiceImpl implements INewsService {
         return null;
     }
 
-    @Override
-    public void deleteById(Long id) {
 
+
+    @Override
+    public void deleteNews(Long id) {
+        News newsEntity = getNewById(id);
+        newsRepository.delete(newsEntity);
     }
 
     @Override
