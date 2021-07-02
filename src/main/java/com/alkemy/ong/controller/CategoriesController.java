@@ -24,8 +24,7 @@ public class CategoriesController {
 	private MessageSource message;
 	@Autowired
 	private ICategoriesService iCategory;
-	@Autowired
-	private CategoriesRepository categoriesRepository;
+	
 
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody CategoriesDto dto) throws EntityNotFoundException{
