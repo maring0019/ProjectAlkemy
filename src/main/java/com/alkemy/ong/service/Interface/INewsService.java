@@ -16,6 +16,6 @@ public interface INewsService {
 
     public void deleteNews(Long id);
 
-    public News updateNews(Long id, NewsDto newsDto);
+    public NewsDto updateNews(Long id, NewsDto newsDto);
 
 }

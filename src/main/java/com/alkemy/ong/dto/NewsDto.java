@@ -1,5 +1,6 @@
 package com.alkemy.ong.dto;
 
+import com.alkemy.ong.model.Categories;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,5 +14,5 @@ public class NewsDto  implements Serializable {
     private String name;
     private String content;
     private String image;
-    private CategoriesDto category;
+    private Categories category;
 }
