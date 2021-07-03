@@ -1,6 +1,5 @@
 package com.alkemy.ong.model;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import javax.persistence.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -48,7 +46,7 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false)
 	@NotBlank(message = "La contraseña es requerida.")
 	private String password;
 
@@ -78,7 +76,7 @@ public class User implements UserDetails {
 
 
 	@Builder
-	public User(String firstName, String lastName, String email, String photo, String password,
+	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
 				Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.firstName = firstName;
@@ -88,15 +86,16 @@ public class User implements UserDetails {
 		this.password = password;
 		this.authorities = authorities;
 		this.created = new Date();
+		this.roles= roles;
 	}
 
 	public static User build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
-				.map(rol -> new SimpleGrantedAuthority(rol.getName()))
+				.map(rol -> new SimpleGrantedAuthority(rol.getRoleName().name()))
 				.collect(Collectors.toList());
 
-		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), authorities);
+		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), user.getRoles(),authorities);
 	}
 
 

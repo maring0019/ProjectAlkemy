@@ -14,7 +14,6 @@ class OngApplicationTests {
 
 	@Test
 	void contextLoads() throws IOException {
-		emailService.send("maxy_093@hotmail.com");
 	}
 
 }

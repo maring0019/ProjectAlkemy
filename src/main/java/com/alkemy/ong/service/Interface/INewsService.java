@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface INewsService {
-    public NewsDto findById(Long id);
+
+
+    public News getNewById(Long id);
+
     public List<News> findAll();
+
     public NewsDto save(NewsDto newsDto);
-    public void deleteById(Long id);
+
+    public void deleteNews(Long id);
+
     public NewsDto updateNews(Long id, NewsDto newsDto);
 
 }

@@ -11,8 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
+
 
 @Service
 public class NewsServiceImpl implements INewsService {
@@ -23,9 +29,16 @@ public class NewsServiceImpl implements INewsService {
     @Autowired
     private ModelMapper mapper;
 
-    @Override
-    public NewsDto findById(Long id) {
-        return mapper.map(newsRepository.findById(id).get(), NewsDto.class);
+    @Autowired
+    private MessageSource messageSource;
+
+
+    public News getNewById(Long id) {
+        return newsRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        messageSource.getMessage("new.error.not.found", null, Locale.getDefault())
+                )
+        );
     }
 
     @Override
@@ -45,8 +58,9 @@ public class NewsServiceImpl implements INewsService {
     }
 
     @Override
-    public void deleteById(Long id) {
-
+    public void deleteNews(Long id) {
+        News newsEntity = getNewById(id);
+        newsRepository.delete(newsEntity);
     }
 
     @Override

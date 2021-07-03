@@ -20,77 +20,77 @@ import com.alkemy.ong.service.Interface.ICategoriesService;
 @Service
 public class CategoriesServiceImpl implements ICategoriesService {
 
-    private CategoriesRepository ctgRepo;
-    private MessageSource messageSource;
-    private ModelMapper mapper;
+      private CategoriesRepository ctgRepo;
+      private MessageSource messageSource;
+      private ModelMapper mapper;
 
-    @Autowired
-    public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
-        this.ctgRepo = repo;
-        this.mapper = model;
-        this.messageSource = msg;
-    }
+      @Autowired
+      public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
+          this.ctgRepo = repo;
+          this.mapper = model;
+          this.messageSource = msg;
+      }
 
-    @Override
-    public CategoriesDto createCategory(CategoriesDto dto) {
+      @Override
+      public CategoriesDto createCategory(CategoriesDto dto) {
 
-        Categories category = new Categories();
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
-        category.setImage(dto.getImage());
+          Categories category = new Categories();
+          category.setName(dto.getName());
+          category.setDescription(dto.getDescription());
+          category.setImage(dto.getImage());
 
-        return mapper.map(ctgRepo.save(category), CategoriesDto.class);
-    }
+          return mapper.map(ctgRepo.save(category), CategoriesDto.class);
+      }
 
-    @Override
-    public CategoriesDto updateCategoryById(Long id, CategoriesDto dto) {
+      @Override
+      public CategoriesDto updateCategoryById(Long id, CategoriesDto dto) {
 
-        Categories updateCategory = findCategoriesById(id);
+          Categories updateCategory = findCategoriesById(id);
 
-        if (!dto.getName().isBlank()) {
-            updateCategory.setName(dto.getName());
-        } else {
-        }
-        if (!dto.getImage().isBlank()) {
+          if (!dto.getName().isBlank()) {
+              updateCategory.setName(dto.getName());
+          } else {
+          }
+          if (!dto.getImage().isBlank()) {
             updateCategory.setImage(dto.getImage());
-        } else {
-        }
-        if (!dto.getDescription().isBlank()) {
-            updateCategory.setDescription(dto.getDescription());
-        } else {
-        }
+          } else {
+          }
+          if (!dto.getDescription().isBlank()) {
+              updateCategory.setDescription(dto.getDescription());
+          } else {
+          }
 
-        updateCategory.setEdited(new Date());
+          updateCategory.setEdited(new Date());
 
-        return mapper.map(ctgRepo.save(updateCategory), CategoriesDto.class);
-    }
+          return mapper.map(ctgRepo.save(updateCategory), CategoriesDto.class);
+      }
 
-    @Override
-    public CategoriesDto findById(Long id) {
+      @Override
+      public CategoriesDto findById(Long id) {
 
-        return mapper.map(ctgRepo.findById(id), CategoriesDto.class);
-    }
+          return mapper.map(ctgRepo.findById(id), CategoriesDto.class);
+      }
 
-    @Override
-    public List<CategoriesDto> findAll() {
+      @Override
+      public List<CategoriesDto> findAll() {
 
-        List<Categories> categories = new ArrayList<>();
-        categories = ctgRepo.findAll();
+          List<Categories> categories = new ArrayList<>();
+          categories = ctgRepo.findAll();
 
-        List<CategoriesDto> dto = new ArrayList<>();
-        categories.forEach(c -> dto.add(mapper.map(c, CategoriesDto.class)));
+          List<CategoriesDto> dto = new ArrayList<>();
+          categories.forEach(c -> dto.add(mapper.map(c, CategoriesDto.class)));
 
-        return dto;
-    }
+          return dto;
+      }
 
-    @Override
-    public void deleteById(Long id) {
-        ctgRepo.deleteById(id);
-    }
+      @Override
+      public void deleteById(Long id) {
+          ctgRepo.deleteById(id);
+      }
 
-    @Override
-    public Categories findCategoriesById(Long id) {
-        return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
-    }
+      @Override
+      public Categories findCategoriesById(Long id) {
+          return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                  messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
+      }
 }

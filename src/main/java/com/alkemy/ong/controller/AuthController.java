@@ -35,9 +35,9 @@ public class AuthController {
     @Autowired
     private final IUsersService usersService;
     @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
     @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
 
     @PostMapping(path = "/register")
@@ -70,17 +70,17 @@ public class AuthController {
     }
 
 
-    
+
     @GetMapping("/me")
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
-    	try {
-    		String token = jwtFilter.getToken(request);
-    		String email = jwtProvider.getEmailFromToken(token);
-   	
-			return new ResponseEntity<>(usersService.loadUserByUsername(email), HttpStatus.FOUND);
+        try {
+            String token = jwtFilter.getToken(request);
+            String email = jwtProvider.getEmailFromToken(token);
 
-    	}catch(UsernameNotFoundException e) {
-    		return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
+            return new ResponseEntity<>(usersService.loadUserByUsername(email), HttpStatus.FOUND);
+
+        }catch(UsernameNotFoundException e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
