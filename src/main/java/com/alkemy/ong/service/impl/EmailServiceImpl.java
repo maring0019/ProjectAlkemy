@@ -36,12 +36,13 @@ public class EmailServiceImpl implements IEmailService {
         String subject = EmailConstants.EMAIL_SUBJECT;
         Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources());
         Mail mail = new Mail(from, subject, to, content);
+        SendGrid sg = new SendGrid(EmailConstants.API_KEY);
         Request request = new Request();
         try{
             request.setMethod(Method.POST);
             request.setEndpoint(EmailConstants.EMAIL_ENDPOINT);
             request.setBody(mail.build());
-            Response response = this.sendGrid.api(request);
+            Response response = sg.api(request);
             System.out.println(response.getStatusCode());
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
