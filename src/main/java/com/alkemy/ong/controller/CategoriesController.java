@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.service.Interface.ICategoriesService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping(path = "/categories")
@@ -34,4 +35,15 @@ public class CategoriesController {
 			return new ResponseEntity<>(message.getMessage("categories.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
 		}
 	}
+        
+        @DeleteMapping(path = "/{id}")
+        public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
+        try {
+            if (iCategory.findCategoriesById(id)!= null)
+                iCategory.deleteById(id);
+                return ResponseEntity.status(HttpStatus.OK).body("Categoria eliminada satisfactoriamente.");
+        } catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }
