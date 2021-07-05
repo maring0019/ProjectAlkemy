@@ -6,6 +6,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import com.alkemy.ong.repository.CategoriesRepository;
+import com.amazonaws.services.xray.model.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -54,5 +55,9 @@ public class CategoriesController {
 
 		}
 
+	@GetMapping()
+	public ResponseEntity<?> getCategories(){
+		return new ResponseEntity<>(iCategory.findAllWithName(), HttpStatus.OK);
+	}
 
 }

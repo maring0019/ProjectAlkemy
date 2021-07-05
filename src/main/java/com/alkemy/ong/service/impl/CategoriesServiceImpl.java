@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import com.alkemy.ong.dto.CategoriesNameDto;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.alkemy.ong.dto.CategoriesNameDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,7 +34,7 @@ public class CategoriesServiceImpl implements ICategoriesService {
       }
 
       @Override
-      public CategoriesDto createCategory(CategoriesDto dto){
+      public CategoriesDto createCategory(CategoriesDto dto) throws EntityNotFoundException {
 
           Categories category = new Categories();
           if(isNumeric(dto.getName()) == true){
@@ -98,14 +100,20 @@ public class CategoriesServiceImpl implements ICategoriesService {
                   messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
       }
 
-      public static boolean isNumeric(String nombre){
-          boolean resultado;
-          try{
-              Long.parseLong(nombre);
-              resultado = true;
-          }catch(NumberFormatException e){
-              resultado = false;
-          }
-          return resultado;
-      }
+    @Override
+    public CategoriesNameDto findAllWithName() {
+        return mapper.map(ctgRepo.findAll(), CategoriesNameDto.class);
+
+    }
+
+    public static boolean isNumeric(String nombre){
+        boolean resultado;
+        try{
+            Long.parseLong(nombre);
+            resultado = true;
+        }catch(NumberFormatException e){
+            resultado = false;
+        }
+        return resultado;
+    }
 }
