@@ -39,7 +39,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @NotEmpty(message = "El campo Name no puede estar vacío.")
     private String name;
     private String facebookUrl;
@@ -52,15 +52,15 @@ public class Member {
     @Column(name = "create_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
-    
+
     @Column(name = "edit_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date editDate;
-    
+
     @Column(name = "delete_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date deleteDate;
-    
-        
-      
+
+
+
 }
