@@ -18,9 +18,9 @@ import javax.validation.constraints.Size;
 
 @Getter @Setter
 public class UsersDto implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
 	@NotBlank
 	private String firstName;
@@ -38,7 +38,7 @@ public class UsersDto implements Serializable{
 	private Date created;
 
 	private Date edited;
-	
+
 	private Set<Role> roles;
 
 	@JsonIgnore

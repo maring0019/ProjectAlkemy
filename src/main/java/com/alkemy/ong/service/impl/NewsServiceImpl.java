@@ -1,17 +1,20 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.NewsDto;
+import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.repository.NewsRepository;
 import com.alkemy.ong.service.Interface.INewsService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+
+
+import org.springframework.context.MessageSource;
+import javax.persistence.EntityNotFoundException;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -23,10 +26,10 @@ public class NewsServiceImpl implements INewsService {
     private NewsRepository newsRepository;
 
     @Autowired
-    private MessageSource messageSource;
+    private ModelMapper mapper;
 
     @Autowired
-    private ModelMapper mapper;
+    private MessageSource messageSource;
 
 
     public News getNewById(Long id) {
@@ -43,11 +46,15 @@ public class NewsServiceImpl implements INewsService {
     }
 
     @Override
-    public News save(NewsDto newsDto) {
-        return null;
+    public NewsDto save(NewsDto newsDto) {
+        News newsEntity = News.builder()
+                .name(newsDto.getName())
+                .content(newsDto.getContent())
+                .image(newsDto.getImage())
+                .category(mapper.map(newsDto.getCategory(), Categories.class))
+                .build();
+        return mapper.map(newsRepository.save(newsEntity), NewsDto.class);
     }
-
-
 
     @Override
     public void deleteNews(Long id) {
@@ -57,6 +64,7 @@ public class NewsServiceImpl implements INewsService {
 
     @Override
     public NewsDto updateNews(Long id, NewsDto newsDto) {
+
         News upNews = getNewById(id);
 
         if((newsDto.getCategory() == null)) {
@@ -76,5 +84,6 @@ public class NewsServiceImpl implements INewsService {
         }
         upNews.setEdited(new Date());
         return mapper.map(newsRepository.save(upNews), NewsDto.class);
+
     }
 }
