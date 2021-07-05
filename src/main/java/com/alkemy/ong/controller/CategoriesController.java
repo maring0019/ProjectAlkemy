@@ -31,7 +31,7 @@ public class CategoriesController {
 		try{
 			return new ResponseEntity<>(iCategory.createCategory(dto) ,HttpStatus.OK);
 		}catch (EntityNotFoundException e){
-			return new ResponseEntity<>(message.getMessage("categories.error.object.notString", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(message.getMessage("categories.error.object.notString", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
 		}
 	}
 

@@ -35,7 +35,7 @@ public class CategoriesServiceImpl implements ICategoriesService {
       public CategoriesDto createCategory(CategoriesDto dto){
 
           Categories category = new Categories();
-          if(isNumeric(dto.getName()) == true){
+          if(isNumeric(dto.getName())){
                dto.setName("");
           }
           category.setName(dto.getName());
