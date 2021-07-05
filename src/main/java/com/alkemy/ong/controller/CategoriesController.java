@@ -24,7 +24,16 @@ public class CategoriesController {
 	private MessageSource message;
 	@Autowired
 	private ICategoriesService iCategory;
-	
+
+
+	@PostMapping(value = "/categories")
+	public ResponseEntity<?> post(@RequestBody CategoriesDto dto) throws EntityNotFoundException{
+		try{
+			return new ResponseEntity<>(iCategory.createCategory(dto) ,HttpStatus.OK);
+		}catch (EntityNotFoundException e){
+			return new ResponseEntity<>(message.getMessage("categories.error.object.empty", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody CategoriesDto dto) throws EntityNotFoundException{
