@@ -26,12 +26,12 @@ public class CategoriesController {
 	private ICategoriesService iCategory;
 
 
-	@PostMapping(value = "/categories")
+	@PostMapping
 	public ResponseEntity<?> post(@RequestBody CategoriesDto dto) throws EntityNotFoundException{
 		try{
 			return new ResponseEntity<>(iCategory.createCategory(dto) ,HttpStatus.OK);
 		}catch (EntityNotFoundException e){
-			return new ResponseEntity<>(message.getMessage("categories.error.object.empty", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(message.getMessage("categories.error.object.notString", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
 		}
 	}
 
