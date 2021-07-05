@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alkemy.ong.dto.UsersDto;
-import com.alkemy.ong.jwt.JwtFilter;
-import com.alkemy.ong.jwt.JwtProvider;
+import com.alkemy.ong.security.JwtFilter;
+import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.AllArgsConstructor;
@@ -77,7 +77,8 @@ public class AuthController {
             String token = jwtFilter.getToken(request);
             String email = jwtProvider.getEmailFromToken(token);
 
-            return new ResponseEntity<>(usersService.loadUserByUsername(email), HttpStatus.FOUND);
+            return ResponseEntity.status(HttpStatus.FOUND)
+            		.body(usersService.getUser(email));
 
         }catch(UsernameNotFoundException e) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

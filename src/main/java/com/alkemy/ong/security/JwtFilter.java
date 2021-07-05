@@ -1,4 +1,4 @@
-package com.alkemy.ong.jwt;
+package com.alkemy.ong.security;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.alkemy.ong.model.User;
 import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.NoArgsConstructor;
@@ -25,18 +26,18 @@ import lombok.NoArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
 
 	private final static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
-
+	public static final String AUTHORIZATION = "Authorization";
+    public static final String BEARER = "Bearer ";
+	
+	
+	@Autowired
 	private MessageSource messageSource;
+	@Autowired
 	private JwtProvider jwtProvider;
+	@Autowired
 	private IUsersService iUserService;
 
-	@Autowired
-	public JwtFilter(IUsersService iUserService, JwtProvider jwtProvider, MessageSource msg) {
-		this.jwtProvider = jwtProvider;
-		this.iUserService = iUserService;
-		this.messageSource = msg;
-	}
-
+	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -64,9 +65,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	public String getToken(HttpServletRequest request) {
 
-		String header = request.getHeader("Authorization");
-		if (header != null && header.startsWith("Bearer")) {
-			return header.replace("Bearer ", "");
+		String header = request.getHeader(AUTHORIZATION);
+		if (header != null && header.startsWith(BEARER)) {
+			return header.substring(7);
 		}
 		return null;
 	}

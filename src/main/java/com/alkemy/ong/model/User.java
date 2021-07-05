@@ -60,7 +60,7 @@ public class User implements UserDetails {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date edited;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "user_role",
 			joinColumns = @JoinColumn(

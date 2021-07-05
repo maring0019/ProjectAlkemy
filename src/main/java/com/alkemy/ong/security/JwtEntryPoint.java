@@ -1,4 +1,4 @@
-package com.alkemy.ong.jwt;
+package com.alkemy.ong.security;
 
 import java.io.IOException;
 import java.util.Locale;
