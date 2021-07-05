@@ -32,7 +32,7 @@ public class CategoriesServiceImpl implements ICategoriesService {
       }
 
       @Override
-      public CategoriesDto createCategory(CategoriesDto dto) throws EntityNotFoundException {
+      public CategoriesDto createCategory(CategoriesDto dto){
 
           Categories category = new Categories();
           if(isNumeric(dto.getName()) == true){
