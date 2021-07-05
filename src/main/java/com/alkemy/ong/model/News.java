@@ -24,19 +24,20 @@ public class News {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "Complete el campo nombre")
-    @Size(min = 2, max = 20, message = "El nombre debe contener entre 2 y 20 caracteres")
+    @NotBlank(message = "Completar el campo nombre")
+    @Size(min = 2, max = 20, message = "El nombre debe contener entre 2 y 20 carácteres")
     private String name;
 
     @Column(nullable = false)
-    @NotBlank(message = "Complete el campo contenido")
+    @NotBlank(message = "Completar el campo contenido")
     private String content;
 
     @Column(nullable = false)
-    @NotBlank(message = "Complete el campo imagen")
+    @NotBlank(message = "Completar el campo imagen")
     private String image;
 
     @OneToOne
+    @JoinColumn(name="category")
     private Categories category;
 
     private boolean deleted = Boolean.FALSE;
