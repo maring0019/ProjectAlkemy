@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.model.Categories;
+import com.alkemy.ong.dto.CategoriesNameDto;
 
 public interface ICategoriesService {
 
@@ -18,4 +19,6 @@ public interface ICategoriesService {
 	public Categories findCategoriesById(Long id);
 
 	public CategoriesDto updateCategoryById(Long id, CategoriesDto dto);
+
+	public CategoriesNameDto findAllWithName();
 }
