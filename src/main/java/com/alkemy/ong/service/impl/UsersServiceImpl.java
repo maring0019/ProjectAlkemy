@@ -10,8 +10,6 @@ import com.alkemy.ong.repository.RolRepository;
 
 import com.alkemy.ong.dto.LoginUsersDto;
 import com.alkemy.ong.exception.NotRegisteredException;
-import com.alkemy.ong.jwt.JwtProvider;
-
 import com.alkemy.ong.util.PatchHelper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.model.User;
 import com.alkemy.ong.repository.UsersRepository;
+import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.IUsersService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -58,10 +58,9 @@ public class UsersServiceImpl implements IUsersService {
 	private final PatchHelper patchHelper;
 
 	@Autowired
-
 	private final RolRepository rolRepository;
 
-
+	@Autowired
 	private final JwtProvider jwtProvider;
 
 
@@ -99,7 +98,19 @@ public class UsersServiceImpl implements IUsersService {
 
 	@Override
 	public UsersDto getUser(String email) {
-		return mapper.map(usersRepository.findByEmail(email), UsersDto.class);
+		Optional<User> usr = usersRepository.findByEmail(email);
+		User user = usr.get();
+		
+		UsersDto info = new UsersDto();
+		info.setEmail(email);
+		info.setFirstName(user.getFirstName());
+		info.setLastName(user.getLastName());
+		info.setPhoto(user.getPhoto());
+		info.setCreated(user.getCreated());
+		info.setEdited(user.getEdited());
+		info.setRoles(user.getRoles());
+		
+		return info;
 	}
 
 	@Override
@@ -132,7 +143,7 @@ public class UsersServiceImpl implements IUsersService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+	public User loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = usersRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException(email));
 		return User.build(user);

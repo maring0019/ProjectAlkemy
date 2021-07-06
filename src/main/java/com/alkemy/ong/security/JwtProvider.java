@@ -1,4 +1,4 @@
-package com.alkemy.ong.jwt;
+package com.alkemy.ong.security;
 
 import java.util.Date;
 import java.util.Locale;

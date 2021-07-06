@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alkemy.ong.dto.UsersDto;
-import com.alkemy.ong.jwt.JwtFilter;
-import com.alkemy.ong.jwt.JwtProvider;
+import com.alkemy.ong.security.JwtFilter;
+import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.AllArgsConstructor;
@@ -35,9 +35,9 @@ public class AuthController {
     @Autowired
     private final IUsersService usersService;
     @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
     @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
 
     @PostMapping(path = "/register")
@@ -70,17 +70,18 @@ public class AuthController {
     }
 
 
-    
+
     @GetMapping("/me")
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
-    	try {
-    		String token = jwtFilter.getToken(request);
-    		String email = jwtProvider.getEmailFromToken(token);
-   	
-			return new ResponseEntity<>(usersService.loadUserByUsername(email), HttpStatus.FOUND);
+        try {
+            String token = jwtFilter.getToken(request);
+            String email = jwtProvider.getEmailFromToken(token);
 
-    	}catch(UsernameNotFoundException e) {
-    		return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
+            return ResponseEntity.status(HttpStatus.FOUND)
+            		.body(usersService.getUser(email));
+
+        }catch(UsernameNotFoundException e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

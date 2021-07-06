@@ -3,16 +3,16 @@ package com.alkemy.ong.controller;
 import java.util.Locale;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
+import com.alkemy.ong.repository.CategoriesRepository;
+import com.amazonaws.services.xray.model.Http;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.service.Interface.ICategoriesService;
@@ -27,6 +27,16 @@ public class CategoriesController {
 	@Autowired
 	private ICategoriesService iCategory;
 
+
+	@PostMapping
+	public ResponseEntity<?> post(@RequestBody CategoriesDto dto) throws EntityNotFoundException{
+		try{
+			return new ResponseEntity<>(iCategory.createCategory(dto) ,HttpStatus.OK);
+		}catch (EntityNotFoundException e){
+			return new ResponseEntity<>(message.getMessage("categories.error.object.notString", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody CategoriesDto dto) throws EntityNotFoundException{
 		try {
@@ -35,6 +45,7 @@ public class CategoriesController {
 			return new ResponseEntity<>(message.getMessage("categories.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
 		}
 	}
+
         
         @DeleteMapping(path = "/{id}")
         public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
@@ -46,4 +57,22 @@ public class CategoriesController {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+
+	@GetMapping(path="/{id}")
+	public ResponseEntity<?> shearch(@PathVariable("id") Long id) {
+		try {
+			return new ResponseEntity<>(iCategory.findCategoriesById(id), HttpStatus.OK);
+		}catch(EntityNotFoundException ex) {
+				return new ResponseEntity<>(message.getMessage("categories.error.object.notFound", null, Locale.getDefault()), HttpStatus.BAD_REQUEST);
+			}
+
+		}
+
+	@GetMapping()
+	public ResponseEntity<?> getCategories(){
+		return new ResponseEntity<>(iCategory.findAllWithName(), HttpStatus.OK);
+	}
+
+
 }
