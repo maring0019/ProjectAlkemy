@@ -1,13 +1,7 @@
 package com.alkemy.ong.model;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,10 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-/**
- *
- * @author Usuario
- */
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -30,12 +21,13 @@ import org.hibernate.annotations.Where;
 @ToString
 @EqualsAndHashCode
 @Entity
-/*Borrado lógico, softDeletes*/
+@Table(name ="members")
 @DynamicUpdate
 @SQLDelete(sql = "UPDATE Member SET deleted=true WHERE id=?")
 @Where(clause = "deleted = false")
 
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -47,7 +39,7 @@ public class Member {
     private String linkedinUrl;
     private String image;
     private String description;
-    /*timestamps*/
+
     @NotEmpty(message = "El campo createDate no puede estar vacío.")
     @Column(name = "create_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
