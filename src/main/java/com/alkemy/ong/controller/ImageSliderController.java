@@ -1,12 +1,44 @@
 package com.alkemy.ong.controller;
 
 
-import lombok.AllArgsConstructor;
+import com.alkemy.ong.dto.ImageSlideDto;
+import com.alkemy.ong.model.ImageSlide;
+import com.alkemy.ong.service.Interface.IImgSlideService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
-@RequestMapping
-@AllArgsConstructor
+@RequestMapping("/slides")
 public class ImageSliderController {
+
+    private final IImgSlideService iImgSlideService;
+
+    @Autowired
+    public ImageSliderController(IImgSlideService iImgSlideService) {
+        this.iImgSlideService = iImgSlideService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> createImageSlide(@Valid @RequestBody ImageSlideDto imageSlideDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(iImgSlideService.createSlide(imageSlideDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllSlidesByOrganization(@RequestParam(value = "organization_id") Long organizationId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iImgSlideService.getAllSlidesByOrganization(organizationId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }
