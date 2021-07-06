@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -17,7 +18,11 @@ import java.util.Date;
 @NoArgsConstructor
 @SQLDelete(sql = " UPDATE image_slide SET deleted = TRUE WHERE id = ?")
 @Where(clause = "deleted = false")
-public class ImageSlide implements Comparable<ImageSlide>{
+public class ImageSlide implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,14 +44,6 @@ public class ImageSlide implements Comparable<ImageSlide>{
         this.createdAt = createdAt;
     }
 
-    @Override
-    public int compareTo(ImageSlide o) {
-        if(this.ordered.equals(o.getOrdered()) && this.getCreatedAt().equals(o.getCreatedAt()))
-            return 0;
-        else if(this.ordered > o.getOrdered() && createdAt.before(o.getCreatedAt()))
-            return 1;
-        else
-            return -1;
-    }
+
 
 }
