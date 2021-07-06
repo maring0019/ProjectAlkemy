@@ -32,14 +32,18 @@ public class CategoriesServiceImpl implements ICategoriesService {
       }
 
       @Override
-      public CategoriesDto createCategory(CategoriesDto dto) {
+      public CategoriesDto createCategory(CategoriesDto dto){
 
           Categories category = new Categories();
+          if(isNumeric(dto.getName())){
+               dto.setName("");
+          }
           category.setName(dto.getName());
           category.setDescription(dto.getDescription());
           category.setImage(dto.getImage());
 
           return mapper.map(ctgRepo.save(category), CategoriesDto.class);
+
       }
 
       @Override
@@ -92,5 +96,16 @@ public class CategoriesServiceImpl implements ICategoriesService {
       public Categories findCategoriesById(Long id) {
           return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
                   messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
+      }
+
+      public static boolean isNumeric(String nombre){
+          boolean resultado;
+          try{
+              Long.parseLong(nombre);
+              resultado = true;
+          }catch(NumberFormatException e){
+              resultado = false;
+          }
+          return resultado;
       }
 }
