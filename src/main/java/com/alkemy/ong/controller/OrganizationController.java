@@ -40,7 +40,7 @@ public class OrganizationController {
     }
     
 
-    @PostMapping("/public")
+    @PostMapping("/public/{id}")
     public ResponseEntity<Object> updateOrganization(@Valid @RequestBody OrganizationDtoComp organization, @PathVariable Long id) {
         try {
         	return ResponseEntity.status(HttpStatus.OK).body(organizationService.updateOrg(id, organization));
