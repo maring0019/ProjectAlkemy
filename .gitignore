@@ -39,6 +39,9 @@ build/
 ### ONG ###
 
 src/main/resources/application.properties
+src/main/resources/data.sql
+
+
 mvnw
 mvnw.cmd
 ong.iml
