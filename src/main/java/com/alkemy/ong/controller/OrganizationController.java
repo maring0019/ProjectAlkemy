@@ -10,13 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-@RestController("/organization")
+@RestController
+@RequestMapping("/organization")
 public class OrganizationController {
 
     @Autowired
@@ -38,7 +41,7 @@ public class OrganizationController {
     }
     
     @PostMapping("/public/{id}")
-    public ResponseEntity<Object> updateOrganization(@Valid OrganizationDtoComp organization, @PathVariable Long id) {
+    public ResponseEntity<Object> updateOrganization(@Valid @RequestBody OrganizationDtoComp organization, @PathVariable Long id) {
         try {
         	return ResponseEntity.status(HttpStatus.OK).body(organizationService.updateOrg(id, organization));
         } catch (Exception e){
