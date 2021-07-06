@@ -21,6 +21,6 @@ public class MemberServiceImpl implements IMemberService {
 
     @Override
     public Member createMember(Member member) {
-        return null;
+        return memberRepository.save(member);
     }
 }
