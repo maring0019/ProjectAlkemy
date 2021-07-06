@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api")
 public class MemberController {
 
     @Autowired
