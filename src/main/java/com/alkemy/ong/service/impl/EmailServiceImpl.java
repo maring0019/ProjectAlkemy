@@ -26,15 +26,21 @@ import com.alkemy.ong.util.EmailConstants;
 public class EmailServiceImpl implements IEmailService {
 
     private final MessageSource messageSource;
-    @Autowired
-    private final SendGrid sendGrid;
+
+    public void contactEmail(String sendTo) throws IOException {
+        send(sendTo, EmailConstants.EMAIL_SUBJECT_CONTACT, EmailConstants.EMAIL_TEMPLATE_CONTACT);
+    }
+
+    public void registerEmail(String sendTo) throws IOException {
+        send(sendTo, EmailConstants.EMAIL_SUBJECT_REGISTER, EmailConstants.EMAIL_TEMPLATE_REGISTER);
+    }
 
     @Override
-    public void send(String sendTo) throws IOException {
+    public void send(String sendTo, String subject_email, String template) throws IOException {
         Email from = new Email(EmailConstants.EMAIL_FROM);
         Email to = new Email(sendTo);
-        String subject = EmailConstants.EMAIL_SUBJECT;
-        Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources());
+        String subject = subject_email;
+        Content content = new Content(EmailConstants.EMAIL_TYPE, getEmailFromResources(template));
         Mail mail = new Mail(from, subject, to, content);
         SendGrid sg = new SendGrid(EmailConstants.API_KEY);
         Request request = new Request();
@@ -51,12 +57,12 @@ public class EmailServiceImpl implements IEmailService {
         }
     }
 
-    private String getEmailFromResources() throws IOException {
+    private String getEmailFromResources(String template) throws IOException {
         String email = "";
         String line;
         ClassLoader classLoader = getClass().getClassLoader();
         try {
-            InputStream inputStream = classLoader.getResourceAsStream(EmailConstants.EMAIL_TEMPLATE);
+            InputStream inputStream = classLoader.getResourceAsStream(template);
             assert inputStream != null;
             InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(streamReader);
