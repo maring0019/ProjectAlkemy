@@ -6,6 +6,7 @@ import com.alkemy.ong.service.Interface.IMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,6 +22,7 @@ public class MemberServiceImpl implements IMemberService {
 
     @Override
     public Member createMember(Member member) {
+        member.setCreateDate(new Date());
         return memberRepository.save(member);
     }
 }

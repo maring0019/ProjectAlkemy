@@ -14,7 +14,7 @@ import java.util.Locale;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping()
 public class MemberController {
 
     @Autowired
