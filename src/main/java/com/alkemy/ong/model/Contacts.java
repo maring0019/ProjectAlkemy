@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +32,7 @@ public class Contacts {
     @Column(name = "phone", length = 50, nullable = false)
     private String phone;
 
+    @Email
     @NotBlank(message = "El campo Email no puede estar vacío")
     @Column(name = "email", length = 80)
     private String email;
