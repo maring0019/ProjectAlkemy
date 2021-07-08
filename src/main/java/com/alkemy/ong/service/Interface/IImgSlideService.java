@@ -17,7 +17,6 @@ public interface IImgSlideService {
     String deleteImage(Long id);
     List<ImageSlideCreationDto> getAllSlidesByOrganization(Long organizationId);
 
-    ImageSlide updateImage(ImageSlide image) throws InvalidImageException;
 
 
     ImageSlide getImageSlideById(Long id);

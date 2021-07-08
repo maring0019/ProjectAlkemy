@@ -79,7 +79,9 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         ImageSlide imageSlide = getImageSlideById(id);
         imageSlide.setText(image.getText());
         imageSlide.setOrganizationId(image.getOrganizationId());
-        return mapper.map(imageRepo.save(imageSlide), ImageSlideDto.class);
+        uploadImage(image, imageSlide);
+        ImageSlide imageSlideUpdated = imageRepo.save(imageSlide);
+        return mapper.map(imageSlideUpdated, ImageSlideDto.class);
     }
 
     @Override
@@ -105,10 +107,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         return imageSlideCreationDtos;
     }
 
-    @Override
-    public ImageSlide updateImage(ImageSlide image) throws InvalidImageException {
-        return null;
-    }
 
     @Override
     public ImageSlide getImageSlideById(Long id) {
