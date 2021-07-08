@@ -1,6 +1,5 @@
 package com.alkemy.ong.controller;
 
-
 import com.alkemy.ong.dto.ImageSlideCreationDto;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import org.springframework.beans.factory.annotation.Autowired;
