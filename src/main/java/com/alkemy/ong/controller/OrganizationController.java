@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -38,8 +39,9 @@ public class OrganizationController {
     	}
     }
     
-    @PostMapping("/public")
-    public ResponseEntity<Object> updateOrganization(@Valid OrganizationDtoComp organization, @PathVariable Long id) {
+
+    @PostMapping("/public/{id}")
+    public ResponseEntity<Object> updateOrganization(@Valid @RequestBody OrganizationDtoComp organization, @PathVariable Long id) {
         try {
         	return ResponseEntity.status(HttpStatus.OK).body(organizationService.updateOrg(id, organization));
         } catch (Exception e){
