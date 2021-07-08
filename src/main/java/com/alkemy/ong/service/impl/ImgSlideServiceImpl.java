@@ -1,11 +1,15 @@
 package com.alkemy.ong.service.impl;
 
+import com.alkemy.ong.dto.ImageSlideDto;
 import com.alkemy.ong.exception.InvalidImageException;
 import com.alkemy.ong.exception.InvalidUserException;
 import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.repository.ImageSlideRepository;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import lombok.AllArgsConstructor;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -21,9 +26,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ImgSlideServiceImpl implements IImgSlideService {
 
+	@Autowired
     private final ImageSlideRepository imageRepo;
     private final MessageSource messageSource;
 
+    @Autowired
+    private ModelMapper mapper;
+    
     public ImageSlide addImage(ImageSlide image) throws InvalidImageException, InvalidUserException {
         if (userIsAuthorized()) {
             if(doNotAdd(image))
@@ -37,8 +46,12 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         }
     }
 
-    public List<ImageSlide> getAll() {
-        return imageRepo.findAll().stream().sorted().collect(Collectors.toList());
+    public List<ImageSlideDto> getAll() {
+    	List<ImageSlide> slide = imageRepo.findAll().stream().sorted().collect(Collectors.toList());
+    	List<ImageSlideDto> dto = new ArrayList<ImageSlideDto>();
+    	
+    	slide.forEach(sld -> dto.add(mapper.map(sld, ImageSlideDto.class)));
+        return dto;
     }
 
     public ImageSlide updateImage(ImageSlide image) throws InvalidImageException {

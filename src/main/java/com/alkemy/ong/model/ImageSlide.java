@@ -5,10 +5,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.*;
 import java.util.Date;
 
@@ -28,7 +31,11 @@ public class ImageSlide implements Comparable<ImageSlide>{
     private Long ordered;
     @NotNull(message = "Es necesaria una Id de organización")
     private Long organizationId;
+    
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    
     private boolean deleted = false;
 
     public ImageSlide(String imageUrl, String text, Long ordered, Long organizationId, Date createdAt) {
