@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
             if(doNotAdd(image))
                 throw new InvalidImageException(messageSource.getMessage("slide.error.exists.img",null, Locale.getDefault()));
             ImageSlide newImage = new ImageSlide(
-                    image.getImageUrl(), image.getText(), image.getOrdered(), image.getOrganizationId(), Date.from(Instant.now())
+                    image.getImageUrl(), image.getText(), image.getOrdered(), image.getOrganization(), Date.from(Instant.now())
             );
             return imageRepo.save(newImage);
         } else {
@@ -65,4 +66,10 @@ public class ImgSlideServiceImpl implements IImgSlideService {
                         .equals("ROLE_ADMIN"));
     }
 
+    @Override
+    public ImageSlide getImageSlideById(Long id) {
+        return imageRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(messageSource.getMessage("slide.error.do.not.exists", null, Locale.getDefault()))
+        );
+    }
 }
