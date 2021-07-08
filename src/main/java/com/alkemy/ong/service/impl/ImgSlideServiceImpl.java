@@ -38,8 +38,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
-
-
     @Value("${aws.s3.bucket.endpointUrl}")
     private String bucketUrl;
 
@@ -56,10 +54,13 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 
     @Override
     public ImageSlideDto createSlide(ImageSlideCreationDto imageSlideCreationDto) {
+
+        Organization organization = getOrganizationById(imageSlideCreationDto.getOrganizationId());
+
         ImageSlide imageSlideEntity = new ImageSlide(
                 imageSlideCreationDto.getText(),
                 imageSlideCreationDto.getOrdered(),
-                imageSlideCreationDto.getOrganizationId(),
+                organization,
                 Date.from(Instant.now())
         );
 
@@ -75,10 +76,10 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     }
 
     @Override
-    public ImageSlideDto updateImage(Long id, ImageSlideCreationDto image) throws InvalidImageException {
+    public ImageSlideDto updateImage(Long id, ImageSlideCreationDto image) {
         ImageSlide imageSlide = getImageSlideById(id);
         imageSlide.setText(image.getText());
-        imageSlide.setOrganizationId(image.getOrganizationId());
+        imageSlide.setOrdered(imageSlide.getOrdered());
         uploadImage(image, imageSlide);
         ImageSlide imageSlideUpdated = imageRepo.save(imageSlide);
         return mapper.map(imageSlideUpdated, ImageSlideDto.class);
@@ -97,11 +98,9 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     public List<ImageSlideCreationDto> getAllSlidesByOrganization(Long organizationId) {
 
         //Validamos que exista una organizacion con el id especificado
-        Organization organization = organizationRepository.findById(organizationId).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("slide.error.organizationId.not.found", null, Locale.getDefault())
-        ));
+        Organization organization = getOrganizationById(organizationId);
 
-        List<ImageSlide> imageSlides = imageRepo.findAllByOrganizationIdOrderByOrdered(organization.getId());
+        List<ImageSlide> imageSlides = imageRepo.findAllByOrganizationOrderByOrdered(organization);
         List<ImageSlideCreationDto> imageSlideCreationDtos = new ArrayList<>();
         imageSlides.forEach(i -> imageSlideCreationDtos.add(mapper.map(i, ImageSlideCreationDto.class)));
         return imageSlideCreationDtos;
@@ -112,6 +111,12 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     public ImageSlide getImageSlideById(Long id) {
         return imageRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("slide.error.not.found",null, Locale.getDefault())
+        ));
+    }
+
+    private Organization getOrganizationById(Long id) {
+        return organizationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("slide.error.organizationId.not.found", null, Locale.getDefault())
         ));
     }
 
