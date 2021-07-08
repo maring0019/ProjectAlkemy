@@ -12,30 +12,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter @Setter
 public class UsersDto implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
-	
-	private Long id;
-	
-	private String firstName;
-	
-	private String lastName;
-	
-	private String email;
 
-	@Size(min = 8, max = 30, message = "La contraseña debe tener entre 8 y 30 caracteres.")
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
+	@NotBlank
+	private String firstName;
+	@NotBlank
+	private String lastName;
+	@NotBlank
+	@Email
+	private String email;
+	@NotBlank
+	@Size(min = 8 , message = "La contraseña debe tener más de 8 caracteres.")
 	private String password;
-	
+
 	private String photo;
 
 	private Date created;
 
 	private Date edited;
-	
+
 	private Set<Role> roles;
 
 	@JsonIgnore

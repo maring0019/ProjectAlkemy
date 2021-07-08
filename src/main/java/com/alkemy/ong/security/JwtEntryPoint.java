@@ -1,4 +1,4 @@
-package com.alkemy.ong.jwt;
+package com.alkemy.ong.security;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -24,7 +24,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException authException) throws IOException, ServletException {
+				AuthenticationException authException) throws IOException, ServletException {
 
 		logger.error(messageSource.getMessage("jwt.error.method.commence.fail", null, Locale.getDefault()));
 

@@ -4,6 +4,9 @@ import javax.json.JsonPatch;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.service.impl.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alkemy.ong.dto.UsersDto;
-import com.alkemy.ong.jwt.JwtFilter;
-import com.alkemy.ong.jwt.JwtProvider;
+import com.alkemy.ong.security.JwtFilter;
+import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.AllArgsConstructor;
@@ -32,9 +35,9 @@ public class AuthController {
     @Autowired
     private final IUsersService usersService;
     @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
     @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
 
     @PostMapping(path = "/register")
@@ -44,6 +47,15 @@ public class AuthController {
                     .body(usersService.createUser(usersDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginUsersDto credentials){
+        try {
+            return ResponseEntity.ok(usersService.loginUser(credentials));
+        } catch (NotRegisteredException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -57,26 +69,19 @@ public class AuthController {
         }
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
-    	try {
-    		usersService.deleteUser(id);
-    		return ResponseEntity.ok().build();
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
-    }
-    
+
+
     @GetMapping("/me")
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
-    	try {
-    		String token = jwtFilter.getToken(request);
-    		String email = jwtProvider.getEmailFromToken(token);
-   	
-			return new ResponseEntity<>(usersService.loadUserByUsername(email), HttpStatus.FOUND);
+        try {
+            String token = jwtFilter.getToken(request);
+            String email = jwtProvider.getEmailFromToken(token);
 
-    	}catch(UsernameNotFoundException e) {
-    		return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
+            return ResponseEntity.status(HttpStatus.FOUND)
+            		.body(usersService.getUser(email));
+
+        }catch(UsernameNotFoundException e) {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

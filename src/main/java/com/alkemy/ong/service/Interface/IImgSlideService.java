@@ -11,4 +11,5 @@ public interface IImgSlideService {
     List<ImageSlide> getAll();
     ImageSlide updateImage(ImageSlide image) throws InvalidImageException;
     void deleteImage(Long id);
+    ImageSlide getImageSlideById(Long id);
 }

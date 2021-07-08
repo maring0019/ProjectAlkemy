@@ -7,8 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -62,6 +64,15 @@ public class ActivitiesController {
             return ResponseEntity.status(HttpStatus.OK).body("Actividad eliminada satisfactoriamente.");
         } catch (Exception e) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "{id}/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> uploadActivityImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(activitiesService.uploadImage(id, file));
+        } catch (Exception e) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

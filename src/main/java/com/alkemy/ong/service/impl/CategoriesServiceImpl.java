@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import com.alkemy.ong.dto.CategoriesNameDto;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.alkemy.ong.dto.CategoriesNameDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -20,77 +22,98 @@ import com.alkemy.ong.service.Interface.ICategoriesService;
 @Service
 public class CategoriesServiceImpl implements ICategoriesService {
 
-	private CategoriesRepository ctgRepo;
-	private MessageSource messageSource;
-	private ModelMapper mapper;
+      private CategoriesRepository ctgRepo;
+      private MessageSource messageSource;
+      private ModelMapper mapper;
 
-	@Autowired
-	public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
-		this.ctgRepo = repo;
-		this.mapper = model;
-		this.messageSource = msg;
-	}
+      @Autowired
+      public CategoriesServiceImpl(CategoriesRepository repo, MessageSource msg, ModelMapper model) {
+          this.ctgRepo = repo;
+          this.mapper = model;
+          this.messageSource = msg;
+      }
 
-	@Override
-	public CategoriesDto createCategory(CategoriesDto dto) {
+      @Override
+      public CategoriesDto createCategory(CategoriesDto dto) throws EntityNotFoundException {
 
-		Categories category = new Categories();
-		category.setName(dto.getName());
-		category.setDescription(dto.getDescription());
-		category.setImage(dto.getImage());
+          Categories category = new Categories();
+          if(isNumeric(dto.getName())){
+               dto.setName("");
+          }
+          category.setName(dto.getName());
+          category.setDescription(dto.getDescription());
+          category.setImage(dto.getImage());
 
-		return mapper.map(ctgRepo.save(category), CategoriesDto.class);
-	}
+          return mapper.map(ctgRepo.save(category), CategoriesDto.class);
 
-	@Override
-	public CategoriesDto updateCategoryById(Long id, CategoriesDto dto) {
+      }
 
-		Categories updateCategory = findCategoriesById(id);
+      @Override
+      public CategoriesDto updateCategoryById(Long id, CategoriesDto dto) {
 
-		if (!dto.getName().isBlank()) {
-			updateCategory.setName(dto.getName());
-		} else {
-		}
-		if (!dto.getImage().isBlank()) {
-			updateCategory.setImage(dto.getImage());
-		} else {
-		}
-		if (!dto.getDescription().isBlank()) {
-			updateCategory.setDescription(dto.getDescription());
-		} else {
-		}
+          Categories updateCategory = findCategoriesById(id);
 
-		updateCategory.setEdited(new Date());
+          if (!dto.getName().isBlank()) {
+              updateCategory.setName(dto.getName());
+          } else {
+          }
+          if (!dto.getImage().isBlank()) {
+            updateCategory.setImage(dto.getImage());
+          } else {
+          }
+          if (!dto.getDescription().isBlank()) {
+              updateCategory.setDescription(dto.getDescription());
+          } else {
+          }
 
-		return mapper.map(ctgRepo.save(updateCategory), CategoriesDto.class);
-	}
+          updateCategory.setEdited(new Date());
 
-	@Override
-	public CategoriesDto findById(Long id) {
+          return mapper.map(ctgRepo.save(updateCategory), CategoriesDto.class);
+      }
 
-		return mapper.map(ctgRepo.findById(id), CategoriesDto.class);
-	}
+      @Override
+      public CategoriesDto findById(Long id) {
 
-	@Override
-	public List<CategoriesDto> findAll() {
+          return mapper.map(ctgRepo.findById(id), CategoriesDto.class);
+      }
 
-		List<Categories> categories = new ArrayList<>();
-		categories = ctgRepo.findAll();
+      @Override
+      public List<CategoriesDto> findAll() {
 
-		List<CategoriesDto> dto = new ArrayList<>();
-		categories.forEach(c -> dto.add(mapper.map(c, CategoriesDto.class)));
+          List<Categories> categories = new ArrayList<>();
+          categories = ctgRepo.findAll();
 
-		return dto;
-	}
+          List<CategoriesDto> dto = new ArrayList<>();
+          categories.forEach(c -> dto.add(mapper.map(c, CategoriesDto.class)));
 
-	@Override
-	public void deleteById(Long id) {
-		ctgRepo.deleteById(id);
-	}
+          return dto;
+      }
 
-	@Override
-	public Categories findCategoriesById(Long id) {
-		return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
-				messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
-	}
+      @Override
+      public void deleteById(Long id) {
+          ctgRepo.deleteById(id);
+      }
+
+      @Override
+      public Categories findCategoriesById(Long id) {
+          return ctgRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                  messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
+      }
+
+    @Override
+    public CategoriesNameDto findAllWithName() {
+        return mapper.map(ctgRepo.findAll(), CategoriesNameDto.class);
+
+    }
+
+    public static boolean isNumeric(String nombre){
+        boolean resultado;
+        try{
+            Long.parseLong(nombre);
+            resultado = true;
+        }catch(NumberFormatException e){
+            resultado = false;
+        }
+        return resultado;
+    }
 }

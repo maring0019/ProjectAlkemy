@@ -1,6 +1,5 @@
 package com.alkemy.ong.model;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import javax.persistence.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -34,35 +32,35 @@ public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank(message = "El Nombre es requerido.")
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
-	
+
 	@NotBlank(message = "El Apellido es requerido.")
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
-	
+
 	@NotBlank(message = "El Email es requerido.")
 	@Email(message = "Email invalido.")
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false)
 	@NotBlank(message = "La contraseña es requerida.")
 	private String password;
 
 	private String photo;
-	
+
 	@Column(name = "create_date", updatable = false, nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
-	
+
 	@Column(name = "edited_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date edited;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "user_role",
 			joinColumns = @JoinColumn(
@@ -70,7 +68,7 @@ public class User implements UserDetails {
 			inverseJoinColumns = @JoinColumn(
 					name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles;
-	
+
 	private Boolean deleted = Boolean.FALSE;
 
 	@ElementCollection(targetClass=GrantedAuthority.class)
@@ -78,8 +76,8 @@ public class User implements UserDetails {
 
 
 	@Builder
-	public User(String firstName, String lastName, String email, String photo, String password,
-					 Collection<? extends GrantedAuthority> authorities) {
+	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
+				Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -88,15 +86,16 @@ public class User implements UserDetails {
 		this.password = password;
 		this.authorities = authorities;
 		this.created = new Date();
+		this.roles= roles;
 	}
 
 	public static User build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
-				.map(rol -> new SimpleGrantedAuthority(rol.getName()))
+				.map(rol -> new SimpleGrantedAuthority(rol.getRoleName().name()))
 				.collect(Collectors.toList());
 
-		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), authorities);
+		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), user.getRoles(),authorities);
 	}
 
 
