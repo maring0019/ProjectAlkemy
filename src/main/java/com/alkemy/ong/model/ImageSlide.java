@@ -26,18 +26,20 @@ public class ImageSlide implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "La url de imagen no puede estar vacía")
+
     private String imageUrl;
     private String text;
+
     @NotNull(message = "Es necesario un valor entero para ordenar las imágenes")
     private Long ordered;
+
     @NotNull(message = "Es necesaria una Id de organización")
     private Long organizationId;
+
     private Date createdAt;
     private boolean deleted = false;
 
-    public ImageSlide(String imageUrl, String text, Long ordered, Long organizationId, Date createdAt) {
-        this.imageUrl = imageUrl;
+    public ImageSlide(String text, Long ordered, Long organizationId, Date createdAt) {
         this.text = text;
         this.ordered = ordered;
         this.organizationId = organizationId;
