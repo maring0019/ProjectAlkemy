@@ -2,6 +2,7 @@ package com.alkemy.ong.model;
 
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +33,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotEmpty(message = "El campo Name no puede estar vacío.")
+    @NotBlank(message = "El campo Name no puede estar vacío.")
     private String name;
     private String facebookUrl;
     private String instagramUrl;
@@ -40,18 +41,16 @@ public class Member {
     private String image;
     private String description;
 
-    @NotEmpty(message = "El campo createDate no puede estar vacío.")
+    //@NotEmpty(message = "El campo createDate no puede estar vacío.")
     @Column(name = "create_date", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @Column(name = "edit_date", updatable = false, nullable = false)
+    @Column(name = "edit_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date editDate;
 
-    @Column(name = "delete_date", updatable = false, nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deleteDate;
+    private Boolean deleted = Boolean.FALSE;
 
 
 
