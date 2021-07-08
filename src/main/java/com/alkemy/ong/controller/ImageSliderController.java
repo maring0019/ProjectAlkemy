@@ -1,6 +1,9 @@
 package com.alkemy.ong.controller;
 
 
+import com.alkemy.ong.dto.ImageSlideDto;
+import com.alkemy.ong.exception.InvalidImageException;
+import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.Locale;
 
 
@@ -32,4 +36,13 @@ public class ImageSliderController {
 
     }
 
+    @PutMapping(path = "{id}")
+    public ResponseEntity<ImageSlide> updateImage(@PathVariable Long id, @Valid @RequestBody ImageSlideDto imageSlideDto) throws InvalidImageException {
+        try {
+            ImageSlide updateImg = iImgSlideService.updateImage(id, imageSlideDto);
+            return ResponseEntity.ok(updateImg);
+        } catch (InvalidImageException e){
+            throw new InvalidImageException(e.getMessage());
+        }
+    }
 }

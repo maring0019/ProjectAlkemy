@@ -40,12 +40,15 @@ public class ImageSlide implements Comparable<ImageSlide>{
 
     @Override
     public int compareTo(ImageSlide o) {
-        if(this.ordered.equals(o.getOrdered()) && this.getCreatedAt().equals(o.getCreatedAt()))
-            return 0;
-        else if(this.ordered > o.getOrdered() && createdAt.before(o.getCreatedAt()))
-            return 1;
-        else
+        if (this.ordered.equals(o.getOrdered())) {
+            if (this.createdAt.before(o.getCreatedAt()))
+                return 1;
+            else if (this.createdAt.after(o.getCreatedAt()))
+                return -1;
+        } else if (this.getOrdered() > o.getOrdered())
             return -1;
+        else
+            return 1;
+        return 0;
     }
-
 }

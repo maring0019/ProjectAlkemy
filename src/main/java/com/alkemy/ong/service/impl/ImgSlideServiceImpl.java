@@ -1,5 +1,6 @@
 package com.alkemy.ong.service.impl;
 
+import com.alkemy.ong.dto.ImageSlideDto;
 import com.alkemy.ong.exception.InvalidImageException;
 import com.alkemy.ong.exception.InvalidUserException;
 import com.alkemy.ong.model.ImageSlide;
@@ -42,10 +43,15 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         return imageRepo.findAll().stream().sorted().collect(Collectors.toList());
     }
 
-    public ImageSlide updateImage(ImageSlide image) throws InvalidImageException {
-        if(doNotAdd(image))
-            throw new InvalidImageException(messageSource.getMessage("slide.error.exists.img",null, Locale.getDefault()));
-        return imageRepo.save(image);
+    public ImageSlide updateImage(Long id, ImageSlideDto image) throws InvalidImageException {
+        ImageSlide found = imageRepo.findById(id).orElseThrow(() -> new InvalidImageException(messageSource.getMessage("slide.error.do.not.exists",null, Locale.getDefault())));
+        if(image.getImageUrl()!=null)
+            found.setImageUrl(image.getImageUrl());
+        if(image.getOrdered()!=null)
+            found.setOrdered(image.getOrdered());
+        if(image.getText()!=null)
+            found.setText(image.getText());
+        return found;
     }
 
     public void deleteImage(Long id){
