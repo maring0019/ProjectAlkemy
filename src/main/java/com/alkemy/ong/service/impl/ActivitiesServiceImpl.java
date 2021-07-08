@@ -51,12 +51,16 @@ public class ActivitiesServiceImpl implements IActivities {
     }
 
     @Override
-    public ActivitiesDto updateActivity(Long id, ActivitiesDto activitiesDto) {
+    public ActivitiesDto updateActivity(Long id, ActivitiesDto dto) {
         Activity activity = getActivityById(id);
 
-        activity.setName(activitiesDto.getName());
-        activity.setContent(activitiesDto.getContent());
-        activity.setImage(activitiesDto.getImage());
+        if(!dto.getName().isBlank())
+        	activity.setName(dto.getName());
+        if(!dto.getContent().isBlank())
+        	activity.setContent(dto.getContent());
+        if(!dto.getImage().isBlank())
+        	activity.setImage(dto.getImage());
+        
         activity.setEdited(new Date());
         return mapper.map(activitiesRepository.save(activity), ActivitiesDto.class);
     }

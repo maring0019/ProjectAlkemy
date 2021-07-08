@@ -39,6 +39,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
 
+
     @Value("${aws.s3.bucket.endpointUrl}")
     private String bucketUrl;
 
@@ -52,6 +53,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     }
 
 
+
     @Override
     public ImageSlideDto createSlide(ImageSlideCreationDto imageSlideCreationDto) {
         ImageSlide imageSlideEntity = new ImageSlide(
@@ -60,7 +62,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
                 imageSlideCreationDto.getOrganizationId(),
                 Date.from(Instant.now())
         );
-        System.out.println(imageSlideEntity.getOrdered());
+
         ImageSlide imageSlideCreated = imageRepo.save(imageSlideEntity);
         uploadImage(imageSlideCreationDto, imageSlideCreated);
         return mapper.map(imageRepo.save(imageSlideCreated), ImageSlideDto.class);
@@ -73,12 +75,11 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     }
 
     @Override
-    public ImageSlideCreationDto updateImage(Long id, ImageSlideCreationDto image) throws InvalidImageException {
+    public ImageSlideDto updateImage(Long id, ImageSlideCreationDto image) throws InvalidImageException {
         ImageSlide imageSlide = getImageSlideById(id);
-        imageSlide.setOrdered(image.getOrdered());
         imageSlide.setText(image.getText());
         imageSlide.setOrganizationId(image.getOrganizationId());
-        return mapper.map(imageRepo.save(imageSlide), ImageSlideCreationDto.class);
+        return mapper.map(imageRepo.save(imageSlide), ImageSlideDto.class);
     }
 
     @Override
@@ -105,6 +106,11 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     }
 
     @Override
+    public ImageSlide updateImage(ImageSlide image) throws InvalidImageException {
+        return null;
+    }
+
+    @Override
     public ImageSlide getImageSlideById(Long id) {
         return imageRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("slide.error.not.found",null, Locale.getDefault())
@@ -127,5 +133,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority()
                         .equals("ROLE_ADMIN"));
     }
+
 
 }

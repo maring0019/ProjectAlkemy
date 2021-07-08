@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -32,6 +29,7 @@ public class ImageSlide implements Serializable {
 
     @NotNull(message = "Es necesario un valor entero para ordenar las imágenes")
     private Long ordered;
+<<<<<<< HEAD
 
     @NotNull(message = "Es necesaria una Id de organización")
     private Long organizationId;
@@ -40,9 +38,20 @@ public class ImageSlide implements Serializable {
     private boolean deleted = false;
 
     public ImageSlide(String text, Long ordered, Long organizationId, Date createdAt) {
+=======
+    private Date createdAt;
+    private boolean deleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
+
+    public ImageSlide(String imageUrl, String text, Long ordered, Organization organization, Date createdAt) {
+        this.imageUrl = imageUrl;
+>>>>>>> e2fcd982cda01f5deb5e6285dbf64aa239492315
         this.text = text;
         this.ordered = ordered;
-        this.organizationId = organizationId;
+        this.organization = organization;
         this.createdAt = createdAt;
     }
 
