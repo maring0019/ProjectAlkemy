@@ -16,7 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Date;
@@ -74,7 +74,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 
     @Override
     public ImageSlideCreationDto updateImage(Long id, ImageSlideCreationDto image) throws InvalidImageException {
-
         ImageSlide imageSlide = getImageSlideById(id);
         imageSlide.setOrdered(image.getOrdered());
         imageSlide.setText(image.getText());
@@ -86,6 +85,8 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     public String deleteImage(Long id){
         ImageSlide imageSlide = getImageSlideById(id);
         imageRepo.delete(imageSlide);
+        //Va el nombre del segundo parametro de cuando se crea, osea el nombre del folder --> String path = String.format("%s/%s", bucketName, "Image-Slide-" + imageSlide.getId() + "/");
+        fileStore.deleteFilesFromS3Bucket("Image-Slide-" + imageSlide.getId()); //Le indicamos el nombre del folder
         return messageSource.getMessage("slide.delete.successful", null, Locale.getDefault());
     }
 
@@ -110,11 +111,13 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         ));
     }
 
+    //Metodo privado de este service que consume el el servicio de amazon de subida de imagen
     private void uploadImage(ImageSlideCreationDto imageSlideCreationDto, ImageSlide imageSlide) {
         String path = String.format("%s/%s", bucketName, "Image-Slide-" + imageSlide.getId());
         String filename = String.format("%s-%s", imageSlideCreationDto.getImage().getOriginalFilename(), UUID.randomUUID());
         fileStore.save(path, filename, imageSlideCreationDto.getImage());
-        imageSlide.setImageUrl(path+filename);
+        String itemImageLink  = bucketUrl + "Image-Slide-" + imageSlide.getId() + "/" + filename;
+        imageSlide.setImageUrl(itemImageLink);
     }
 
 
