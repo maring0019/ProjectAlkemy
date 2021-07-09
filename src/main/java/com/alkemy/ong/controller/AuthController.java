@@ -6,12 +6,10 @@ import javax.validation.Valid;
 
 import com.alkemy.ong.dto.LoginUsersDto;
 import com.alkemy.ong.exception.NotRegisteredException;
-import com.alkemy.ong.service.impl.UsersServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;

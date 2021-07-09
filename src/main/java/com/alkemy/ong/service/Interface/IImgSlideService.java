@@ -2,9 +2,7 @@ package com.alkemy.ong.service.Interface;
 
 import com.alkemy.ong.dto.ImageSlideCreationDto;
 import com.alkemy.ong.dto.ImageSlideDto;
-import com.alkemy.ong.exception.InvalidImageException;
 import com.alkemy.ong.model.ImageSlide;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

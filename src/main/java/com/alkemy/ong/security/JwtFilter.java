@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.alkemy.ong.model.User;
 import com.alkemy.ong.service.Interface.IUsersService;
 
 import lombok.NoArgsConstructor;

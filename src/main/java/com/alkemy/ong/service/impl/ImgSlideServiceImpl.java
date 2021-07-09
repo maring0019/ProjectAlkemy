@@ -2,7 +2,6 @@ package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.ImageSlideCreationDto;
 import com.alkemy.ong.dto.ImageSlideDto;
-import com.alkemy.ong.exception.InvalidImageException;
 import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.model.Organization;
 import com.alkemy.ong.repository.ImageSlideRepository;
