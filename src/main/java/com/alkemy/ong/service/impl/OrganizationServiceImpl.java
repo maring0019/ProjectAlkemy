@@ -78,6 +78,7 @@ public class OrganizationServiceImpl implements IOrganization {
 		Organization org = this.getById(id);
 			
 		SocialNetwork contact = new SocialNetwork();
+
 		if(!dto.getName().isBlank())
 			contact.setName(dto.getName());
 		if(!dto.getLink().isBlank())
@@ -85,6 +86,7 @@ public class OrganizationServiceImpl implements IOrganization {
 		
 		contact.setOrg(org);
 		org.getContact().add(contact);
+
 		
 		repository.save(org);
 			
@@ -102,8 +104,7 @@ public class OrganizationServiceImpl implements IOrganization {
 		org.setImage(dto.getImage());
 		org.setPhone(dto.getPhone());
 		org.setWelcomeText(dto.getWelcomeText());
-				
-		
+
 		return modelMapper.map(repository.save(org), OrganizationDtoComp.class);
 		
 	}

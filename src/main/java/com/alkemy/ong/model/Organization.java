@@ -61,6 +61,8 @@ public class Organization implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
     
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<SocialNetwork> contact;
+
 }

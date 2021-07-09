@@ -26,6 +26,6 @@ public class OrganizationDtoComp {
     private String welcomeText;
     
     private String aboutUsText;
-    
+
     private List<SocialNetwork> contact;
 }

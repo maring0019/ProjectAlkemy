@@ -42,6 +42,7 @@ public class OrganizationController {
     }
     
 
+
     @PostMapping("/public/{id}")
     public ResponseEntity<Object> updateOrganization(@Valid @RequestBody OrganizationDtoComp organization, @PathVariable Long id) {
         try {

@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SocialNetworkDto {
 
+
 	private String name;
 	private String link;
+
 }
