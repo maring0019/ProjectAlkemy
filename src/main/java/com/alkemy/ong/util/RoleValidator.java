@@ -19,7 +19,6 @@ import java.util.Objects;
 public class RoleValidator {
 
     private final UsersServiceImpl usersService;
-    private final MessageSource messageSource;
 
 
     public static String getToken(){

@@ -15,8 +15,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.alkemy.ong.dto.UsersDto;
@@ -27,6 +25,7 @@ import com.alkemy.ong.service.Interface.IUsersService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Date;
 
@@ -63,10 +62,13 @@ public class UsersServiceImpl implements IUsersService {
 	@Autowired
 	private final JwtProvider jwtProvider;
 
+	@Autowired
+	private final EmailServiceImpl emailService;
+
 
 
 	@Override
-	public UsersDto createUser(UsersDto user) {
+	public UsersDto createUser(UsersDto user) throws IOException {
 
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
@@ -83,6 +85,8 @@ public class UsersServiceImpl implements IUsersService {
 				.photo(user.getPhoto())
 				.roles(user.getRoles())
 				.build();
+
+		emailService.registerEmail(user.getEmail());
 
 		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
 	}

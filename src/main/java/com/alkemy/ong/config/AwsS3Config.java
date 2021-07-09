@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Configuration;
 public class AwsS3Config {
 
     @Value("${aws.access_key_id}")
-    private String accessKeyId = "yourAccessKeyId";
+    private String accessKeyId;
 
     @Value("${aws.secret_access_key}")
-    private String secretAccessKey = "yourSecretAccessKey";
+    private String secretAccessKey;
 
     @Bean
     public AmazonS3 s3() {

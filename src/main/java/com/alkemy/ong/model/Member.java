@@ -3,7 +3,6 @@ package com.alkemy.ong.model;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
