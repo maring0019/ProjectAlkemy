@@ -8,7 +8,6 @@ import com.alkemy.ong.dto.CategoriesNameDto;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.alkemy.ong.dto.CategoriesNameDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
