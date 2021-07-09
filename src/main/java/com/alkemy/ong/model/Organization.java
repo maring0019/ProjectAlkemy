@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @SQLDelete(sql = "UPDATE Organizations SET deleted=true WHERE id = ?")
@@ -59,4 +60,7 @@ public class Organization implements Serializable {
     @Column(name = "edited_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SocialNetwork> contact;
 }
