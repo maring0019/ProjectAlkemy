@@ -2,7 +2,6 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.NewsDto;
 
-import com.alkemy.ong.model.News;
 import com.alkemy.ong.service.impl.NewsServiceImpl;
 
 import com.alkemy.ong.service.Interface.INewsService;

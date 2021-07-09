@@ -3,12 +3,8 @@ package com.alkemy.ong.controller;
 import java.util.Locale;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 
-import com.alkemy.ong.repository.CategoriesRepository;
-import com.amazonaws.services.xray.model.Http;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

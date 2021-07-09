@@ -1,16 +1,21 @@
 package com.alkemy.ong.service.Interface;
 
+import com.alkemy.ong.dto.ImageSlideCreationDto;
 import com.alkemy.ong.dto.ImageSlideDto;
-import com.alkemy.ong.exception.InvalidImageException;
-import com.alkemy.ong.exception.InvalidUserException;
 import com.alkemy.ong.model.ImageSlide;
 
 import java.util.List;
 
 public interface IImgSlideService {
-    ImageSlide addImage(ImageSlide image) throws InvalidImageException, InvalidUserException;
+
+    ImageSlideDto createSlide(ImageSlideCreationDto imageSlideCreationDto);
     List<ImageSlide> getAll();
-    ImageSlide updateImage(Long id, ImageSlideDto image) throws InvalidImageException;
-    void deleteImage(Long id);
+
+    ImageSlideDto updateImage(Long id, ImageSlideCreationDto image);
+    String deleteImage(Long id);
+    List<ImageSlideCreationDto> getAllSlidesByOrganization(Long organizationId);
+
+
+
     ImageSlide getImageSlideById(Long id);
 }
