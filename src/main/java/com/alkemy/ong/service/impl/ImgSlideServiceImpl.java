@@ -77,8 +77,10 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     @Override
     public ImageSlideDto updateImage(Long id, ImageSlideCreationDto image) {
         ImageSlide imageSlide = getImageSlideById(id);
-        imageSlide.setText(image.getText());
-        imageSlide.setOrdered(imageSlide.getOrdered());
+        if(image.getText()!=null)
+            imageSlide.setText(image.getText());
+        if(image.getOrdered()!=null)
+            imageSlide.setOrdered(image.getOrdered());
         uploadImage(image, imageSlide);
         ImageSlide imageSlideUpdated = imageRepo.save(imageSlide);
         return mapper.map(imageSlideUpdated, ImageSlideDto.class);
