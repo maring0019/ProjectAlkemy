@@ -37,17 +37,17 @@ public class Testimonials {
     @Column(name = "content")
     private String content;
 
-    @NotNull(message = "El campo fecha creación no puede estar vacío")
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_created", nullable = false, updatable = false)
+    @Column(name = "date_created")
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_edited")
     private Date edited;
 
-    @Column(name = "deleted")
-    private Boolean deleted = false;
+
+    private Boolean deleted = Boolean.FALSE;
 
 
 
