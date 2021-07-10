@@ -1,6 +1,7 @@
 package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.ImageSlideCreationDto;
+import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.List;
 import java.util.Locale;
 
 
@@ -64,6 +67,13 @@ public class ImageSliderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    
+    @GetMapping("/all")
+	public ResponseEntity<?> getSlides(){
+		List<ImageSlide> slider = iImgSlideService.getAll();
+		return ResponseEntity.ok(slider);
+
+	}
 
 }
 
