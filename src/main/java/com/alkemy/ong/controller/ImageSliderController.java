@@ -30,7 +30,7 @@ public class ImageSliderController {
     }
 
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<Object> createImageSlide(@ModelAttribute ImageSlideCreationDto imageSlideCreationDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(iImgSlideService.createSlide(imageSlideCreationDto));
