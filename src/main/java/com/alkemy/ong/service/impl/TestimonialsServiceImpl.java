@@ -20,4 +20,7 @@ public class TestimonialsServiceImpl implements ITestimonials {
     public Testimonials save(Testimonials testimonials) {
         return testimonialsRepository.save(testimonials);
     }
+
+    @Override
+    public void deleteById(Long id) {testimonialsRepository.deleteById(id); }
 }

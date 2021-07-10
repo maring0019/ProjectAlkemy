@@ -9,4 +9,6 @@ public interface ITestimonials {
 
     public Testimonials save(Testimonials testimonials);
 
+    public void deleteById(Long id);
+
 }

@@ -74,6 +74,9 @@ public class User implements UserDetails {
 	@ElementCollection(targetClass=GrantedAuthority.class)
 	private Collection<? extends GrantedAuthority> authorities;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
+	private List<Comment> comments = new ArrayList<>();
+
 
 	@Builder
 	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
