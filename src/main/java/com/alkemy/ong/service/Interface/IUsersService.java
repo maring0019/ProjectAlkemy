@@ -8,12 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.json.JsonPatch;
+import java.io.IOException;
 import java.util.List;
 
 
 public interface IUsersService extends UserDetailsService {
 
-	UsersDto createUser(UsersDto user);
+	UsersDto createUser(UsersDto user) throws IOException;
 
 	UsersDto getUser(String email);
 
