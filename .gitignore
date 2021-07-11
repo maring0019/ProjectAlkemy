@@ -39,7 +39,7 @@ build/
 ### ONG ###
 
 src/main/resources/application.properties
-src/main/java/com/alkemy/ong/security/SecurityConfig.java
+
 mvnw
 mvnw.cmd
 ong.iml
