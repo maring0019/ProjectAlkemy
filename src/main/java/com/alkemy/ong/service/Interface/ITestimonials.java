@@ -12,13 +12,11 @@ public interface ITestimonials {
 
     public Testimonials save(Testimonials testimonials);
 
-<<<<<<< HEAD
     /* Para el endpoint /testimonials/{id} */
     public void deleteById(Long id);
 
 
-=======
     public TestimonialsDto create(TestimonialsDto testimonialsDto);
->>>>>>> develop
+
 
 }
