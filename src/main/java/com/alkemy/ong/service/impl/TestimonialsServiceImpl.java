@@ -21,6 +21,9 @@ public class TestimonialsServiceImpl implements ITestimonials {
         return testimonialsRepository.save(testimonials);
     }
 
+    /* Para el endpoint /testimonials/{id} */
     @Override
     public void deleteById(Long id) {testimonialsRepository.deleteById(id); }
+
+
 }

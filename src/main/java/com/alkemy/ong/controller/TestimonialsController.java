@@ -33,6 +33,7 @@ public class TestimonialsController {
         }
     }
 
+    /* Borrado de testimonials según el id pasado como parámetro*/
     @DeleteMapping(path = "/testimonials/{id}")
     public ResponseEntity<String> deleteTestimonialById(@PathVariable Long id) {
         try {
