@@ -12,7 +12,7 @@ public interface ITestimonials {
 
     public Testimonials save(Testimonials testimonials);
 
-    /* Para el endpoint /testimonials/{id} */
+
     public void deleteById(Long id);
 
 
