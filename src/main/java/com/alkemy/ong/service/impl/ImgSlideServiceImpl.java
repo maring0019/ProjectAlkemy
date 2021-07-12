@@ -5,15 +5,13 @@ import com.alkemy.ong.dto.ImageSlideDto;
 import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.model.Organization;
 import com.alkemy.ong.repository.ImageSlideRepository;
-import com.alkemy.ong.repository.OrganizationRepository;
 import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IImgSlideService;
+import com.alkemy.ong.service.Interface.IOrganization;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 
@@ -27,12 +25,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ImgSlideServiceImpl implements IImgSlideService {
 
     private final ImageSlideRepository imageRepo;
     private final MessageSource messageSource;
     private final ModelMapper mapper;
-    private final OrganizationRepository organizationRepository;
+    private final IOrganization organizationService;
     private final IFileStore fileStore;
 
     @Value("${aws.s3.bucket.name}")
@@ -40,21 +39,12 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     @Value("${aws.s3.bucket.endpointUrl}")
     private String bucketUrl;
 
-    @Autowired
-    public ImgSlideServiceImpl(ImageSlideRepository imageRepo, MessageSource messageSource, ModelMapper mapper, OrganizationRepository organizationRepository, IFileStore fileStore) {
-        this.imageRepo = imageRepo;
-        this.messageSource = messageSource;
-        this.mapper = mapper;
-        this.organizationRepository = organizationRepository;
-        this.fileStore = fileStore;
-    }
-
 
 
     @Override
     public ImageSlideDto createSlide(ImageSlideCreationDto imageSlideCreationDto) {
 
-        Organization organization = getOrganizationById(imageSlideCreationDto.getOrganizationId());
+        Organization organization = organizationService.getById(imageSlideCreationDto.getOrganizationId());
 
         ImageSlide imageSlideEntity = new ImageSlide(
                 imageSlideCreationDto.getText(),
@@ -77,8 +67,10 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     @Override
     public ImageSlideDto updateImage(Long id, ImageSlideCreationDto image) {
         ImageSlide imageSlide = getImageSlideById(id);
-        imageSlide.setText(image.getText());
-        imageSlide.setOrdered(imageSlide.getOrdered());
+        if(image.getText()!=null)
+            imageSlide.setText(image.getText());
+        if(image.getOrdered()!=null)
+            imageSlide.setOrdered(image.getOrdered());
         uploadImage(image, imageSlide);
         ImageSlide imageSlideUpdated = imageRepo.save(imageSlide);
         return mapper.map(imageSlideUpdated, ImageSlideDto.class);
@@ -97,7 +89,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
     public List<ImageSlideCreationDto> getAllSlidesByOrganization(Long organizationId) {
 
         //Validamos que exista una organizacion con el id especificado
-        Organization organization = getOrganizationById(organizationId);
+        Organization organization = organizationService.getById(organizationId);
 
         List<ImageSlide> imageSlides = imageRepo.findAllByOrganizationOrderByOrdered(organization);
         List<ImageSlideCreationDto> imageSlideCreationDtos = new ArrayList<>();
@@ -113,12 +105,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         ));
     }
 
-    private Organization getOrganizationById(Long id) {
-        return organizationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("slide.error.organizationId.not.found", null, Locale.getDefault())
-        ));
-    }
-
     //Metodo privado de este service que consume el el servicio de amazon de subida de imagen
     private void uploadImage(ImageSlideCreationDto imageSlideCreationDto, ImageSlide imageSlide) {
         String path = String.format("%s/%s", bucketName, "Image-Slide-" + imageSlide.getId());
@@ -126,14 +112,6 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         fileStore.save(path, filename, imageSlideCreationDto.getImage());
         String itemImageLink  = bucketUrl + "Image-Slide-" + imageSlide.getId() + "/" + filename;
         imageSlide.setImageUrl(itemImageLink);
-    }
-
-
-    private boolean userIsAuthorized(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return((UserDetails) principal).getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority()
-                        .equals("ROLE_ADMIN"));
     }
 
 
