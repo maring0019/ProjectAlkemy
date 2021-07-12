@@ -5,11 +5,14 @@ import lombok.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -48,6 +51,9 @@ public class News {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public News(String name, String content, String image, Categories category) {
