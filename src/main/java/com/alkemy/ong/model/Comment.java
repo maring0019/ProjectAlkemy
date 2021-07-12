@@ -2,7 +2,6 @@ package com.alkemy.ong.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -32,5 +31,5 @@ public class Comment {
     @JoinColumn(name = "news_id")
     private News news;
 
-
 }
+
