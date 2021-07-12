@@ -21,6 +21,8 @@ public class TestimonialsController {
     @Autowired
     private ITestimonials iTestimonials;
 
+    @Autowired
+    private MessageSource messageSource;
 
 
     @PutMapping("/testimonials/{id}")
@@ -40,14 +42,24 @@ public class TestimonialsController {
         }
     }
 
+    @PostMapping("/testimonials")
+    public ResponseEntity<?> Update(@Valid @RequestBody TestimonialsDto testimonialsDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.create(testimonialsDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
-    /* Borrado de testimonials según el id pasado como parámetro*/
+
     @DeleteMapping(path = "/testimonials/{id}")
     public ResponseEntity<String> deleteTestimonialById(@PathVariable Long id) {
         try {
             if (iTestimonials.findById(id) != null)
                 iTestimonials.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Testimonial eliminado satisfactoriamente.");
+            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("testimonials.delete.successful",
+                    null, Locale.getDefault()));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
