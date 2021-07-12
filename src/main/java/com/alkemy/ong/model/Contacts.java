@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "contacts")
 @SQLDelete(sql = "UPDATE contacts SET deleted=true WHERE id = ?")
-@Where(clause = "deleted = false")
+@Where(clause = "deleted_at = false")
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
 public class Contacts {
