@@ -6,12 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.function.Predicate;
 
 @RestController
 @RequestMapping(value = "/contacts")
@@ -30,5 +29,12 @@ public class ContactsController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ContactsDto>> getAll(){
+        return contactService.getAllContacts().filter(Predicate.not(List::isEmpty))
+                .map(contactsDtos -> new ResponseEntity<>(contactsDtos, HttpStatus.OK))
+                .orElse(new ResponseEntity("No hay ningún contacto aún", HttpStatus.NOT_FOUND));
     }
 }

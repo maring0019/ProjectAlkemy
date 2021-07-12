@@ -8,6 +8,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ContactsServiceImpl implements IContacts {
 
@@ -27,4 +31,13 @@ public class ContactsServiceImpl implements IContacts {
 
         return mapper.map(repository.save(contacts), ContactsDto.class);
     }
+
+    @Override
+    public Optional<List<ContactsDto>> getAllContacts() {
+        List<Contacts> contactsList = repository.findAll();
+        List<ContactsDto>contactsDtoList = new ArrayList<>();
+        contactsList.forEach(contacts -> contactsDtoList.add(mapper.map(contacts, ContactsDto.class)));
+        return Optional.of(contactsDtoList);
+    }
+
 }
