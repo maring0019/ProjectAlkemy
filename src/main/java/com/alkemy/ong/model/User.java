@@ -77,6 +77,7 @@ public class User implements UserDetails {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
 	private List<Comment> comments = new ArrayList<>();
 
+
 	@Builder
 	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
 				Collection<? extends GrantedAuthority> authorities) {

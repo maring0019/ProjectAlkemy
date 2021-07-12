@@ -49,7 +49,7 @@ public class JwtProvider {
 		} catch (MalformedJwtException e) {
 			logger.error(messageSource.getMessage("jwt.error.token.malformed", null, Locale.getDefault()));
 		} catch (UnsupportedJwtException e) {
-			logger.error(messageSource.getMessage("jwt.error.token.unsupport", null, Locale.getDefault()));
+			logger.error(messageSource.getMessage("jwt.error.token.unsupported", null, Locale.getDefault()));
 		} catch (ExpiredJwtException e) {
 			logger.error(messageSource.getMessage("jwt.error.token.expired", null, Locale.getDefault()));
 		} catch (IllegalArgumentException e) {

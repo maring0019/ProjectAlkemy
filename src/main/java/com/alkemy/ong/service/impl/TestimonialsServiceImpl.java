@@ -28,6 +28,13 @@ public class TestimonialsServiceImpl implements ITestimonials {
         return testimonialsRepository.save(testimonials);
     }
 
+
+
+    @Override
+    public void deleteById(Long id) {testimonialsRepository.deleteById(id); }
+
+
+
     @Override
     public TestimonialsDto create(TestimonialsDto testimonialsDto) {
 
@@ -40,4 +47,5 @@ public class TestimonialsServiceImpl implements ITestimonials {
                 .build();
         return mapper.map(testimonialsRepository.save(testimonials),TestimonialsDto.class);
     }
+
 }

@@ -1,6 +1,7 @@
 package com.alkemy.ong.controller;
 import com.alkemy.ong.dto.TestimonialsDto;
 import com.alkemy.ong.model.Testimonials;
+import com.alkemy.ong.service.Interface.IMemberService;
 import com.alkemy.ong.service.Interface.ITestimonials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -20,6 +21,10 @@ public class TestimonialsController {
     @Autowired
     private ITestimonials iTestimonials;
 
+    @Autowired
+    private MessageSource messageSource;
+
+
     @PutMapping("/testimonials/{id}")
     public ResponseEntity<?> Update(@RequestBody Testimonials testimonials, @PathVariable Long id){
         try {
@@ -37,12 +42,18 @@ public class TestimonialsController {
         }
     }
 
-    @PostMapping("/testimonials")
-    public ResponseEntity<?> Update(@Valid @RequestBody TestimonialsDto testimonialsDto) {
+
+
+    @DeleteMapping(path = "/testimonials/{id}")
+    public ResponseEntity<String> deleteTestimonialById(@PathVariable Long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.create(testimonialsDto));
+            if (iTestimonials.findById(id) != null)
+                iTestimonials.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("testimonials.delete.successful",
+                    null, Locale.getDefault()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
 }
