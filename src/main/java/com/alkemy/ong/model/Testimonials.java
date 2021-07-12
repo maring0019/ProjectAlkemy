@@ -1,9 +1,6 @@
 package com.alkemy.ong.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -20,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
+@Builder
 public class Testimonials {
 
     @Id
@@ -33,7 +31,7 @@ public class Testimonials {
 
     @Column(name = "image", length = 100)
     private String image;
-
+    @NotBlank(message = "El campo Content no debe estar vacío")
     @Column(name = "content")
     private String content;
 
