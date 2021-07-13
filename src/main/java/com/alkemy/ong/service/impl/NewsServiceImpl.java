@@ -38,10 +38,6 @@ public class NewsServiceImpl implements INews {
     private final MessageSource messageSource;
     private final IFileStore fileStore;
     private final ICategories categoriesService;
-    @Value("${aws.s3.bucket.name}")
-    private String bucketName;
-    @Value("${aws.s3.bucket.endpointUrl}")
-    private String bucketUrl;
 
     @Autowired
     public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategories categoriesService) {
@@ -77,7 +73,7 @@ public class NewsServiceImpl implements INews {
                 .category(categoriesEntity)
                 .build();
         News newsCreated = newsRepository.save(newsEntity);
-        uploadImage(newsCreationDto.getImage(), newsCreated);
+        newsCreated.setImage(fileStore.save(newsEntity, newsCreationDto.getImage()));
         return projectionFactory.createProjection(NewsResponseDto.class, newsRepository.save(newsCreated));
     }
 
@@ -85,7 +81,7 @@ public class NewsServiceImpl implements INews {
     public void deleteNews(Long id) {
         News newsEntity = getNewById(id);
         newsRepository.delete(newsEntity);
-        fileStore.deleteFilesFromS3Bucket("News-" + newsEntity.getId());
+        fileStore.deleteFilesFromS3Bucket(newsEntity);
     }
 
     @Override
@@ -98,7 +94,7 @@ public class NewsServiceImpl implements INews {
         newsUpdated.setContent(newsCreationDto.getContent());
         newsUpdated.setName(newsCreationDto.getName());
         if(newsCreationDto.getImage() != null) {
-            uploadImage(newsCreationDto.getImage(), newsUpdated);
+            newsUpdated.setImage(fileStore.save(newsUpdated, newsCreationDto.getImage()));
         }
         newsUpdated.setEdited(new Date());
         return projectionFactory.createProjection(NewsResponseDto.class, newsRepository.save(newsUpdated));
@@ -119,11 +115,4 @@ public class NewsServiceImpl implements INews {
     }
 
 
-    private void uploadImage(MultipartFile imageFile, News news) {
-        String path = String.format("%s/%s", bucketName, "News-" + news.getId());
-        String filename = String.format("%s-%s", imageFile.getOriginalFilename(), UUID.randomUUID());
-        fileStore.save(path, filename, imageFile);
-        String itemImageLink  = bucketUrl + "News-" + news.getId() + "/" + filename;
-        news.setImage(itemImageLink);
-    }
 }
