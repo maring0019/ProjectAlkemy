@@ -66,13 +66,6 @@ public class ActivitiesController {
         }
     }
 
-    @PostMapping(path = "{id}/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> uploadActivityImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(activitiesService.uploadImage(id, file));
-        } catch (Exception e) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+
 
 }
