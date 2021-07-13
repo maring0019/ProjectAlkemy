@@ -1,13 +1,18 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.NewsDto;
+import com.alkemy.ong.dto.NewsResponseDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.repository.NewsRepository;
-import com.alkemy.ong.service.Interface.INewsService;
+import com.alkemy.ong.service.Interface.INews;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 
@@ -20,16 +25,18 @@ import java.util.Locale;
 
 
 @Service
-public class NewsServiceImpl implements INewsService {
+public class NewsImpl implements INews {
+
+    private final NewsRepository newsRepository;
+    private final  ModelMapper mapper;
+    private final MessageSource messageSource;
 
     @Autowired
-    private NewsRepository newsRepository;
-
-    @Autowired
-    private ModelMapper mapper;
-
-    @Autowired
-    private MessageSource messageSource;
+    public NewsImpl(NewsRepository newsRepository, ModelMapper mapper, MessageSource messageSource) {
+        this.newsRepository = newsRepository;
+        this.mapper = mapper;
+        this.messageSource = messageSource;
+    }
 
 
     public News getNewById(Long id) {
@@ -85,5 +92,19 @@ public class NewsServiceImpl implements INewsService {
         upNews.setEdited(new Date());
         return mapper.map(newsRepository.save(upNews), NewsDto.class);
 
+    }
+
+    @Override
+    public Page<NewsResponseDto> getAllNewsPaginated(int page, int limit, String sortBy, String sortDir) {
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        Pageable pageable = PageRequest.of(
+                page, limit,
+                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+
+        return newsRepository.findAllProjectedBy(pageable);
     }
 }
