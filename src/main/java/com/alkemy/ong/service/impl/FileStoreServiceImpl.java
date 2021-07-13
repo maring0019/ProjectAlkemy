@@ -50,7 +50,9 @@ public class FileStoreServiceImpl implements IFileStore {
         });
 
         try {
-            s3.putObject(path, fileName, file.getInputStream(), metadata);
+            String pathToUpload = path.replaceAll("\\s+", "-");
+            String fileNameToUpload = fileName.replaceAll("\\s+", "-");
+            s3.putObject(pathToUpload, fileNameToUpload, file.getInputStream(), metadata);
         } catch (AmazonServiceException | IOException ex) {
             throw new IllegalStateException(messageSource.getMessage(
                     "s3bucket.error.upload.file" + " " + ex, null, Locale.getDefault()
