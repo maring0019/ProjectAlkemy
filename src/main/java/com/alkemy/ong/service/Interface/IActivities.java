@@ -18,6 +18,4 @@ public interface IActivities {
 
     Activity getActivityById(Long id);
 
-    String uploadImage(Long id, MultipartFile file);
-
 }
