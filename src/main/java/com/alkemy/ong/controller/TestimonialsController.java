@@ -5,6 +5,9 @@ import com.alkemy.ong.service.Interface.IMemberService;
 import com.alkemy.ong.service.Interface.ITestimonials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,4 +59,18 @@ public class TestimonialsController {
         }
     }
 
-}
+    @GetMapping("/testimonials")
+    public  ResponseEntity<?> AllPagination(@PageableDefault(size = 10 , page = 0 ) Pageable pageable) {
+
+        try {
+            Page<Testimonials> result = iTestimonials.showAllTestimonials(pageable);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+    }
+
+    }
+
+

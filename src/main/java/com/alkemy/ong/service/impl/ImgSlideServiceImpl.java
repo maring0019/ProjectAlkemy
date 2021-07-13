@@ -8,8 +8,9 @@ import com.alkemy.ong.repository.ImageSlideRepository;
 import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import com.alkemy.ong.service.Interface.IOrganization;
-import lombok.AllArgsConstructor;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class ImgSlideServiceImpl implements IImgSlideService {
 
-    private final ImageSlideRepository imageRepo;
-    private final MessageSource messageSource;
-    private final ModelMapper mapper;
-    private final IOrganization organizationService;
-    private final IFileStore fileStore;
+    @Autowired
+    private  ImageSlideRepository imageRepo;
+    @Autowired
+    private  MessageSource messageSource;
+    @Autowired
+    private  ModelMapper mapper;
+    @Autowired
+    private  IOrganization organizationService;
+    @Autowired
+    private  IFileStore fileStore;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
