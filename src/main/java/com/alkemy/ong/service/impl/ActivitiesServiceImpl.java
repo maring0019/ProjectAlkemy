@@ -7,22 +7,14 @@ import com.alkemy.ong.service.Interface.IActivities;
 import com.alkemy.ong.service.Interface.IFileStore;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
 public class ActivitiesServiceImpl implements IActivities {
-
-    @Value("${aws.s3.bucket.name}")
-    private String bucketName;
-
-    @Value("${aws.s3.bucket.endpointUrl}")
-    private String bucketUrl;
 
     private final ActivitiesRepository activitiesRepository;
     private final IFileStore fileStore;
@@ -93,20 +85,5 @@ public class ActivitiesServiceImpl implements IActivities {
         );
     }
 
-    @Override
-    public String uploadImage(Long id, MultipartFile file) {
-        Activity activity = getActivityById(id);
-
-        //Almacenar la imagen en s3 y actualizar la db (imagen from Activity) con el link de la imagen en s3
-        //El campo imagen sera: el nombre del actual bucket/el id de la actividad-nombre-de-la-actividad    <-- Asi quedara formado el directorio/folder del file
-        String path = String.format("%s/%s", bucketName, activity.getId() + "-" + activity.getName().replaceAll("\\s", "-"));
-        //El nombre de la imagen quedara formado por el nombre original-UUID random
-        String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
-
-        fileStore.save(path, filename, file);
-        activity.setImage(path+filename); //Seteo el nuevo link de la imagen
-        activitiesRepository.save(activity);
-        return bucketUrl + path + filename;
-    }
 
 }
