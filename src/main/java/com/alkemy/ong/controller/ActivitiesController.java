@@ -1,33 +1,37 @@
 package com.alkemy.ong.controller;
 
-import com.alkemy.ong.dto.ActivitiesDto;
+import com.alkemy.ong.dto.request.ActivityCreationDto;
+import com.alkemy.ong.dto.response.ActivityResponseDto;
 import com.alkemy.ong.service.Interface.IActivities;
-import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/activities")
-@AllArgsConstructor
 public class ActivitiesController {
 
-    @Autowired
     private final IActivities activitiesService;
+    private final ProjectionFactory projectionFactory;
+    private final MessageSource messageSource;
 
     @Autowired
-    private final ModelMapper mapper;
+    public ActivitiesController(IActivities activitiesService, ProjectionFactory projectionFactory, MessageSource messageSource) {
+        this.activitiesService = activitiesService;
+        this.projectionFactory = projectionFactory;
+        this.messageSource = messageSource;
+    }
 
 
     @GetMapping
-    public ResponseEntity<List<ActivitiesDto>> getAllActivities() {
+    public ResponseEntity<List<ActivityResponseDto>> getAllActivities() {
         return ResponseEntity.status(HttpStatus.OK).body(activitiesService.getAllActivities());
     }
 
@@ -35,22 +39,27 @@ public class ActivitiesController {
     public ResponseEntity<Object> getActivityById(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(mapper.map(activitiesService.getActivityById(id), ActivitiesDto.class));
+                    .body(projectionFactory.createProjection(ActivityResponseDto.class, activitiesService.getActivityById(id)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PostMapping
-    public ResponseEntity<ActivitiesDto> createActivity(@Valid @RequestBody ActivitiesDto activitiesDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(activitiesService.createActivity(activitiesDto));
+    public ResponseEntity<?> createActivity(@Valid @ModelAttribute(name = "activityCreationDto") ActivityCreationDto activityCreationDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(activitiesService.createActivity(activityCreationDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateActivity(@PathVariable Long id, @Valid @RequestBody ActivitiesDto activitiesDto) {
+    public ResponseEntity<Object> updateActivity(@PathVariable Long id, @Valid @ModelAttribute(name = "activityCreationDto") ActivityCreationDto activityCreationDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(activitiesService.updateActivity(id, activitiesDto));
+                    .body(activitiesService.updateActivity(id, activityCreationDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -60,7 +69,8 @@ public class ActivitiesController {
     public ResponseEntity<String> deleteActivityById(@PathVariable Long id) {
         try {
             activitiesService.deleteActivity(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Actividad eliminada satisfactoriamente.");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(messageSource.getMessage("activity.delete.successful", null, Locale.getDefault()));
         } catch (Exception e) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
