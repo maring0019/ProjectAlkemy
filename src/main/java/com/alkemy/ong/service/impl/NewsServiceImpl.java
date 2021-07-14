@@ -1,7 +1,7 @@
 package com.alkemy.ong.service.impl;
 
-import com.alkemy.ong.dto.NewsCreationDto;
-import com.alkemy.ong.dto.NewsResponseDto;
+import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.repository.NewsRepository;
@@ -10,7 +10,6 @@ import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.INews;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +20,11 @@ import java.util.Date;
 
 
 import org.springframework.context.MessageSource;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 
 @Service
@@ -38,6 +35,8 @@ public class NewsServiceImpl implements INews {
     private final MessageSource messageSource;
     private final IFileStore fileStore;
     private final ICategories categoriesService;
+
+    private static final String ASC = "asc";
 
     @Autowired
     public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategories categoriesService) {
@@ -108,7 +107,7 @@ public class NewsServiceImpl implements INews {
 
         Pageable pageable = PageRequest.of(
                 page, limit,
-                sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+                sortDir.equalsIgnoreCase(ASC) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
         );
 
         return newsRepository.findAllProjectedBy(pageable);
