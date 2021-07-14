@@ -60,10 +60,15 @@ public class TestimonialsController {
     }
 
     @GetMapping("/testimonials")
-    public  ResponseEntity<?> AllPagination(@PageableDefault(size = 10 , page = 0 ) Pageable pageable) {
+    public  ResponseEntity<?> AllPagination(@PageableDefault(size = 10 , page = 0 ) Pageable pageable ,@RequestParam
+            (value = "page" , defaultValue = "0") int page) {
 
         try {
-            Page<Testimonials> result = iTestimonials.showAllTestimonials(pageable);
+            Page<?> result = iTestimonials.showAllTestimonials(pageable);
+            if (page >= result.getTotalPages()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("pagination.error.notFound",
+                        null, Locale.getDefault()));
+            }
             return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
