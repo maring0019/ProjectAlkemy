@@ -30,7 +30,7 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotBlank(message = "El campo Name no puede estar vacío.")
     private String name;

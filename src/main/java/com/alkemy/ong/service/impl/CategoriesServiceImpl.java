@@ -34,15 +34,10 @@ public class CategoriesServiceImpl implements ICategoriesService {
 
       @Override
       public CategoriesDto createCategory(CategoriesDto dto) throws EntityNotFoundException {
-
-          Categories category = new Categories();
-          if(isNumeric(dto.getName())){
-               dto.setName("");
-          }
-          category.setName(dto.getName());
-          category.setDescription(dto.getDescription());
-          category.setImage(dto.getImage());
-
+          Categories category = new Categories(
+                  dto.getName(),
+                  dto.getDescription()
+          );
           return mapper.map(ctgRepo.save(category), CategoriesDto.class);
 
       }

@@ -1,21 +1,25 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.NewsDto;
+import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.News;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface INewsService {
 
 
-    public News getNewById(Long id);
+    News getNewById(Long id);
 
-    public List<News> findAll();
+    List<News> findAll();
 
-    public NewsDto save(NewsDto newsDto);
+    NewsResponseDto save(NewsCreationDto newsCreationDto);
 
-    public void deleteNews(Long id);
+    void deleteNews(Long id);
 
-    public NewsDto updateNews(Long id, NewsDto newsDto);
+    NewsResponseDto updateNews(Long id, NewsCreationDto newsCreationDto);
+
+    Page<NewsResponseDto> getAllNewsPaginated(int page, int limit, String sortBy, String sortDir);
 
 }

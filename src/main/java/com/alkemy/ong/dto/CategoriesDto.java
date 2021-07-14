@@ -1,22 +1,19 @@
 package com.alkemy.ong.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CategoriesDto {
+@Getter @Setter
+public class CategoriesDto implements Serializable {
 
-	@Id
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	private String name;
@@ -25,12 +22,9 @@ public class CategoriesDto {
 
 	private String image;
 
-	@NonNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created = new Date();
+	private Date created;
 
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date edited;
 
-	private Boolean deleted = Boolean.FALSE;
+	private Boolean deleted;
 }
