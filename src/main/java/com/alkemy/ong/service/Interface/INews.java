@@ -1,7 +1,7 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.NewsCreationDto;
-import com.alkemy.ong.dto.NewsResponseDto;
+import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.News;
 import org.springframework.data.domain.Page;
 
