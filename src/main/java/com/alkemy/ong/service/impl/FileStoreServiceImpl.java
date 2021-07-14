@@ -65,7 +65,7 @@ public class FileStoreServiceImpl implements IFileStore {
 
         try {
             String path = String.format("%s/%s", bucketName, objectName + SEPARATOR + objectId);
-            String filename = String.format("%s-%s", Objects.requireNonNull(file.getOriginalFilename()).replaceAll("\\s+", "-"), UUID.randomUUID());
+            String filename = String.format("%s" + SEPARATOR + "%s", Objects.requireNonNull(file.getOriginalFilename()).replaceAll("\\s+", SEPARATOR), UUID.randomUUID());
             s3.putObject(path, filename, file.getInputStream(), metadata);
             return bucketUrl + objectName + SEPARATOR + objectId + "/" + filename;
         } catch (AmazonServiceException | IOException ex) {
