@@ -10,7 +10,6 @@ import com.alkemy.ong.service.Interface.IImgSlideService;
 import com.alkemy.ong.service.Interface.IOrganization;
 
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,13 +31,9 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 
 
     private final ImageSlideRepository imageRepo;
-
     private final MessageSource messageSource;
-
     private final ModelMapper mapper;
-
     private final IOrganization organizationService;
-
     private final IFileStore fileStore;
 
     @Value("${aws.s3.bucket.name}")
