@@ -1,18 +1,18 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.ActivitiesDto;
+import com.alkemy.ong.dto.request.ActivityCreationDto;
+import com.alkemy.ong.dto.response.ActivityResponseDto;
 import com.alkemy.ong.model.Activity;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface IActivities {
 
-    ActivitiesDto createActivity(ActivitiesDto activitiesDto);
+    ActivityResponseDto createActivity(ActivityCreationDto activitiesDto);
 
-    ActivitiesDto updateActivity(Long id, ActivitiesDto activitiesDto);
+    ActivityResponseDto updateActivity(Long id, ActivityCreationDto activitiesDto);
 
-    List<ActivitiesDto> getAllActivities();
+    List<ActivityResponseDto> getAllActivities();
 
     void deleteActivity(Long id);
 
