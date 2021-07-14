@@ -1,18 +1,16 @@
 package com.alkemy.ong.controller;
 
-import com.alkemy.ong.dto.NewsCreationDto;
-
-import com.alkemy.ong.dto.NewsResponseDto;
+import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.service.Interface.INews;
 import org.hibernate.Filter;
 import org.hibernate.Session;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,24 +28,25 @@ public class NewsController {
 
     private final INews newsService;
     private final MessageSource messageSource;
-    private final ModelMapper mapper;
+    private final ProjectionFactory projectionFactory;
     private final EntityManager entityManager;
 
     @Autowired
-    public NewsController(INews newsService, MessageSource messageSource, ModelMapper mapper, EntityManager entityManager) {
+    public NewsController(INews newsService, MessageSource messageSource, ProjectionFactory projectionFactory, EntityManager entityManager) {
         this.newsService = newsService;
         this.messageSource = messageSource;
-        this.mapper = mapper;
+        this.projectionFactory = projectionFactory;
         this.entityManager = entityManager;
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<?>getNews(@PathVariable("id") Long id){
-        NewsCreationDto newsCreationDto = mapper.map(newsService.getNewById(id), NewsCreationDto.class);
-        if(newsCreationDto.getId() != null){
-            return ResponseEntity.status(HttpStatus.OK).body(newsCreationDto);
-        }else{
-            return new ResponseEntity<>(messageSource.getMessage("news.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(projectionFactory.createProjection(NewsResponseDto.class, newsService.getNewById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -57,7 +56,7 @@ public class NewsController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(newsService.save(newsCreationDto));
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
@@ -73,7 +72,7 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateNews(@PathVariable Long id, @Valid @RequestBody NewsCreationDto newsCreationDto) {
+    public ResponseEntity<Object> updateNews(@PathVariable Long id, @Valid @ModelAttribute(name = "newsCreationDto") NewsCreationDto newsCreationDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(newsService.updateNews(id, newsCreationDto));
