@@ -45,7 +45,7 @@ public class News {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date_time", nullable = false, updatable = false)
-    private Date created;
+    private Date created = new Date();
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;

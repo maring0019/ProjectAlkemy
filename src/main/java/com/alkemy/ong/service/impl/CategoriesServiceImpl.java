@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.repository.CategoriesRepository;
-import com.alkemy.ong.service.Interface.ICategories;
+import com.alkemy.ong.service.Interface.ICategoriesService;
 
 @Service
-public class CategoriesServiceImpl implements ICategories {
+public class CategoriesServiceImpl implements ICategoriesService {
 
       private CategoriesRepository ctgRepo;
       private MessageSource messageSource;

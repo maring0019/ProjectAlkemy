@@ -6,7 +6,7 @@ import com.alkemy.ong.model.Activity;
 
 import java.util.List;
 
-public interface IActivities {
+public interface IActivitiesService {
 
     ActivityResponseDto createActivity(ActivityCreationDto activitiesDto);
 

@@ -30,11 +30,14 @@ import java.util.stream.Collectors;
 public class ImgSlideServiceImpl implements IImgSlideService {
 
 
+
+
+	
     private final ImageSlideRepository imageRepo;
-    private final MessageSource messageSource;
-    private final ModelMapper mapper;
-    private final IOrganization organizationService;
-    private final IFileStore fileStore;
+	private final MessageSource messageSource;
+	private final ModelMapper mapper;
+	private final IOrganization organizationService;
+	private final IFileStore fileStore;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
