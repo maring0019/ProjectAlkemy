@@ -1,4 +1,4 @@
-package com.alkemy.ong.dto;
+package com.alkemy.ong.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
