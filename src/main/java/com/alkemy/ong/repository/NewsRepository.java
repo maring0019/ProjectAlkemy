@@ -1,6 +1,6 @@
 package com.alkemy.ong.repository;
 
-import com.alkemy.ong.dto.NewsResponseDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
