@@ -15,19 +15,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Service
 public class FileStoreServiceImpl implements IFileStore {
 
     private final AmazonS3 s3;
+    private final MessageSource messageSource;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
+    @Value("${aws.s3.bucket.endpointUrl}")
+    private String bucketUrl;
+
+    private static final String SEPARATOR = "-";
 
     @Autowired
-    private final MessageSource messageSource;
-
     public FileStoreServiceImpl(AmazonS3 s3, MessageSource messageSource) {
         this.s3 = s3;
         this.messageSource = messageSource;
@@ -35,11 +39,21 @@ public class FileStoreServiceImpl implements IFileStore {
 
 
     @Override
-    public void save(String path, String fileName, MultipartFile file) {
-        //Validate if the file is empty - Chequear si la imagen no esta vacia
+    public String save(Object object, MultipartFile file) {
         fileIsEmpty(file);
-        //Validate if the file corresponds to an image - Chequear si el archivo es una imagen valida
         isAnImage(file);
+
+        String objectName = object.getClass().getSimpleName();
+        Field privateObjectId = null;
+        Long objectId = null;
+        try {
+            privateObjectId = object.getClass().getDeclaredField("id");
+            privateObjectId.setAccessible(true);
+            objectId = (Long) privateObjectId.get(object);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.getMessage();
+        }
+
 
         ObjectMetadata metadata = new ObjectMetadata();
         //Metadata extraction from the file - Grabar metadata del archivo
@@ -50,7 +64,10 @@ public class FileStoreServiceImpl implements IFileStore {
         });
 
         try {
-            s3.putObject(path, fileName, file.getInputStream(), metadata);
+            String path = String.format("%s/%s", bucketName, objectName + SEPARATOR + objectId);
+            String filename = String.format("%s" + SEPARATOR + "%s", Objects.requireNonNull(file.getOriginalFilename()).replaceAll("\\s+", SEPARATOR), UUID.randomUUID());
+            s3.putObject(path, filename, file.getInputStream(), metadata);
+            return bucketUrl + objectName + SEPARATOR + objectId + "/" + filename;
         } catch (AmazonServiceException | IOException ex) {
             throw new IllegalStateException(messageSource.getMessage(
                     "s3bucket.error.upload.file" + " " + ex, null, Locale.getDefault()
@@ -69,13 +86,18 @@ public class FileStoreServiceImpl implements IFileStore {
     }
 
     @Override
-    public void deleteFilesFromS3Bucket(String fileUrl) {
+    public void deleteFilesFromS3Bucket(Object object) {
         try {
-            for(S3ObjectSummary file : s3.listObjects(bucketName, fileUrl).getObjectSummaries()) {
+            String objectName = object.getClass().getSimpleName();
+            Field privateObjectId = object.getClass().getDeclaredField("id");
+            privateObjectId.setAccessible(true);
+            Long objectId = (Long) privateObjectId.get(object);
+            for(S3ObjectSummary file : s3.listObjects(bucketName, objectName + SEPARATOR + objectId).getObjectSummaries()) {
                 s3.deleteObject(bucketName, file.getKey());
             }
-        } catch (SdkClientException e) {
-            e.printStackTrace();
+        } catch (SdkClientException | NoSuchFieldException | IllegalAccessException e) {
+            e.getMessage();
         }
     }
+
 }

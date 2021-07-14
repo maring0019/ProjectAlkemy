@@ -9,6 +9,8 @@ import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import com.alkemy.ong.service.Interface.IOrganization;
 
+
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,22 +30,30 @@ import java.util.stream.Collectors;
 @Service
 public class ImgSlideServiceImpl implements IImgSlideService {
 
-    @Autowired
-    private  ImageSlideRepository imageRepo;
-    @Autowired
-    private  MessageSource messageSource;
-    @Autowired
-    private  ModelMapper mapper;
-    @Autowired
-    private  IOrganization organizationService;
-    @Autowired
-    private  IFileStore fileStore;
+
+    private final ImageSlideRepository imageRepo;
+
+    private final MessageSource messageSource;
+
+    private final ModelMapper mapper;
+
+    private final IOrganization organizationService;
+
+    private final IFileStore fileStore;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
     @Value("${aws.s3.bucket.endpointUrl}")
     private String bucketUrl;
 
+    @Autowired
+    public ImgSlideServiceImpl(ImageSlideRepository imageRepo, MessageSource messageSource, ModelMapper mapper, IOrganization organizationService, IFileStore fileStore) {
+        this.imageRepo = imageRepo;
+        this.messageSource = messageSource;
+        this.mapper = mapper;
+        this.organizationService = organizationService;
+        this.fileStore = fileStore;
+    }
 
 
     @Override
@@ -59,7 +69,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         );
 
         ImageSlide imageSlideCreated = imageRepo.save(imageSlideEntity);
-        uploadImage(imageSlideCreationDto, imageSlideCreated);
+        imageSlideCreated.setImageUrl(fileStore.save(imageSlideCreated, imageSlideCreationDto.getImage()));
         return mapper.map(imageRepo.save(imageSlideCreated), ImageSlideDto.class);
     }
 
@@ -76,17 +86,16 @@ public class ImgSlideServiceImpl implements IImgSlideService {
             imageSlide.setText(image.getText());
         if(image.getOrdered()!=null)
             imageSlide.setOrdered(image.getOrdered());
-        uploadImage(image, imageSlide);
-        ImageSlide imageSlideUpdated = imageRepo.save(imageSlide);
-        return mapper.map(imageSlideUpdated, ImageSlideDto.class);
+
+        imageSlide.setImageUrl(fileStore.save(imageSlide, image.getImage()));
+        return mapper.map(imageRepo.save(imageSlide), ImageSlideDto.class);
     }
 
     @Override
     public String deleteImage(Long id){
         ImageSlide imageSlide = getImageSlideById(id);
         imageRepo.delete(imageSlide);
-        //Va el nombre del segundo parametro de cuando se crea, osea el nombre del folder --> String path = String.format("%s/%s", bucketName, "Image-Slide-" + imageSlide.getId() + "/");
-        fileStore.deleteFilesFromS3Bucket("Image-Slide-" + imageSlide.getId()); //Le indicamos el nombre del folder
+        fileStore.deleteFilesFromS3Bucket(imageSlide);
         return messageSource.getMessage("slide.delete.successful", null, Locale.getDefault());
     }
 
@@ -102,22 +111,11 @@ public class ImgSlideServiceImpl implements IImgSlideService {
         return imageSlideCreationDtos;
     }
 
-
     @Override
     public ImageSlide getImageSlideById(Long id) {
         return imageRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("slide.error.not.found",null, Locale.getDefault())
         ));
     }
-
-    //Metodo privado de este service que consume el el servicio de amazon de subida de imagen
-    private void uploadImage(ImageSlideCreationDto imageSlideCreationDto, ImageSlide imageSlide) {
-        String path = String.format("%s/%s", bucketName, "Image-Slide-" + imageSlide.getId());
-        String filename = String.format("%s-%s", imageSlideCreationDto.getImage().getOriginalFilename(), UUID.randomUUID());
-        fileStore.save(path, filename, imageSlideCreationDto.getImage());
-        String itemImageLink  = bucketUrl + "Image-Slide-" + imageSlide.getId() + "/" + filename;
-        imageSlide.setImageUrl(itemImageLink);
-    }
-
 
 }
