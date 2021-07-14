@@ -2,7 +2,7 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.request.ActivityCreationDto;
 import com.alkemy.ong.dto.response.ActivityResponseDto;
-import com.alkemy.ong.service.Interface.IActivities;
+import com.alkemy.ong.service.Interface.IActivitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.projection.ProjectionFactory;
@@ -18,12 +18,12 @@ import java.util.Locale;
 @RequestMapping("/activities")
 public class ActivitiesController {
 
-    private final IActivities activitiesService;
+    private final IActivitiesService activitiesService;
     private final ProjectionFactory projectionFactory;
     private final MessageSource messageSource;
 
     @Autowired
-    public ActivitiesController(IActivities activitiesService, ProjectionFactory projectionFactory, MessageSource messageSource) {
+    public ActivitiesController(IActivitiesService activitiesService, ProjectionFactory projectionFactory, MessageSource messageSource) {
         this.activitiesService = activitiesService;
         this.projectionFactory = projectionFactory;
         this.messageSource = messageSource;

@@ -20,7 +20,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = {"comments", "handler","hibernateLazyInitializer"}, allowSetters = true)
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @NotBlank(message = "El campo body no puede estar vacío.")
@@ -28,7 +28,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = {"comments", "handler","hibernateLazyInitializer"}, allowSetters = true)
-    @JoinColumn(name = "news_id")
+    @JoinColumn(name = "news_id", nullable = false)
     private News news;
 
 }
