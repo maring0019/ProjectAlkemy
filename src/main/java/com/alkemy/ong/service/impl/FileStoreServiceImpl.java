@@ -22,15 +22,16 @@ import java.util.*;
 public class FileStoreServiceImpl implements IFileStore {
 
     private final AmazonS3 s3;
+    private final MessageSource messageSource;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
     @Value("${aws.s3.bucket.endpointUrl}")
     private String bucketUrl;
 
-    @Autowired
-    private final MessageSource messageSource;
+    private static final String SEPARATOR = "-";
 
+    @Autowired
     public FileStoreServiceImpl(AmazonS3 s3, MessageSource messageSource) {
         this.s3 = s3;
         this.messageSource = messageSource;
@@ -63,10 +64,10 @@ public class FileStoreServiceImpl implements IFileStore {
         });
 
         try {
-            String path = String.format("%s/%s", bucketName, objectName + "-" + objectId);
+            String path = String.format("%s/%s", bucketName, objectName + SEPARATOR + objectId);
             String filename = String.format("%s-%s", Objects.requireNonNull(file.getOriginalFilename()).replaceAll("\\s+", "-"), UUID.randomUUID());
             s3.putObject(path, filename, file.getInputStream(), metadata);
-            return bucketUrl + objectName + "-" + objectId + "/" + filename;
+            return bucketUrl + objectName + SEPARATOR + objectId + "/" + filename;
         } catch (AmazonServiceException | IOException ex) {
             throw new IllegalStateException(messageSource.getMessage(
                     "s3bucket.error.upload.file" + " " + ex, null, Locale.getDefault()
@@ -91,7 +92,7 @@ public class FileStoreServiceImpl implements IFileStore {
             Field privateObjectId = object.getClass().getDeclaredField("id");
             privateObjectId.setAccessible(true);
             Long objectId = (Long) privateObjectId.get(object);
-            for(S3ObjectSummary file : s3.listObjects(bucketName, objectName + "-" + objectId).getObjectSummaries()) {
+            for(S3ObjectSummary file : s3.listObjects(bucketName, objectName + SEPARATOR + objectId).getObjectSummaries()) {
                 s3.deleteObject(bucketName, file.getKey());
             }
         } catch (SdkClientException | NoSuchFieldException | IllegalAccessException e) {
