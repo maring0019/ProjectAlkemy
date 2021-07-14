@@ -1,16 +1,15 @@
 package com.alkemy.ong.service.impl;
 
-import com.alkemy.ong.dto.ActivitiesDto;
+import com.alkemy.ong.dto.request.ActivityCreationDto;
+import com.alkemy.ong.dto.response.ActivityResponseDto;
 import com.alkemy.ong.model.Activity;
 import com.alkemy.ong.repository.ActivitiesRepository;
 import com.alkemy.ong.service.Interface.IActivities;
 import com.alkemy.ong.service.Interface.IFileStore;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -18,68 +17,58 @@ import java.util.*;
 @Service
 public class ActivitiesServiceImpl implements IActivities {
 
-    @Value("${aws.s3.bucket.name}")
-    private String bucketName;
-
-    @Value("${aws.s3.bucket.endpointUrl}")
-    private String bucketUrl;
-
     private final ActivitiesRepository activitiesRepository;
     private final IFileStore fileStore;
-    private final ModelMapper mapper;
+    private final ProjectionFactory projectionFactory;
     private final MessageSource messageSource;
 
     @Autowired
-    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository, IFileStore fileStore, ModelMapper mapper, MessageSource messageSource) {
+    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository, IFileStore fileStore, ProjectionFactory projectionFactory, MessageSource messageSource) {
         this.activitiesRepository = activitiesRepository;
         this.fileStore = fileStore;
-        this.mapper = mapper;
+        this.projectionFactory = projectionFactory;
         this.messageSource = messageSource;
     }
 
+
     @Override
-    public ActivitiesDto createActivity(ActivitiesDto activitiesDto) {
+    public ActivityResponseDto createActivity(ActivityCreationDto activityCreationDto) {
 
         Activity activity = Activity.builder()
-                .name(activitiesDto.getName())
-                .content(activitiesDto.getContent())
-                .image(activitiesDto.getImage())
+                .name(activityCreationDto.getName())
+                .content(activityCreationDto.getContent())
                 .created(new Date())
                 .build();
-
-        return mapper.map(activitiesRepository.save(activity), ActivitiesDto.class);
+        Activity activityCreated = activitiesRepository.save(activity);
+        activityCreated.setImage(fileStore.save(activityCreated, activityCreationDto.getImage()));
+        return projectionFactory.createProjection(ActivityResponseDto.class, activitiesRepository.save(activityCreated));
     }
 
     @Override
-    public ActivitiesDto updateActivity(Long id, ActivitiesDto dto) {
+    public ActivityResponseDto updateActivity(Long id, ActivityCreationDto dto) {
         Activity activity = getActivityById(id);
 
         if(!dto.getName().isBlank())
         	activity.setName(dto.getName());
         if(!dto.getContent().isBlank())
         	activity.setContent(dto.getContent());
-        if(!dto.getImage().isBlank())
-        	activity.setImage(dto.getImage());
+        if(dto.getImage() != null)
+        	activity.setImage(fileStore.save(activity, dto.getImage()));
         
         activity.setEdited(new Date());
-        return mapper.map(activitiesRepository.save(activity), ActivitiesDto.class);
+        return projectionFactory.createProjection(ActivityResponseDto.class, activitiesRepository.save(activity));
     }
 
     @Override
-    public List<ActivitiesDto> getAllActivities() {
-        List<Activity> activityEntities = activitiesRepository.findAll();
-        List<ActivitiesDto> activitiesDto = new ArrayList<>();
-        activityEntities.forEach(a -> activitiesDto.add(mapper.map(a, ActivitiesDto.class)));
-        return activitiesDto;
+    public List<ActivityResponseDto> getAllActivities() {
+        return activitiesRepository.findAllProjectedBy();
     }
 
     @Override
     public void deleteActivity(Long id) {
         Activity activity = getActivityById(id);
         activity.setDeletedAt(new Date());
-        //Para eliminar las imagenes almacenadas en el s3 bucket le debo pasar el nombre del directorio donde estan las n imagenes
-        //No es que tiene n images, sino que al poner otra imagen esta se almacena en el mismo directorio por ende al eliminar la actividad eliminamos todas las imagenes que tuvo
-        fileStore.deleteFilesFromS3Bucket(activity.getId() + "-" + activity.getName().replaceAll("\\s", "-"));
+        fileStore.deleteFilesFromS3Bucket(activity);
         activitiesRepository.save(activity);
         activitiesRepository.delete(activity);
     }
@@ -93,20 +82,5 @@ public class ActivitiesServiceImpl implements IActivities {
         );
     }
 
-    @Override
-    public String uploadImage(Long id, MultipartFile file) {
-        Activity activity = getActivityById(id);
-
-        //Almacenar la imagen en s3 y actualizar la db (imagen from Activity) con el link de la imagen en s3
-        //El campo imagen sera: el nombre del actual bucket/el id de la actividad-nombre-de-la-actividad    <-- Asi quedara formado el directorio/folder del file
-        String path = String.format("%s/%s", bucketName, activity.getId() + "-" + activity.getName().replaceAll("\\s", "-"));
-        //El nombre de la imagen quedara formado por el nombre original-UUID random
-        String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
-
-        fileStore.save(path, filename, file);
-        activity.setImage(path+filename); //Seteo el nuevo link de la imagen
-        activitiesRepository.save(activity);
-        return bucketUrl + path + filename;
-    }
 
 }

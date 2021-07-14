@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.repository.CategoriesRepository;
-import com.alkemy.ong.service.Interface.ICategoriesService;
+import com.alkemy.ong.service.Interface.ICategories;
 
 @Service
-public class CategoriesServiceImpl implements ICategoriesService {
+public class CategoriesServiceImpl implements ICategories {
 
       private CategoriesRepository ctgRepo;
       private MessageSource messageSource;
@@ -34,15 +34,10 @@ public class CategoriesServiceImpl implements ICategoriesService {
 
       @Override
       public CategoriesDto createCategory(CategoriesDto dto) throws EntityNotFoundException {
-
-          Categories category = new Categories();
-          if(isNumeric(dto.getName())){
-               dto.setName("");
-          }
-          category.setName(dto.getName());
-          category.setDescription(dto.getDescription());
-          category.setImage(dto.getImage());
-
+          Categories category = new Categories(
+                  dto.getName(),
+                  dto.getDescription()
+          );
           return mapper.map(ctgRepo.save(category), CategoriesDto.class);
 
       }

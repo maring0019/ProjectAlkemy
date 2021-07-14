@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.alkemy.ong.dto.CategoriesDto;
-import com.alkemy.ong.service.Interface.ICategoriesService;
+import com.alkemy.ong.service.Interface.ICategories;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
@@ -21,7 +21,7 @@ public class CategoriesController {
 	@Autowired
 	private MessageSource message;
 	@Autowired
-	private ICategoriesService iCategory;
+	private ICategories iCategory;
 
 
 	@PostMapping
