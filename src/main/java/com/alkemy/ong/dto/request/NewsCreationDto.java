@@ -1,6 +1,5 @@
-package com.alkemy.ong.dto;
+package com.alkemy.ong.dto.request;
 
-import com.alkemy.ong.model.Categories;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,15 +13,16 @@ public class NewsCreationDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    @NotBlank(message = "{news.error.blank.name}")
     private String name;
 
-    @NotBlank(message = "Completar el campo contenido")
+    @NotBlank(message = "{news.error.blank.content}")
     private String content;
 
-    @NotNull(message = "La imagen es requerida.")
+    @NotNull(message = "{news.error.null.image}")
     private MultipartFile image;
 
+    @NotNull(message = "{news.error.null.category}")
     private Long category;
 
 }
