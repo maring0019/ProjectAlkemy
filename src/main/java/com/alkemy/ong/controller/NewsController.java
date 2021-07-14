@@ -5,6 +5,7 @@ import com.alkemy.ong.dto.NewsDto;
 import com.alkemy.ong.service.impl.NewsServiceImpl;
 
 import com.alkemy.ong.service.Interface.INewsService;
+import io.swagger.annotations.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Api(value = "Novedad controller")
+@CrossOrigin(origins = "*")
 @RequestMapping("/news")
 public class NewsController {
 
@@ -37,7 +40,12 @@ public class NewsController {
     private ModelMapper mapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?>getNews(@PathVariable("id") Long id){
+    @ApiOperation("Busca una novedad por el id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 404, message = "Novedad no encontrada")
+    })
+    public ResponseEntity<?>getNews(@ApiParam(value = "El id de la novedad", required = true, example = "1") @PathVariable("id") Long id){
         NewsDto newsDto = mapper.map(newsService.getNewById(id), NewsDto.class);
         if(newsDto.getId() != null){
             return ResponseEntity.status(HttpStatus.OK).body(newsDto);
@@ -47,7 +55,12 @@ public class NewsController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?>createNews(@Valid @RequestBody NewsDto newsDto){
+    @ApiOperation("Crea una nueva novedad")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 400, message = "Solicitud incorrecta")
+    })
+    public ResponseEntity<?>createNews(@ApiParam(value = "Objeto novedad", required = true) @Valid @RequestBody NewsDto newsDto){
         try{
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(newsService.save(newsDto));
@@ -57,7 +70,12 @@ public class NewsController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteNews(@PathVariable Long id){
+    @ApiOperation("Elimina una novedad")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 404, message = "Novedad no encontrada")
+    })
+    public ResponseEntity<String> deleteNews(@ApiParam(value = "El id de la novedad", required = true, example = "1") @PathVariable Long id){
         try {
             iNewsService.deleteNews(id);
             return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("new.delete.successful",
@@ -68,7 +86,12 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateNews(@PathVariable Long id, @Valid @RequestBody NewsDto newsDto) {
+    @ApiOperation("Actualiza una novedad")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 404, message = "Novedad no encontrada")
+    })
+    public ResponseEntity<Object> updateNews(@ApiParam(value = "El id de la novedad", required = true, example = "1") @PathVariable Long id, @Valid @RequestBody NewsDto newsDto) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(iNewsService.updateNews(id, newsDto));
