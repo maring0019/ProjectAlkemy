@@ -8,6 +8,8 @@ import com.alkemy.ong.repository.ImageSlideRepository;
 import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IImgSlideService;
 import com.alkemy.ong.service.Interface.IOrganization;
+
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class ImgSlideServiceImpl implements IImgSlideService {
+
+
+
+
 	
     private final ImageSlideRepository imageRepo;
 	private final MessageSource messageSource;
