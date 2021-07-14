@@ -11,7 +11,7 @@ import static org.apache.http.entity.ContentType.*;
 
 public interface IFileStore {
 
-    void save(String path, String fileName, MultipartFile file);
+    String save(Object object, MultipartFile file);
 
     byte[] download(String path, String key);
 
@@ -34,6 +34,6 @@ public interface IFileStore {
         }
     }
 
-    void deleteFilesFromS3Bucket(String fileUrl);
+    void deleteFilesFromS3Bucket(Object object);
 
 }

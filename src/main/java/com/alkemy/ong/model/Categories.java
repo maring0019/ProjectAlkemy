@@ -51,4 +51,9 @@ public class Categories implements Serializable {
 
 	private Boolean deleted = Boolean.FALSE;
 
+	public Categories(String name, String description) {
+		this.name = name;
+		this.description = description;
+		this.created = new Date();
+	}
 }
