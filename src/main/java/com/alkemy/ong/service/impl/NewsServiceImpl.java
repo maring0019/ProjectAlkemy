@@ -5,9 +5,9 @@ import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.repository.NewsRepository;
-import com.alkemy.ong.service.Interface.ICategories;
+import com.alkemy.ong.service.Interface.ICategoriesService;
 import com.alkemy.ong.service.Interface.IFileStore;
-import com.alkemy.ong.service.Interface.INews;
+import com.alkemy.ong.service.Interface.INewsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,18 +28,18 @@ import java.util.Locale;
 
 
 @Service
-public class NewsServiceImpl implements INews {
+public class NewsServiceImpl implements INewsService {
 
     private final NewsRepository newsRepository;
     private final ProjectionFactory projectionFactory;
     private final MessageSource messageSource;
     private final IFileStore fileStore;
-    private final ICategories categoriesService;
+    private final ICategoriesService categoriesService;
 
     private static final String ASC = "asc";
 
     @Autowired
-    public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategories categoriesService) {
+    public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategoriesService categoriesService) {
         this.newsRepository = newsRepository;
         this.projectionFactory = projectionFactory;
         this.messageSource = messageSource;

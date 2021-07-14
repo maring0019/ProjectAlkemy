@@ -4,7 +4,7 @@ import com.alkemy.ong.dto.request.ActivityCreationDto;
 import com.alkemy.ong.dto.response.ActivityResponseDto;
 import com.alkemy.ong.model.Activity;
 import com.alkemy.ong.repository.ActivitiesRepository;
-import com.alkemy.ong.service.Interface.IActivities;
+import com.alkemy.ong.service.Interface.IActivitiesService;
 import com.alkemy.ong.service.Interface.IFileStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
-public class ActivitiesServiceImpl implements IActivities {
+public class ActivitiesServiceImpl implements IActivitiesService {
 
     private final ActivitiesRepository activitiesRepository;
     private final IFileStore fileStore;

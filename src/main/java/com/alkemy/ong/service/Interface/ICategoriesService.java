@@ -6,7 +6,7 @@ import com.alkemy.ong.dto.CategoriesDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.dto.CategoriesNameDto;
 
-public interface ICategories {
+public interface ICategoriesService {
 
 	public CategoriesDto findById(Long id);
 

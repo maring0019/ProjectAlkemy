@@ -2,7 +2,7 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.request.NewsCreationDto;
 import com.alkemy.ong.dto.response.NewsResponseDto;
-import com.alkemy.ong.service.Interface.INews;
+import com.alkemy.ong.service.Interface.INewsService;
 import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/news")
 public class NewsController {
 
-    private final INews newsService;
+    private final INewsService newsService;
     private final MessageSource messageSource;
     private final ProjectionFactory projectionFactory;
     private final EntityManager entityManager;
 
     @Autowired
-    public NewsController(INews newsService, MessageSource messageSource, ProjectionFactory projectionFactory, EntityManager entityManager) {
+    public NewsController(INewsService newsService, MessageSource messageSource, ProjectionFactory projectionFactory, EntityManager entityManager) {
         this.newsService = newsService;
         this.messageSource = messageSource;
         this.projectionFactory = projectionFactory;

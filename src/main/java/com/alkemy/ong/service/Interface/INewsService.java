@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface INews {
+public interface INewsService {
 
 
     News getNewById(Long id);
