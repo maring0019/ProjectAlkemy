@@ -4,14 +4,14 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alkemy.ong.exception.CommentNotFoundException;
+import com.alkemy.ong.util.RoleValidator;
+import lombok.AllArgsConstructor;
+import org.apache.catalina.connector.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alkemy.ong.dto.CommentDto;
 import com.alkemy.ong.security.JwtFilter;
@@ -21,17 +21,15 @@ import com.amazonaws.services.lexruntime.model.NotAcceptableException;
 
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(path = "/comments")
 public class CommentController {
 
-	@Autowired
-	private MessageSource message;
-	@Autowired
-	private JwtFilter jwtFilter;
-	@Autowired
-	private JwtProvider jwtProvider;
-	@Autowired
-	private ICommentService iComment;
+	private final MessageSource message;
+	private final JwtFilter jwtFilter;
+	private final JwtProvider jwtProvider;
+	private final ICommentService iComment;
+	private final RoleValidator validator;
 	
 	
 	@PostMapping
@@ -44,5 +42,19 @@ public class CommentController {
 		}catch(NotAcceptableException e){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message.getMessage("comment.error.create", null, Locale.getDefault()));
 		}
-	}	
+	}
+
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentDto comment) throws CommentNotFoundException {
+		String token = RoleValidator.getToken();
+		if (validator.isAuthorized(token)) {
+			try {
+				CommentDto updatedComment = iComment.updateComment(id, comment, token);
+				return new ResponseEntity<CommentDto>(updatedComment, HttpStatus.OK);
+			} catch (CommentNotFoundException e) {
+				return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+			}
+		}else
+			return ResponseEntity.status(403).build();
+	}
 }
