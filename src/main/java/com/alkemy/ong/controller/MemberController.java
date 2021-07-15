@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -34,7 +33,7 @@ public class MemberController {
     		Page<?> result = iMemberService.showAllMembers(pageable);
     		
     		if(page >= result.getTotalPages()) {
-    			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("members.pagination.error.notMorePag", null,Locale.getDefault()));
+    			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("pagination.error.notFound", null,Locale.getDefault()));
     		}
     		
     		return ResponseEntity.ok(result);
