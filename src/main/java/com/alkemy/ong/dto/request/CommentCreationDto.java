@@ -1,4 +1,4 @@
-package com.alkemy.ong.dto;
+package com.alkemy.ong.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,11 +6,11 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Getter @Setter
-public class CommentDto implements Serializable {
+public class CommentCreationDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String body;
 
-	private Long idNews;
+	private Long news;
 }
