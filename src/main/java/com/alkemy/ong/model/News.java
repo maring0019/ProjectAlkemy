@@ -1,6 +1,8 @@
 package com.alkemy.ong.model;
 
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.*;
 
@@ -20,25 +22,34 @@ import java.util.List;
 @Table(name = "news")
 @SQLDelete(sql = "UPDATE news SET deleted = true WHERE id=?")
 @FilterDef(name = "deletedNewsFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
+@Filter(name = "deletedProductFilter", condition = "deleted = :isDeleted")
+@ApiModel(description = "Detalles sobre novedad")
 @Filter(name = "deletedNewsFilter", condition = "deleted = :isDeleted")
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "Identificación única de la entidad")
     private Long id;
 
     @Column(nullable = false)
     @NotBlank(message = "Completar el campo nombre")
     @Size(min = 2, max = 20, message = "El nombre debe contener entre 2 y 20 carácteres")
+    @ApiModelProperty(notes = "Nombre de la novedad")
     private String name;
 
     @Column(nullable = false)
     @NotBlank(message = "Completar el campo contenido")
+    @ApiModelProperty(notes = "Contenido o descripción de la novedad")
     private String content;
 
+    @Column(nullable = false)
+    @NotBlank(message = "Completar el campo imagen")
+    @ApiModelProperty(notes = "Imagen de la novedad")
     private String image;
 
     @OneToOne
     @JoinColumn(name="category")
+    @ApiModelProperty(notes = "Categoria de la novedad")
     private Categories category;
 
     private boolean deleted = Boolean.FALSE;
@@ -51,6 +62,7 @@ public class News {
     private Date edited;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "news")
+    @ApiModelProperty(notes = "Lista de comentarios de la novedad")
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
