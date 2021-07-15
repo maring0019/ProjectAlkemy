@@ -1,8 +1,9 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.CommentDto;
+import com.alkemy.ong.dto.request.CommentCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 
 public interface ICommentService {
 
-	public CommentDto createComment(String email,CommentDto dto);
+	CommentResponseDto createComment(String email, CommentCreationDto dto);
 }

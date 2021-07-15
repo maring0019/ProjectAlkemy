@@ -1,24 +1,21 @@
 package com.alkemy.ong.service.Interface;
 
 
-import com.alkemy.ong.dto.TestimonialsDto;
+import com.alkemy.ong.dto.request.TestimonialsCreationDto;
+import com.alkemy.ong.dto.response.TestimonialsResponseDto;
 import com.alkemy.ong.model.Testimonials;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface ITestimonials {
 
-    public Testimonials findById(Long id);
+    Testimonials getTestimonialsById(Long id);
 
-    public Testimonials save(Testimonials testimonials);
+    String deleteById(Long id);
 
+    TestimonialsResponseDto createTestimonials(TestimonialsCreationDto testimonialsCreationDto);
 
-    public void deleteById(Long id);
+    TestimonialsResponseDto updateTestimonials(Long id, TestimonialsCreationDto testimonialsCreationDto);
 
-
-    public TestimonialsDto create(TestimonialsDto testimonialsDto);
-
-    public Page<Testimonials> showAllTestimonials(Pageable pageable);
+    Page<Testimonials> showAllTestimonials(Pageable pageable);
 }

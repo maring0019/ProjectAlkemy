@@ -5,19 +5,21 @@ import javax.persistence.EntityNotFoundException;
 
 
 import com.alkemy.ong.Enum.ERole;
+import com.alkemy.ong.dto.response.UserResponseDto;
 import com.alkemy.ong.model.Role;
 import com.alkemy.ong.repository.RolRepository;
 
-import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.dto.request.LoginUsersDto;
 import com.alkemy.ong.exception.NotRegisteredException;
+import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.util.PatchHelper;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.alkemy.ong.dto.UsersDto;
+import com.alkemy.ong.dto.request.UsersCreationDto;
 import com.alkemy.ong.model.User;
 import com.alkemy.ong.repository.UsersRepository;
 import com.alkemy.ong.security.JwtProvider;
@@ -26,7 +28,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Date;
 
 import java.util.HashSet;
@@ -34,61 +35,58 @@ import java.util.HashSet;
 import java.util.List;
 
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
 public class UsersServiceImpl implements IUsersService {
 
-	@Autowired
 	private final UsersRepository usersRepository;
-
-	@Autowired
 	private final PasswordEncoder passwordEncoder;
-
-	@Autowired
 	private final ModelMapper mapper;
-
-	@Autowired
 	private final MessageSource messageSource;
-
-	@Autowired
 	private final PatchHelper patchHelper;
-
-	@Autowired
 	private final RolRepository rolRepository;
-
-	@Autowired
 	private final JwtProvider jwtProvider;
+	private final EmailServiceImpl emailService;
+	private final ProjectionFactory projectionFactory;
+	private final IFileStore fileStore;
 
 	@Autowired
-	private final EmailServiceImpl emailService;
-
+	public UsersServiceImpl(UsersRepository usersRepository, PasswordEncoder passwordEncoder, ModelMapper mapper, MessageSource messageSource, PatchHelper patchHelper, RolRepository rolRepository, JwtProvider jwtProvider, EmailServiceImpl emailService, ProjectionFactory projectionFactory, IFileStore fileStore) {
+		this.usersRepository = usersRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.mapper = mapper;
+		this.messageSource = messageSource;
+		this.patchHelper = patchHelper;
+		this.rolRepository = rolRepository;
+		this.jwtProvider = jwtProvider;
+		this.emailService = emailService;
+		this.projectionFactory = projectionFactory;
+		this.fileStore = fileStore;
+	}
 
 
 	@Override
-	public UsersDto createUser(UsersDto user) throws IOException {
+	public UserResponseDto createUser(UsersCreationDto user) throws IOException {
 
 		if(usersRepository.findByEmail(user.getEmail()).isPresent())
 			throw new RuntimeException(messageSource.getMessage("user.error.email.registered", null, Locale.getDefault()));
-
-		Set<Role> roles = new HashSet<>();
-		roles.add(rolRepository.findByRoleName(ERole.ROLE_USER).get());
-		user.setRoles(roles);
 
 		User userEntity = User.builder()
 				.email(user.getEmail())
 				.firstName(user.getFirstName())
 				.lastName(user.getLastName())
 				.password(passwordEncoder.encode(user.getPassword()))
-				.photo(user.getPhoto())
-				.roles(user.getRoles())
 				.build();
 
+		Set<Role> roles = new HashSet<>();
+		roles.add(rolRepository.findByRoleName(ERole.ROLE_USER).get());
+		userEntity.setRoles(roles);
 		emailService.registerEmail(user.getEmail());
 
-		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
+		User userCreated = usersRepository.save(userEntity);
+		userCreated.setPhoto(fileStore.save(userCreated, user.getPhoto()));
+		return projectionFactory.createProjection(UserResponseDto.class, usersRepository.save(userCreated));
 	}
 
 	@Override
@@ -101,32 +99,30 @@ public class UsersServiceImpl implements IUsersService {
 	}
 
 	@Override
-	public UsersDto getUser(String email) {
-		Optional<User> usr = usersRepository.findByEmail(email);
-		User user = usr.get();
-		
-		UsersDto info = new UsersDto();
-		info.setEmail(email);
-		info.setFirstName(user.getFirstName());
-		info.setLastName(user.getLastName());
-		info.setPhoto(user.getPhoto());
-		info.setCreated(user.getCreated());
-		info.setEdited(user.getEdited());
-		info.setRoles(user.getRoles());
-		
-		return info;
+	public User getUser(String email) {
+		User usr = usersRepository.findByEmail(email).orElseThrow(
+				() -> new UsernameNotFoundException(
+						messageSource.getMessage("user.error.email.not.found", null, Locale.getDefault())
+				)
+		);
+		return usr;
 	}
 
 	@Override
-	public UsersDto updateUser(Long id, UsersDto user) {
+	public UserResponseDto updateUser(Long id, UsersCreationDto user) {
 		User userEntity = getUserById(id);
 		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
-		return mapper.map(usersRepository.save(userEntity), UsersDto.class);
+
+		if(user.getPhoto() != null)
+			userEntity.setPhoto(fileStore.save(userEntity, user.getPhoto()));
+
+		return projectionFactory.createProjection(UserResponseDto.class, usersRepository.save(userEntity));
 	}
 
 	@Override
 	public void deleteUser(Long id) {
 		User userEntity = getUserById(id);
+		fileStore.deleteFilesFromS3Bucket(userEntity);
 		usersRepository.delete(userEntity);
 	}
 
@@ -139,11 +135,11 @@ public class UsersServiceImpl implements IUsersService {
 
 	//https://cassiomolin.com/2019/06/10/using-http-patch-in-spring/
 	@Override
-	public UsersDto patchUpdate(Long id, JsonPatch patchDocument) {
+	public UserResponseDto patchUpdate(Long id, JsonPatch patchDocument) {
 		User user = getUserById(id);
 		User userPatched = patchHelper.patch(patchDocument, user, User.class);
 		userPatched.setEdited(new Date());
-		return mapper.map(usersRepository.save(userPatched), UsersDto.class);
+		return projectionFactory.createProjection(UserResponseDto.class, userPatched);
 	}
 
 	@Override
@@ -154,8 +150,8 @@ public class UsersServiceImpl implements IUsersService {
 	}
 
 	@Override
-	public List<UsersDto> showAllUsers() {
-		return mapper.map(usersRepository.findAll(), (Type) UsersDto.class);
+	public List<UserResponseDto> showAllUsers() {
+		return usersRepository.findAllProjectedBy();
 	}
 
 
