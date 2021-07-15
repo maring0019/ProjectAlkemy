@@ -1,4 +1,4 @@
-package com.alkemy.ong.dto;
+package com.alkemy.ong.dto.request;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -38,7 +38,6 @@ public class UsersDto implements Serializable{
 
 	private Date edited;
 
-	private Set<Role> roles;
 
 	@JsonIgnore
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
