@@ -7,14 +7,19 @@ import com.alkemy.ong.repository.MemberRepository;
 import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.MessageSource;
 import org.springframework.data.projection.ProjectionFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+
 
 @Service
 public class MemberServiceImpl implements IMemberService {
@@ -33,11 +38,6 @@ public class MemberServiceImpl implements IMemberService {
     }
 
     @Override
-    public List<MemberResponseDto> showAllMembers() {
-        return memberRepository.findAllProjectedBy();
-    }
-
-    @Override
     public MemberResponseDto createMember(MemberCreationDto memberCreationDto) {
 
         Member member = Member.builder()
@@ -52,6 +52,11 @@ public class MemberServiceImpl implements IMemberService {
         memberCreated.setImage(fileStore.save(memberCreated, memberCreationDto.getImage()));
         return projectionFactory.createProjection(MemberResponseDto.class, memberRepository.save(memberCreated));
     }
+
+    public Page<Member> showAllMembers(Pageable pageable) {
+        return memberRepository.findAll(pageable);
+    }
+
 
     @Override
     public MemberResponseDto updateMemberById(Long id, MemberCreationDto dto) {
@@ -95,5 +100,4 @@ public class MemberServiceImpl implements IMemberService {
                 )
         );
     }
-
 }

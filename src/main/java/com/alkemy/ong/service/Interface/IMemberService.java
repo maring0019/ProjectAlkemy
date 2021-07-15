@@ -4,11 +4,13 @@ import com.alkemy.ong.dto.request.MemberCreationDto;
 import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.model.Member;
 
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IMemberService {
 
-    List<MemberResponseDto> showAllMembers();
+    Page<Member> showAllMembers(Pageable pageable);
 
     MemberResponseDto createMember(MemberCreationDto member);
 
