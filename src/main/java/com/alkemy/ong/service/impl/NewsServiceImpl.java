@@ -1,9 +1,11 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.Categories;
 import com.alkemy.ong.model.News;
+import com.alkemy.ong.repository.CommentRepository;
 import com.alkemy.ong.repository.NewsRepository;
 import com.alkemy.ong.service.Interface.ICategoriesService;
 import com.alkemy.ong.service.Interface.IFileStore;
@@ -35,23 +37,25 @@ public class NewsServiceImpl implements INewsService {
     private final MessageSource messageSource;
     private final IFileStore fileStore;
     private final ICategoriesService categoriesService;
+    private final CommentRepository commentRepository;
 
     private static final String ASC = "asc";
 
     @Autowired
-    public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategoriesService categoriesService) {
+    public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategoriesService categoriesService, CommentRepository commentRepository) {
         this.newsRepository = newsRepository;
         this.projectionFactory = projectionFactory;
         this.messageSource = messageSource;
         this.fileStore = fileStore;
         this.categoriesService = categoriesService;
+        this.commentRepository = commentRepository;
     }
 
 
     public News getNewById(Long id) {
         return newsRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(
-                        messageSource.getMessage("new.error.not.found", null, Locale.getDefault())
+                        messageSource.getMessage("news.error.not.found", null, Locale.getDefault())
                 )
         );
     }
@@ -111,6 +115,15 @@ public class NewsServiceImpl implements INewsService {
         );
 
         return newsRepository.findAllProjectedBy(pageable);
+    }
+
+    @Override
+    public List<CommentResponseDto> getAllCommentsByPost(Long id) {
+        News news = getNewById(id);
+        if(id == null) throw new IllegalStateException(
+                messageSource.getMessage("news.error.object.notFound", null, Locale.getDefault())
+        );
+        return commentRepository.findByNewsOrderByCreatedDesc(news);
     }
 
 
