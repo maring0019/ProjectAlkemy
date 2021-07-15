@@ -5,6 +5,8 @@ import com.alkemy.ong.repository.TestimonialsRepository;
 import com.alkemy.ong.service.Interface.ITestimonials;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -46,6 +48,11 @@ public class TestimonialsServiceImpl implements ITestimonials {
                 .deleted(false)
                 .build();
         return mapper.map(testimonialsRepository.save(testimonials),TestimonialsDto.class);
+    }
+
+    @Override
+    public Page<Testimonials> showAllTestimonials(Pageable pageable) {
+        return testimonialsRepository.findAll(pageable);
     }
 
 }

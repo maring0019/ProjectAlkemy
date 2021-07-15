@@ -1,5 +1,6 @@
 package com.alkemy.ong.repository;
 
+import com.alkemy.ong.dto.response.ActivityResponseDto;
 import com.alkemy.ong.model.Activity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,6 @@ public interface ActivitiesRepository extends CrudRepository<Activity, Long> {
 
     Optional<Activity> findById(Long id);
 
-    List<Activity> findAll();
+    List<ActivityResponseDto> findAllProjectedBy();
 
 }

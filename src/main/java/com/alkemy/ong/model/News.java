@@ -18,9 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter @Setter
 @Table(name = "news")
-@SQLDelete(sql = "UPDATE NewsEntity SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE news SET deleted = true WHERE id=?")
 @FilterDef(name = "deletedNewsFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
-@Filter(name = "deletedProductFilter", condition = "deleted = :isDeleted")
+@Filter(name = "deletedNewsFilter", condition = "deleted = :isDeleted")
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +35,6 @@ public class News {
     @NotBlank(message = "Completar el campo contenido")
     private String content;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Completar el campo imagen")
     private String image;
 
     @OneToOne
@@ -47,7 +45,7 @@ public class News {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date_time", nullable = false, updatable = false)
-    private Date created;
+    private Date created = new Date();
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
@@ -56,11 +54,10 @@ public class News {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public News(String name, String content, String image, Categories category) {
+    public News(String name, String content, Categories category) {
         super();
         this.name = name;
         this.content = content;
-        this.image = image;
         this.category = category;
         this.created = new Date();
     }
