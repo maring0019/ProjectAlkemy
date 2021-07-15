@@ -10,42 +10,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter @Setter
-public class UsersDto implements Serializable{
+public class UsersCreationDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	@NotBlank
+	@NotBlank(message = "{user.error.blank.firstName}")
 	private String firstName;
-	@NotBlank
+
+	@NotBlank(message = "{user.error.blank.lastName}")
 	private String lastName;
-	@NotBlank
-	@Email
+
+	@NotBlank(message = "{user.error.blank.email}")
+	@Email(message = "{user.error.invalid.email}")
 	private String email;
-	@NotBlank
-	@Size(min = 8 , message = "La contraseña debe tener más de 8 caracteres.")
+
+	@NotBlank(message = "{user.error.blank.password}")
+	@Size(min = 8 , message = "{user.error.min.size.password}")
 	private String password;
 
-	private String photo;
+	private MultipartFile photo;
 
-	private Date created;
-
-	private Date edited;
-
-
-	@JsonIgnore
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 }
