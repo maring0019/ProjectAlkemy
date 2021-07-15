@@ -6,17 +6,15 @@ import javax.validation.Valid;
 
 import com.alkemy.ong.dto.LoginUsersDto;
 import com.alkemy.ong.exception.NotRegisteredException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alkemy.ong.dto.UsersDto;
 import com.alkemy.ong.security.JwtFilter;
@@ -28,6 +26,8 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Api(value = "Auth controller")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
@@ -39,6 +39,11 @@ public class AuthController {
 
 
     @PostMapping(path = "/register")
+    @ApiOperation("Registro de usuarios.")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Usuario registrado con  éxito."),
+            @ApiResponse(code = 400, message = "Error no se pudo realizar el registro.")
+    })
     public ResponseEntity<Object> createUser(@Valid @RequestBody UsersDto usersDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -49,6 +54,11 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
+    @ApiOperation("Inicio de sesion.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Inicio de sesión exitosa."),
+            @ApiResponse(code = 404, message = "Error al querer iniciar sesión.")
+    })
     public ResponseEntity<String> loginUser(@RequestBody LoginUsersDto credentials){
         try {
             return ResponseEntity.ok(usersService.loginUser(credentials));
@@ -58,6 +68,11 @@ public class AuthController {
     }
 
     @PatchMapping(path = "/users/{id}", consumes = "application/json-patch+json")
+    @ApiOperation("Edicion de usuario.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Edición exitosa."),
+            @ApiResponse(code = 404, message = "Usuario no encontrado.")
+    })
     public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
@@ -70,6 +85,11 @@ public class AuthController {
 
 
     @GetMapping("/me")
+    @ApiOperation("Buscar mi sesion.")
+    @ApiResponses({
+            @ApiResponse(code = 302, message = "Operación exitosa."),
+            @ApiResponse(code = 404, message = "error sesión no encontrada.")
+    })
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
         try {
             String token = jwtFilter.getToken(request);

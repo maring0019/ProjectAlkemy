@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -25,31 +27,38 @@ import lombok.Setter;
 @SQLDelete(sql = "UPDATE users SET deleted=true WHERE id=?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor
+@ApiModel(description = "Detalles sobre usuario")
 public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(notes = "Identificación única del usuario.")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ApiModelProperty(notes = "Nombre del usuario.")
 	@NotBlank(message = "El Nombre es requerido.")
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
+	@ApiModelProperty(notes = "Apellido del usuario.")
 	@NotBlank(message = "El Apellido es requerido.")
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
+	@ApiModelProperty(notes = "Email del usuario.")
 	@NotBlank(message = "El Email es requerido.")
 	@Email(message = "Email invalido.")
 	@Column(nullable = false)
 	private String email;
 
+	@ApiModelProperty(notes = "Password del usuario.")
 	@Column(nullable = false)
 	@NotBlank(message = "La contraseña es requerida.")
 	private String password;
 
+	@ApiModelProperty(notes = "Foto del usuario.")
 	private String photo;
 
 	@Column(name = "create_date", updatable = false, nullable = false)
