@@ -47,7 +47,7 @@ public class CommentServiceImpl implements ICommentService{
 	}
 
 	@Override
-	public CommentDto updateComment(Long id, CommentDto comment, String token) throws CommentNotFoundException {
+	public CommentDto updateComment(Long id, CommentDto comment) throws CommentNotFoundException {
 		Comment foundComment = repoComment.findById(id).orElseThrow(() -> new CommentNotFoundException(
 				messageSource.getMessage("comment.error.not.found", null, Locale.getDefault())
 		));

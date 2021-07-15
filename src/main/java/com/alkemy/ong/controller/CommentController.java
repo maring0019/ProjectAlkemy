@@ -5,9 +5,9 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alkemy.ong.exception.CommentNotFoundException;
+import com.alkemy.ong.exception.InvalidUserException;
 import com.alkemy.ong.util.RoleValidator;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.connector.Response;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,16 +45,17 @@ public class CommentController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentDto comment) throws CommentNotFoundException {
-		String token = RoleValidator.getToken();
-		if (validator.isAuthorized(token)) {
-			try {
-				CommentDto updatedComment = iComment.updateComment(id, comment, token);
-				return new ResponseEntity<CommentDto>(updatedComment, HttpStatus.OK);
-			} catch (CommentNotFoundException e) {
-				return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+	public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentDto comment) throws CommentNotFoundException, InvalidUserException {
+		try {
+			if (validator.isAuthorized()) {
+				CommentDto updatedComment = iComment.updateComment(id, comment);
+				return new ResponseEntity<>(updatedComment, HttpStatus.OK);
 			}
-		}else
+		} catch (CommentNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (InvalidUserException e) {
 			return ResponseEntity.status(403).build();
+		}
+		return ResponseEntity.internalServerError().build();
 	}
 }

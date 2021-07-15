@@ -7,5 +7,5 @@ public interface ICommentService {
 
 	public CommentDto createComment(String email,CommentDto dto);
 
-	CommentDto updateComment(Long id, CommentDto comment, String token) throws CommentNotFoundException;
+	CommentDto updateComment(Long id, CommentDto comment) throws CommentNotFoundException;
 }
