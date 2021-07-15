@@ -9,7 +9,7 @@ import com.alkemy.ong.dto.response.UserResponseDto;
 import com.alkemy.ong.model.Role;
 import com.alkemy.ong.repository.RolRepository;
 
-import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.dto.request.LoginUsersDto;
 import com.alkemy.ong.exception.NotRegisteredException;
 import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.util.PatchHelper;

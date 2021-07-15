@@ -1,17 +1,20 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.MemberDto;
+import com.alkemy.ong.dto.request.MemberCreationDto;
+import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.model.Member;
 
 import java.util.List;
 
 public interface IMemberService {
 
-    public List<Member> showAllMembers();
+    List<MemberResponseDto> showAllMembers();
 
-    public Member createMember(Member member);
+    MemberResponseDto createMember(MemberCreationDto member);
 
-    public MemberDto updateMemberById(Long id, MemberDto dto);
+    MemberResponseDto updateMemberById(Long id, MemberCreationDto dto);
 
-    public Member getById(Long id);
+    String deleteMember(Long id);
+
+    Member getMemberById(Long id);
 }

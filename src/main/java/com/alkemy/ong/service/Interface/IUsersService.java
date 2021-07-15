@@ -1,6 +1,6 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.dto.request.LoginUsersDto;
 import com.alkemy.ong.dto.request.UsersCreationDto;
 import com.alkemy.ong.dto.response.UserResponseDto;
 import com.alkemy.ong.exception.NotRegisteredException;

@@ -4,7 +4,7 @@ import javax.json.JsonPatch;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.alkemy.ong.dto.LoginUsersDto;
+import com.alkemy.ong.dto.request.LoginUsersDto;
 import com.alkemy.ong.dto.response.UserResponseDto;
 import com.alkemy.ong.exception.NotRegisteredException;
 import org.springframework.beans.factory.annotation.Autowired;

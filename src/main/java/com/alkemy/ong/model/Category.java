@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categories implements Serializable {
+public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -42,16 +42,17 @@ public class Categories implements Serializable {
 
 	private String image;
 
-	@Column(name = "created_date_time", nullable = false, updatable = false)
+	@Column(name = "created_date", nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date created = new Date();
+	private Date created;
 
+	@Column(name = "edited_date")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date edited;
 
 	private Boolean deleted = Boolean.FALSE;
 
-	public Categories(String name, String description) {
+	public Category(String name, String description) {
 		this.name = name;
 		this.description = description;
 		this.created = new Date();

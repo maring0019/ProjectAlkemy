@@ -1,55 +1,64 @@
 package com.alkemy.ong.controller;
 
-import com.alkemy.ong.dto.MemberDto;
+import com.alkemy.ong.dto.request.MemberCreationDto;
+import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.model.Member;
 import com.alkemy.ong.service.Interface.IMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 
 
 @RestController
-@RequestMapping()
+@RequestMapping("/members")
 public class MemberController {
 
-    @Autowired
-    private IMemberService iMemberService;
+    private final IMemberService iMemberService;
 
     @Autowired
-    private MessageSource messageSource;
+    public MemberController(IMemberService iMemberService) {
+        this.iMemberService = iMemberService;
+    }
 
-    @GetMapping("/members")
-    public ResponseEntity< List<Member> > getAllMembers(){
+    @GetMapping
+    public ResponseEntity< List<MemberResponseDto> > getAllMembers(){
         return ResponseEntity.status(HttpStatus.OK).body(iMemberService.showAllMembers());
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<?> create(@Validated @RequestBody Member member){
+    @PostMapping
+    public ResponseEntity<?> createMember(@Valid @ModelAttribute(name = "memberCreationDto") MemberCreationDto memberCreationDto){
         try {
-            iMemberService.createMember(member);
-            return ResponseEntity.status(HttpStatus.CREATED).body(messageSource.getMessage("new.create.successful",
-                    null,Locale.getDefault()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(iMemberService.createMember(memberCreationDto));
         }catch (Exception e){
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return  ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
 
-    @PutMapping(path = "/members/{id}")
-	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody MemberDto dto) throws EntityNotFoundException {
+    @PutMapping(path = "/{id}")
+	public ResponseEntity<?> updateMember(@PathVariable("id") Long id, @Valid @ModelAttribute(name = "memberCreationDto") MemberCreationDto memberCreationDto) {
 		try {
-			return new ResponseEntity<>(iMemberService.updateMemberById(id, dto), HttpStatus.OK);
-		}catch(EntityNotFoundException e) {
-			return new ResponseEntity<>(messageSource.getMessage("member.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(iMemberService.updateMemberById(id, memberCreationDto), HttpStatus.OK);
+		}catch(Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<String> deleteMember(@PathVariable("id") Long id) {
+        try {
+            return new ResponseEntity<>(iMemberService.deleteMember(id), HttpStatus.OK);
+        } catch(Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 }

@@ -3,7 +3,7 @@ package com.alkemy.ong.service.impl;
 import com.alkemy.ong.dto.request.NewsCreationDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.dto.response.NewsResponseDto;
-import com.alkemy.ong.model.Categories;
+import com.alkemy.ong.model.Category;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.repository.CommentRepository;
 import com.alkemy.ong.repository.NewsRepository;
@@ -68,12 +68,12 @@ public class NewsServiceImpl implements INewsService {
     @Override
     public NewsResponseDto save(NewsCreationDto newsCreationDto) {
 
-        Categories categoriesEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
+        Category categoryEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
 
         News newsEntity = News.builder()
                 .name(newsCreationDto.getName())
                 .content(newsCreationDto.getContent())
-                .category(categoriesEntity)
+                .category(categoryEntity)
                 .build();
         News newsCreated = newsRepository.save(newsEntity);
         newsCreated.setImage(fileStore.save(newsEntity, newsCreationDto.getImage()));
@@ -91,9 +91,9 @@ public class NewsServiceImpl implements INewsService {
     public NewsResponseDto updateNews(Long id, NewsCreationDto newsCreationDto) {
 
         News newsUpdated = getNewById(id);
-        Categories categoriesEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
+        Category categoryEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
 
-        newsUpdated.setCategory(categoriesEntity);
+        newsUpdated.setCategory(categoryEntity);
         newsUpdated.setContent(newsCreationDto.getContent());
         newsUpdated.setName(newsCreationDto.getName());
         if(newsCreationDto.getImage() != null) {

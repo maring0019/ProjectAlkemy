@@ -14,10 +14,8 @@ import java.util.Date;
 @SQLDelete(sql = "UPDATE testimonials SET deleted = true where id=?")
 @FilterDef(name = "deletedTestimonialsFilter", parameters = @ParamDef(name = "isDeleted", type = "boolean"))
 @Filter(name = "deletedTestimonialsFilter", condition = "deleted = :isDeleted")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
-@Builder
 public class Testimonials {
 
     @Id
@@ -29,8 +27,8 @@ public class Testimonials {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "image", length = 100)
     private String image;
+
     @NotBlank(message = "El campo Content no debe estar vacío")
     @Column(name = "content")
     private String content;
@@ -44,10 +42,11 @@ public class Testimonials {
     @Column(name = "date_edited")
     private Date edited;
 
-
     private Boolean deleted = Boolean.FALSE;
 
-
-
-
+    public Testimonials(String name, String content) {
+        this.name = name;
+        this.content = content;
+        this.created = new Date();
+    }
 }
