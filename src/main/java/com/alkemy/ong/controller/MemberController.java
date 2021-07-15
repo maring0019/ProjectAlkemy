@@ -5,13 +5,15 @@ import com.alkemy.ong.model.Member;
 import com.alkemy.ong.service.Interface.IMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -26,8 +28,18 @@ public class MemberController {
     private MessageSource messageSource;
 
     @GetMapping("/members")
-    public ResponseEntity< List<Member> > getAllMembers(){
-        return ResponseEntity.status(HttpStatus.OK).body(iMemberService.showAllMembers());
+    public ResponseEntity<?> getAllMembers(@PageableDefault(size = 10, page = 0) Pageable pageable, @RequestParam(value = "page", defaultValue = "0") int page){
+    	try {
+    		Page<?> result = iMemberService.showAllMembers(pageable);
+    		
+    		if(page >= result.getTotalPages()) {
+    			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageSource.getMessage("pagination.error.notFound", null,Locale.getDefault()));
+    		}
+    		
+    		return ResponseEntity.ok(result);
+    	}catch(Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}    	
     }
 
     @PostMapping("/members")
@@ -41,7 +53,6 @@ public class MemberController {
         }
     }
 
-
     @PutMapping(path = "/members/{id}")
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody MemberDto dto) throws EntityNotFoundException {
 		try {
@@ -50,6 +61,4 @@ public class MemberController {
 			return new ResponseEntity<>(messageSource.getMessage("member.error.object.notFound", null, Locale.getDefault()), HttpStatus.NOT_FOUND);
 		}
 	}
-
-
 }
