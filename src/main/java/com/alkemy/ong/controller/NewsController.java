@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.Locale;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -121,6 +122,15 @@ public class NewsController {
             return ResponseEntity.status(HttpStatus.OK).body(newsPaged);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/{id}/comments")
+    public ResponseEntity<?> getCommentsByPost(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(newsService.getAllCommentsByPost(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

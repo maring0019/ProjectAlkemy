@@ -1,6 +1,6 @@
 package com.alkemy.ong.dto;
 
-import com.alkemy.ong.model.Categories;
+import com.alkemy.ong.model.Category;
 import com.alkemy.ong.model.Comment;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,7 +25,7 @@ public class NewsDto  implements Serializable {
     @ApiModelProperty(notes = "Imagen de la novedad")
     private String image;
     @ApiModelProperty(notes = "Categoria de la novedad")
-    private Categories category;
+    private Category category;
     @ApiModelProperty(notes = "Lista de comentarios de la novedad")
     private List<Comment> comments = new ArrayList<>();
 }

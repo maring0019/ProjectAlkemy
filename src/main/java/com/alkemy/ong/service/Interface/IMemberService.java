@@ -1,6 +1,7 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.MemberDto;
+import com.alkemy.ong.dto.request.MemberCreationDto;
+import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.model.Member;
 
 
@@ -9,11 +10,13 @@ import org.springframework.data.domain.Pageable;
 
 public interface IMemberService {
 
-    public Page<Member> showAllMembers(Pageable pageable);
+    Page<Member> showAllMembers(Pageable pageable);
 
-    public Member createMember(Member member);
+    MemberResponseDto createMember(MemberCreationDto member);
 
-    public MemberDto updateMemberById(Long id, MemberDto dto);
+    MemberResponseDto updateMemberById(Long id, MemberCreationDto dto);
 
-    public Member getById(Long id);
+    String deleteMember(Long id);
+
+    Member getMemberById(Long id);
 }

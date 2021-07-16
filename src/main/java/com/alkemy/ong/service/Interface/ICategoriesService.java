@@ -2,23 +2,23 @@ package com.alkemy.ong.service.Interface;
 
 import java.util.List;
 
-import com.alkemy.ong.dto.CategoriesDto;
-import com.alkemy.ong.model.Categories;
-import com.alkemy.ong.dto.CategoriesNameDto;
+import com.alkemy.ong.dto.request.CategoryCreationDto;
+import com.alkemy.ong.dto.response.CategoryResponseDto;
+import com.alkemy.ong.model.Category;
 
 public interface ICategoriesService {
 
-	public CategoriesDto findById(Long id);
+	CategoryResponseDto findById(Long id);
 
-	public List<CategoriesDto> findAll();
+	List<CategoryResponseDto> findAll();
 
-	public CategoriesDto createCategory(CategoriesDto category);
+	CategoryResponseDto createCategory(CategoryCreationDto category);
 
-	public void deleteById(Long id);
+	String deleteById(Long id);
 
-	public Categories findCategoriesById(Long id);
+	Category findCategoriesById(Long id);
 
-	public CategoriesDto updateCategoryById(Long id, CategoriesDto dto);
+	CategoryResponseDto updateCategoryById(Long id, CategoryCreationDto dto);
 
-	public CategoriesNameDto findAllWithName();
+	List<CategoryResponseDto> findAllWithName();
 }

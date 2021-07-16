@@ -1,6 +1,7 @@
 package com.alkemy.ong.service.Interface;
 
 import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.dto.response.NewsResponseDto;
 import com.alkemy.ong.model.News;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,5 @@ public interface INewsService {
 
     Page<NewsResponseDto> getAllNewsPaginated(int page, int limit, String sortBy, String sortDir);
 
+    List<CommentResponseDto> getAllCommentsByPost(Long id);
 }
