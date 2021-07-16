@@ -76,7 +76,7 @@ public class OrganizationServiceImpl implements IOrganization {
 		organization.setWelcomeText(org.getWelcomeText());
 		organization.setAboutUsText(org.getAboutUsText());
 		organization.setEdited(new Date());
-		if(org.getImage() != null)
+		if(!org.getImage().isEmpty())
 			organization.setImage(fileStore.save(organization, org.getImage()));
 
 		return projectionFactory.createProjection(OrganizationResponseDto.class, repository.save(organization));
@@ -114,7 +114,9 @@ public class OrganizationServiceImpl implements IOrganization {
 				.build();
 
 		Organization organizationCreated = repository.save(organization);
-		organizationCreated.setImage(fileStore.save(organizationCreated, organizationCreationDto.getImage()));
+		
+		if(!organizationCreationDto.getImage().isEmpty())
+			organizationCreated.setImage(fileStore.save(organizationCreated, organizationCreationDto.getImage()));
 
 		return projectionFactory.createProjection(OrganizationResponseDto.class, repository.save(organizationCreated));
 	}

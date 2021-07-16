@@ -40,7 +40,10 @@ public class ActivitiesServiceImpl implements IActivitiesService {
                 .created(new Date())
                 .build();
         Activity activityCreated = activitiesRepository.save(activity);
-        activityCreated.setImage(fileStore.save(activityCreated, activityCreationDto.getImage()));
+        
+        if(!activityCreationDto.getImage().isEmpty())
+        	activityCreated.setImage(fileStore.save(activityCreated, activityCreationDto.getImage()));
+        
         return projectionFactory.createProjection(ActivityResponseDto.class, activitiesRepository.save(activityCreated));
     }
 
@@ -52,7 +55,8 @@ public class ActivitiesServiceImpl implements IActivitiesService {
         	activity.setName(dto.getName());
         if(!dto.getContent().isBlank())
         	activity.setContent(dto.getContent());
-        if(dto.getImage() != null)
+        
+        if(!dto.getImage().isEmpty())
         	activity.setImage(fileStore.save(activity, dto.getImage()));
         
         activity.setEdited(new Date());
