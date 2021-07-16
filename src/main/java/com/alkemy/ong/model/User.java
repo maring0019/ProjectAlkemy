@@ -88,17 +88,14 @@ public class User implements UserDetails {
 
 
 	@Builder
-	public User(String firstName, String lastName, String email, String photo, String password,Set roles,
-				Collection<? extends GrantedAuthority> authorities) {
+	public User(String firstName, String lastName, String email, String password, Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.photo = photo;
 		this.password = password;
 		this.authorities = authorities;
 		this.created = new Date();
-		this.roles= roles;
 	}
 
 	public static User build(User user) {
@@ -107,7 +104,7 @@ public class User implements UserDetails {
 				.map(rol -> new SimpleGrantedAuthority(rol.getRoleName().name()))
 				.collect(Collectors.toList());
 
-		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoto(), user.getPassword(), user.getRoles(),authorities);
+		return new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), authorities);
 	}
 
 

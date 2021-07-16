@@ -1,7 +1,6 @@
 package com.alkemy.ong.controller;
-import com.alkemy.ong.dto.TestimonialsDto;
-import com.alkemy.ong.model.Testimonials;
-import com.alkemy.ong.service.Interface.IMemberService;
+
+import com.alkemy.ong.dto.request.TestimonialsCreationDto;
 import com.alkemy.ong.service.Interface.ITestimonials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,54 +11,52 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.Locale;
 
 @RestController
-@RequestMapping
+@RequestMapping("/testimonials")
 public class TestimonialsController {
 
-    @Autowired
-    private ITestimonials iTestimonials;
+    private final ITestimonials iTestimonials;
+    private final MessageSource messageSource;
 
     @Autowired
-    private MessageSource messageSource;
+    public TestimonialsController(ITestimonials iTestimonials, MessageSource messageSource) {
+        this.iTestimonials = iTestimonials;
+        this.messageSource = messageSource;
+    }
 
-
-    @PutMapping("/testimonials/{id}")
-    public ResponseEntity<?> Update(@RequestBody Testimonials testimonials, @PathVariable Long id){
+    @PostMapping
+    public ResponseEntity<?> createTestimonials(@ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto) {
         try {
-            Testimonials testimonialsUpdate = iTestimonials.findById(id);
+             return ResponseEntity.status(HttpStatus.CREATED).body(iTestimonials.createTestimonials(testimonialsCreationDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
 
-            testimonialsUpdate.setName(testimonials.getName());
-            testimonialsUpdate.setImage(testimonials.getImage());
-            testimonialsUpdate.setContent(testimonials.getContent());
-
-            return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.save(testimonialsUpdate));
-
-        }catch (Exception e){
-
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<?> Update(@ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto, @PathVariable Long id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.updateTestimonials(id, testimonialsCreationDto));
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
 
 
-    @DeleteMapping(path = "/testimonials/{id}")
+    @DeleteMapping(path = "{id}")
     public ResponseEntity<String> deleteTestimonialById(@PathVariable Long id) {
         try {
-            if (iTestimonials.findById(id) != null)
-                iTestimonials.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(messageSource.getMessage("testimonials.delete.successful",
-                    null, Locale.getDefault()));
+            return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.deleteById(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @GetMapping("/testimonials")
+    @GetMapping
     public  ResponseEntity<?> AllPagination(@PageableDefault(size = 10 , page = 0 ) Pageable pageable ,@RequestParam
             (value = "page" , defaultValue = "0") int page) {
 
@@ -76,6 +73,6 @@ public class TestimonialsController {
 
     }
 
-    }
+}
 
 

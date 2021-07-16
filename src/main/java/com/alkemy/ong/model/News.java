@@ -50,7 +50,7 @@ public class News {
     @OneToOne
     @JoinColumn(name="category")
     @ApiModelProperty(notes = "Categoria de la novedad")
-    private Categories category;
+    private Category category;
 
     private boolean deleted = Boolean.FALSE;
 
@@ -66,7 +66,7 @@ public class News {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public News(String name, String content, Categories category) {
+    public News(String name, String content, Category category) {
         super();
         this.name = name;
         this.content = content;
