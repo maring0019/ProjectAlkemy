@@ -51,7 +51,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "Error no se pudo realizar el registro.")
     })
 
-    public ResponseEntity<Object> createUser(@Valid @ModelAttribute(name = "usersCreationDto") /*@RequestBody*/ UsersCreationDto usersCreationDto) {
+    public ResponseEntity<Object> createUser(@Valid @ModelAttribute(name = "usersCreationDto") UsersCreationDto usersCreationDto) {
 
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
