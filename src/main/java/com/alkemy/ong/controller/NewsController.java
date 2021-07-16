@@ -67,6 +67,7 @@ public class NewsController {
          @ApiResponse(code = 400, message = "Solicitud incorrecta")
         })
     public ResponseEntity<?>createNews(@ModelAttribute(name = "newsCreationDto") @Valid NewsCreationDto newsCreationDto){
+
         try{
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(newsService.save(newsCreationDto));

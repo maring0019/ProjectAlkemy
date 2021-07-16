@@ -29,6 +29,7 @@ public class ImgSlideServiceImpl implements IImgSlideService {
 	private final IOrganization organizationService;
 	private final IFileStore fileStore;
 
+
 	@Autowired
     public ImgSlideServiceImpl(ImageSlideRepository imageRepo, MessageSource messageSource, ProjectionFactory projectionFactory, IOrganization organizationService, IFileStore fileStore) {
         this.imageRepo = imageRepo;
