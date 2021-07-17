@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
+
 import javax.persistence.EntityNotFoundException;
 
 import com.alkemy.ong.dto.response.CategoryResponseDto;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.alkemy.ong.dto.request.CategoryCreationDto;
 import com.alkemy.ong.model.Category;
@@ -90,10 +94,6 @@ public class CategoriesServiceImpl implements ICategoriesService {
                   messageSource.getMessage("categories.error.object.notFound", null, Locale.getDefault())));
       }
 
-    @Override
-    public List<CategoryResponseDto> findAllWithName() {
-        return ctgRepo.fetchName();
-    }
 
     public static boolean isNumeric(String nombre){
         boolean resultado;
@@ -105,4 +105,11 @@ public class CategoriesServiceImpl implements ICategoriesService {
         }
         return resultado;
     }
+
+    
+	@Override
+	public Page<CategoryResponseDto> findAllWithNameInPage(Pageable pageable) {
+		Page<CategoryResponseDto> dtoPage = ctgRepo.fetchName(pageable);
+		return dtoPage;
+	}
 }

@@ -7,6 +7,10 @@ import javax.validation.Valid;
 import com.alkemy.ong.dto.request.LoginUsersDto;
 import com.alkemy.ong.dto.response.UserResponseDto;
 import com.alkemy.ong.exception.NotRegisteredException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.http.HttpStatus;
@@ -18,9 +22,11 @@ import com.alkemy.ong.dto.request.UsersCreationDto;
 import com.alkemy.ong.security.JwtFilter;
 import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.IUsersService;
-
+@Api(value = "Auth controller")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/auth")
+
 public class AuthController {
 
     private final IUsersService usersService;
@@ -38,7 +44,15 @@ public class AuthController {
 
 
     @PostMapping(path = "/register")
+
+    @ApiOperation("Registro de usuarios.")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Usuario registrado con  éxito."),
+            @ApiResponse(code = 400, message = "Error no se pudo realizar el registro.")
+    })
+
     public ResponseEntity<Object> createUser(@Valid @ModelAttribute(name = "usersCreationDto") UsersCreationDto usersCreationDto) {
+
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(usersService.createUser(usersCreationDto));
@@ -48,6 +62,11 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
+    @ApiOperation("Inicio de sesion.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Inicio de sesión exitosa."),
+            @ApiResponse(code = 404, message = "Error al querer iniciar sesión.")
+    })
     public ResponseEntity<String> loginUser(@RequestBody LoginUsersDto credentials){
         try {
             return ResponseEntity.ok(usersService.loginUser(credentials));
@@ -57,6 +76,11 @@ public class AuthController {
     }
 
     @PatchMapping(path = "/users/{id}", consumes = "application/json-patch+json")
+    @ApiOperation("Edicion de usuario.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Edición exitosa."),
+            @ApiResponse(code = 404, message = "Usuario no encontrado.")
+    })
     public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody JsonPatch patch) {
         try {
             return ResponseEntity.status(HttpStatus.OK)
@@ -69,6 +93,11 @@ public class AuthController {
 
 
     @GetMapping("/me")
+    @ApiOperation("Buscar mi sesion.")
+    @ApiResponses({
+            @ApiResponse(code = 302, message = "Operación exitosa."),
+            @ApiResponse(code = 404, message = "error sesión no encontrada.")
+    })
     public ResponseEntity<Object> userInfo(HttpServletRequest request){
         try {
             String token = jwtFilter.getToken(request);

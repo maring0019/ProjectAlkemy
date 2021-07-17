@@ -1,6 +1,9 @@
 package com.alkemy.ong.repository;
 
 import com.alkemy.ong.dto.response.CategoryResponseDto;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,7 +20,7 @@ public interface CategoriesRepository extends JpaRepository<Category, Long> {
 
     List<CategoryResponseDto> findAllProjectedBy();
 
-    @Query("SELECT c.name FROM Category c")
-    List<CategoryResponseDto> fetchName();
+    @Query(value = "SELECT name FROM categories", nativeQuery = true, countQuery = "SELECT COUNT(*) FROM categories")
+    Page<CategoryResponseDto> fetchName(Pageable pagebale);
 
 }
