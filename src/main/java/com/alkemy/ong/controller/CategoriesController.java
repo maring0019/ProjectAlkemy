@@ -6,7 +6,14 @@ import java.util.Locale;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import com.alkemy.ong.dto.response.CategoryResponseDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -23,7 +30,7 @@ import com.amazonaws.services.alexaforbusiness.model.NotFoundException;
 
 
 import org.springframework.web.bind.annotation.DeleteMapping;
-
+@Api(value = "Categorias controller")
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
@@ -36,7 +43,11 @@ public class CategoriesController {
 		this.message = message;
 	}
 
-
+	@ApiOperation("Crear categoria")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 400, message = "Solicitud incorrecta")
+	})
 	@PostMapping
 	public ResponseEntity<?> post(@Valid @ModelAttribute(name = "categoryCreationDto") CategoryCreationDto categoryCreationDto) throws EntityNotFoundException{
 		try{
@@ -46,6 +57,11 @@ public class CategoriesController {
 		}
 	}
 
+	@ApiOperation("Actualizar categoria")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 400, message = "Solicitud incorrecta")
+	})
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @ModelAttribute(name = "categoryCreationDto") CategoryCreationDto categoryCreationDto) {
 		try {
@@ -55,6 +71,11 @@ public class CategoriesController {
 		}
 	}
 
+	@ApiOperation("Buscar por id a categoria")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 400, message = "Solicitud incorrecta")
+	})
 	@GetMapping(path="/{id}")
 	public ResponseEntity<?> shearch(@PathVariable Long id) {
 		try {
@@ -65,6 +86,11 @@ public class CategoriesController {
 	}
 
 
+	@ApiOperation("Buscar y paginar por el nombre  todas las categorias")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 400, message = "Solicitud incorrecta")
+	})
 	@GetMapping
 	public ResponseEntity<?> getAllPageable(@PageableDefault (size = 10, page = 0) Pageable pagebale, 
 			@RequestParam(value = "page", defaultValue = "0") int page){
@@ -77,10 +103,13 @@ public class CategoriesController {
 	}catch(NotFoundException e) {
 		return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 	}
-
 }
 
-
+	@ApiOperation("Eliminar por id a categoria")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 400, message = "Solicitud incorrecta")
+	})
 	@DeleteMapping(path = "/{id}")
         public ResponseEntity<String> deleteCategoryById(@PathVariable Long id) {
         try {
