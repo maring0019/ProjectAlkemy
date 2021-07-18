@@ -1,8 +1,6 @@
 package com.alkemy.ong.controller;
 
-import com.alkemy.ong.dto.CommentDto;
-import com.alkemy.ong.dto.ContactsDto;
-import com.alkemy.ong.model.Comment;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.service.Interface.ICommentService;
 
 import java.util.Locale;
@@ -20,17 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.alkemy.ong.dto.request.CommentCreationDto;
 import com.alkemy.ong.security.JwtFilter;
 import com.alkemy.ong.security.JwtProvider;
-import com.alkemy.ong.service.Interface.ICommentService;
 import com.amazonaws.services.lexruntime.model.NotAcceptableException;
 
 
@@ -44,17 +39,6 @@ public class CommentController {
 	private final  ICommentService iComment;
 
 
-	private ICommentService iCommentService;
-
-	@Autowired
-	private MessageSource messageSource;
-
-	@GetMapping("/comments")
-	public ResponseEntity<List<CommentDto>> commentsOrderedByDate(){
-		return ResponseEntity.status(HttpStatus.OK).body(iCommentService.commentsOrderedByDate());
-	}
-
-
 	@Autowired
 	public CommentController(MessageSource message, JwtFilter jwtFilter, JwtProvider jwtProvider, ICommentService iComment) {
 		this.message = message;
@@ -63,6 +47,10 @@ public class CommentController {
 		this.iComment = iComment;
 	}
 
+	@GetMapping
+	public ResponseEntity<List<CommentResponseDto>> commentsOrderedByDate(){
+		return ResponseEntity.status(HttpStatus.OK).body(iComment.commentsOrderedByDate());
+	}
 
 	@PostMapping
 	public ResponseEntity<Object> addComment(@RequestBody @Valid CommentCreationDto dto, HttpServletRequest request){
