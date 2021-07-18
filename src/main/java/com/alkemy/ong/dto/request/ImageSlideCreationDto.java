@@ -1,4 +1,4 @@
-package com.alkemy.ong.dto;
+package com.alkemy.ong.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,18 +1,28 @@
 package com.alkemy.ong.service.impl;
 
-import com.alkemy.ong.dto.NewsDto;
-import com.alkemy.ong.model.Categories;
+import com.alkemy.ong.dto.request.NewsCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
+import com.alkemy.ong.dto.response.NewsResponseDto;
+import com.alkemy.ong.model.Category;
 import com.alkemy.ong.model.News;
+import com.alkemy.ong.repository.CommentRepository;
 import com.alkemy.ong.repository.NewsRepository;
+import com.alkemy.ong.service.Interface.ICategoriesService;
+import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.INewsService;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 
 
 import org.springframework.context.MessageSource;
+
 import javax.persistence.EntityNotFoundException;
 
 import java.util.List;
@@ -22,20 +32,30 @@ import java.util.Locale;
 @Service
 public class NewsServiceImpl implements INewsService {
 
-    @Autowired
-    private NewsRepository newsRepository;
+    private final NewsRepository newsRepository;
+    private final ProjectionFactory projectionFactory;
+    private final MessageSource messageSource;
+    private final IFileStore fileStore;
+    private final ICategoriesService categoriesService;
+    private final CommentRepository commentRepository;
+
+    private static final String ASC = "asc";
 
     @Autowired
-    private ModelMapper mapper;
-
-    @Autowired
-    private MessageSource messageSource;
+    public NewsServiceImpl(NewsRepository newsRepository, ProjectionFactory projectionFactory, MessageSource messageSource, IFileStore fileStore, ICategoriesService categoriesService, CommentRepository commentRepository) {
+        this.newsRepository = newsRepository;
+        this.projectionFactory = projectionFactory;
+        this.messageSource = messageSource;
+        this.fileStore = fileStore;
+        this.categoriesService = categoriesService;
+        this.commentRepository = commentRepository;
+    }
 
 
     public News getNewById(Long id) {
         return newsRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(
-                        messageSource.getMessage("new.error.not.found", null, Locale.getDefault())
+                        messageSource.getMessage("news.error.not.found", null, Locale.getDefault())
                 )
         );
     }
@@ -46,44 +66,65 @@ public class NewsServiceImpl implements INewsService {
     }
 
     @Override
-    public NewsDto save(NewsDto newsDto) {
+    public NewsResponseDto save(NewsCreationDto newsCreationDto) {
+
+        Category categoryEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
+
         News newsEntity = News.builder()
-                .name(newsDto.getName())
-                .content(newsDto.getContent())
-                .image(newsDto.getImage())
-                .category(mapper.map(newsDto.getCategory(), Categories.class))
+                .name(newsCreationDto.getName())
+                .content(newsCreationDto.getContent())
+                .category(categoryEntity)
                 .build();
-        return mapper.map(newsRepository.save(newsEntity), NewsDto.class);
+        News newsCreated = newsRepository.save(newsEntity);
+        newsCreated.setImage(fileStore.save(newsEntity, newsCreationDto.getImage()));
+        return projectionFactory.createProjection(NewsResponseDto.class, newsRepository.save(newsCreated));
     }
 
     @Override
     public void deleteNews(Long id) {
         News newsEntity = getNewById(id);
         newsRepository.delete(newsEntity);
+        fileStore.deleteFilesFromS3Bucket(newsEntity);
     }
 
     @Override
-    public NewsDto updateNews(Long id, NewsDto newsDto) {
+    public NewsResponseDto updateNews(Long id, NewsCreationDto newsCreationDto) {
 
-        News upNews = getNewById(id);
+        News newsUpdated = getNewById(id);
+        Category categoryEntity = categoriesService.findCategoriesById(newsCreationDto.getCategory());
 
-        if((newsDto.getCategory() == null)) {
-            newsDto.setCategory(upNews.getCategory());
+        newsUpdated.setCategory(categoryEntity);
+        newsUpdated.setContent(newsCreationDto.getContent());
+        newsUpdated.setName(newsCreationDto.getName());
+        if(newsCreationDto.getImage() != null) {
+            newsUpdated.setImage(fileStore.save(newsUpdated, newsCreationDto.getImage()));
         }
-        if(!(newsDto.getCategory().getId() == null)) {
-            upNews.setCategory(newsDto.getCategory());
-        }
-        if(!newsDto.getName().isBlank()){
-            upNews.setName(newsDto.getName());
-        }
-        if(!newsDto.getContent().isBlank()){
-            upNews.setContent(newsDto.getContent());
-        }
-        if(!newsDto.getImage().isBlank()) {
-            upNews.setImage(newsDto.getImage());
-        }
-        upNews.setEdited(new Date());
-        return mapper.map(newsRepository.save(upNews), NewsDto.class);
-
+        newsUpdated.setEdited(new Date());
+        return projectionFactory.createProjection(NewsResponseDto.class, newsRepository.save(newsUpdated));
     }
+
+    @Override
+    public Page<NewsResponseDto> getAllNewsPaginated(int page, int limit, String sortBy, String sortDir) {
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        Pageable pageable = PageRequest.of(
+                page, limit,
+                sortDir.equalsIgnoreCase(ASC) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+
+        return newsRepository.findAllProjectedBy(pageable);
+    }
+
+    @Override
+    public List<CommentResponseDto> getAllCommentsByPost(Long id) {
+        News news = getNewById(id);
+        if(id == null) throw new IllegalStateException(
+                messageSource.getMessage("news.error.object.notFound", null, Locale.getDefault())
+        );
+        return commentRepository.findByNewsOrderByCreatedDesc(news);
+    }
+
+
 }

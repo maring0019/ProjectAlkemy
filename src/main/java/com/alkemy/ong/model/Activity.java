@@ -6,6 +6,7 @@ import org.hibernate.annotations.*;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,15 +25,15 @@ public class Activity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre de la actividad es obligatorio.")
+    @NotBlank(message = "{activity.error.blank.name}")
     @Column(nullable = false, length = 120)
     private String name;
 
-    @NotBlank(message = "El contenido de la actividad es obligatorio.")
+    @NotBlank(message = "{activity.error.blank.content}")
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @NotBlank(message = "La imagen de la activdad es olbitoria.")
+    @NotNull(message = "{activity.error.null.image}")
     @Column(nullable = false)
     private String image;
 

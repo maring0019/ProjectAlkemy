@@ -1,20 +1,21 @@
 package com.alkemy.ong.repository;
 
-import com.alkemy.ong.dto.CommentDto;
-import com.alkemy.ong.model.Comment;
+import com.alkemy.ong.dto.response.CommentResponseDto;
+import com.alkemy.ong.model.News;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import com.alkemy.ong.model.Comment;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface CommentRepository extends JpaRepository<Comment, Integer>{
+@Repository
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+    Optional<Comment> findById(Long id);
 
-    @Query("SELECT c.body FROM Comment c")
-    List<CommentDto> findAllByOrderCreatedDesc();
-
+    List<CommentResponseDto> findByNewsOrderByCreatedDesc(News news);
 
     @Query(value = "SELECT body FROM comments", countQuery = "SELECT COUNT(*) FROM comments", nativeQuery = true)
     List<CommentResponseDto> findAllByOrderCreatedDesc();
