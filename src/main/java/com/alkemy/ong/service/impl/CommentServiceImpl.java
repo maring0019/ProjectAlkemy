@@ -1,18 +1,22 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.dto.response.CommentResponseDto;
-import com.alkemy.ong.service.Interface.INewsService;
+import com.alkemy.ong.model.Comment;
+import com.alkemy.ong.repository.CommentRepository;
+import com.alkemy.ong.service.Interface.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
+import com.alkemy.ong.service.Interface.INewsService;
+import org.springframework.data.projection.ProjectionFactory;
+
 import com.alkemy.ong.dto.request.CommentCreationDto;
-import com.alkemy.ong.model.Comment;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.model.User;
-import com.alkemy.ong.repository.CommentRepository;
 import com.alkemy.ong.repository.UsersRepository;
-import com.alkemy.ong.service.Interface.ICommentService;
 
 @Service
 public class CommentServiceImpl implements ICommentService{
@@ -30,6 +34,7 @@ public class CommentServiceImpl implements ICommentService{
 		this.repoComment = repoComment;
 	}
 
+	public List<CommentResponseDto> commentsOrderedByDate() {return (List<CommentResponseDto>) repoComment.findAllByOrderCreatedDesc();}
 
 	@Override
 	public CommentResponseDto createComment(String email, CommentCreationDto dto) {
