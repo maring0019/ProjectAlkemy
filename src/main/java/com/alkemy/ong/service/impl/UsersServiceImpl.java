@@ -85,7 +85,10 @@ public class UsersServiceImpl implements IUsersService {
 		emailService.registerEmail(user.getEmail());
 
 		User userCreated = usersRepository.save(userEntity);
-		userCreated.setPhoto(fileStore.save(userCreated, user.getPhoto()));
+		
+		if(!user.getPhoto().isEmpty())
+			userCreated.setPhoto(fileStore.save(userCreated, user.getPhoto()));
+		
 		return projectionFactory.createProjection(UserResponseDto.class, usersRepository.save(userCreated));
 	}
 
@@ -113,7 +116,7 @@ public class UsersServiceImpl implements IUsersService {
 		User userEntity = getUserById(id);
 		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		if(user.getPhoto() != null)
+		if(!user.getPhoto().isEmpty())
 			userEntity.setPhoto(fileStore.save(userEntity, user.getPhoto()));
 
 		return projectionFactory.createProjection(UserResponseDto.class, usersRepository.save(userEntity));

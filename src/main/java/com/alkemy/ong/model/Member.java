@@ -11,6 +11,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 
 
 @Entity
@@ -20,19 +23,29 @@ import org.hibernate.annotations.Where;
 @Where(clause = "deleted = false")
 @Getter @Setter
 @NoArgsConstructor
+@ApiModel(description = "Detalles sobre Miembros")
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "Identificación única de la entidad")
     private Long id;
 
     @NotBlank(message = "{member.error.empty.name}")
+    @ApiModelProperty(notes = "Nombre del Miembro")
     private String name;
 
+    @ApiModelProperty(notes = "Link de Facebook")
     private String facebookUrl;
+    @ApiModelProperty(notes = "Link de Instagram")
     private String instagramUrl;
+    @ApiModelProperty(notes = "Link de Linkedin")
     private String linkedinUrl;
+    
+    @ApiModelProperty(notes = "Link de la foto del Miembro")
     private String image;
+    
+    @ApiModelProperty(notes = "Contenido o Descripción del Miembro")
     private String description;
 
     @Column(name = "create_date", updatable = false, nullable = false)

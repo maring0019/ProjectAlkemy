@@ -3,6 +3,12 @@ package com.alkemy.ong.controller;
 import com.alkemy.ong.dto.request.MemberCreationDto;
 import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.service.Interface.IMemberService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -21,6 +27,7 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/members")
+@Api(value = "Miembros controller")
 public class MemberController {
 
     private final IMemberService iMemberService;
@@ -34,6 +41,11 @@ public class MemberController {
 
 
     @GetMapping
+    @ApiOperation("Obtiene todos los miembros")
+    @ApiResponses({
+          @ApiResponse(code = 200, message = "Operación exitosa"),
+          @ApiResponse(code = 404, message = "Solicitud Incorrecta")
+        })
     public ResponseEntity<?> getAllMembers(@PageableDefault(size = 10, page = 0) Pageable pageable, @RequestParam(value = "page", defaultValue = "0") int page){
     	try {
     		Page<?> result = iMemberService.showAllMembers(pageable);
@@ -48,6 +60,11 @@ public class MemberController {
     }
 
     @PostMapping
+    @ApiOperation("Crea un Miembro")
+    @ApiResponses({
+          @ApiResponse(code = 200, message = "Operación exitosa"),
+          @ApiResponse(code = 404, message = "Solicitud incorrecta")
+        })
     public ResponseEntity<?> createMember(@Valid @ModelAttribute(name = "memberCreationDto") MemberCreationDto memberCreationDto){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(iMemberService.createMember(memberCreationDto));
@@ -59,6 +76,11 @@ public class MemberController {
 
 
     @PutMapping(path = "/{id}")
+    @ApiOperation("Actualiza un miembro por el id")
+    @ApiResponses({
+          @ApiResponse(code = 200, message = "Operación exitosa"),
+          @ApiResponse(code = 404, message = "Solicitud incorrecta")
+        })
 	public ResponseEntity<?> updateMember(@PathVariable("id") Long id, @Valid @ModelAttribute(name = "memberCreationDto") MemberCreationDto memberCreationDto)
     {
 		try {
@@ -70,6 +92,11 @@ public class MemberController {
 
 
 	@DeleteMapping(path = "/{id}")
+    @ApiOperation("Elimina un miembro por el id")
+    @ApiResponses({
+          @ApiResponse(code = 200, message = "Operación exitosa"),
+          @ApiResponse(code = 404, message = "El miembro con el ID especificado no existe")
+        })
 	public ResponseEntity<String> deleteMember(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<>(iMemberService.deleteMember(id), HttpStatus.OK);
