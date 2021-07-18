@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alkemy.ong.dto.request.CommentCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.exception.CommentNotFoundException;
 import com.alkemy.ong.exception.InvalidUserException;
 import com.alkemy.ong.util.RoleValidator;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.alkemy.ong.dto.CommentDto;
 import com.alkemy.ong.security.JwtFilter;
 import com.alkemy.ong.security.JwtProvider;
 import com.alkemy.ong.service.Interface.ICommentService;
@@ -33,7 +34,7 @@ public class CommentController {
 	
 	
 	@PostMapping
-	public ResponseEntity<Object> addComment(@RequestBody CommentDto dto, HttpServletRequest request){
+	public ResponseEntity<Object> addComment(@RequestBody CommentCreationDto dto, HttpServletRequest request){
 		try {
 			String token = jwtFilter.getToken(request);
 			String email = jwtProvider.getEmailFromToken(token);
@@ -45,10 +46,10 @@ public class CommentController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentDto comment) throws CommentNotFoundException, InvalidUserException {
+	public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody CommentCreationDto comment) throws CommentNotFoundException, InvalidUserException {
 		try {
 			if (validator.isAuthorized()) {
-				CommentDto updatedComment = iComment.updateComment(id, comment);
+				CommentResponseDto updatedComment = iComment.updateComment(id, comment);
 				return new ResponseEntity<>(updatedComment, HttpStatus.OK);
 			}
 		} catch (CommentNotFoundException e) {

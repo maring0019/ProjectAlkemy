@@ -1,11 +1,12 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.CommentDto;
+import com.alkemy.ong.dto.request.CommentCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.exception.CommentNotFoundException;
 
 public interface ICommentService {
 
-	public CommentDto createComment(String email,CommentDto dto);
+	CommentResponseDto createComment(String email,CommentCreationDto dto);
 
-	CommentDto updateComment(Long id, CommentDto comment) throws CommentNotFoundException;
+	CommentResponseDto updateComment(Long id, CommentCreationDto comment) throws CommentNotFoundException;
 }

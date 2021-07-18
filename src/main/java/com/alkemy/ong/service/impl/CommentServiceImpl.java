@@ -1,14 +1,14 @@
 package com.alkemy.ong.service.impl;
 
+import com.alkemy.ong.dto.request.CommentCreationDto;
+import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.exception.CommentNotFoundException;
 import com.alkemy.ong.util.RoleValidator;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import com.alkemy.ong.dto.CommentDto;
 import com.alkemy.ong.model.Comment;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.model.User;
@@ -32,10 +32,10 @@ public class CommentServiceImpl implements ICommentService{
 	
 	
 	@Override
-	public CommentDto createComment(String email, CommentDto dto) {
+	public CommentResponseDto createComment(String email, CommentCreationDto dto) {
 		
 		User user = repoUser.findByEmail(email).get();
-		News post = repoNew.findById(dto.getIdNews()).get();
+		News post = repoNew.findById(dto.getNews()).get();
 		
 		Comment comment = new Comment();
 		comment.setNews(post);
@@ -43,17 +43,17 @@ public class CommentServiceImpl implements ICommentService{
 		comment.setBody(dto.getBody());
 		
 		
-		return mapper.map(repoComment.save(comment) , CommentDto.class);
+		return mapper.map(repoComment.save(comment) , CommentResponseDto.class);
 	}
 
 	@Override
-	public CommentDto updateComment(Long id, CommentDto comment) throws CommentNotFoundException {
+	public CommentResponseDto updateComment(Long id, CommentCreationDto comment) throws CommentNotFoundException {
 		Comment foundComment = repoComment.findById(id).orElseThrow(() -> new CommentNotFoundException(
 				messageSource.getMessage("comment.error.not.found", null, Locale.getDefault())
 		));
 		if(foundComment!=null)
 			foundComment.setBody(comment.getBody());
-		return mapper.map(repoComment.save(foundComment), CommentDto.class);
+		return mapper.map(repoComment.save(foundComment), CommentResponseDto.class);
 	}
 
 
