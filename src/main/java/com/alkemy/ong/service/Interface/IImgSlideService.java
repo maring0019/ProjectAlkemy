@@ -1,21 +1,19 @@
 package com.alkemy.ong.service.Interface;
 
-import com.alkemy.ong.dto.ImageSlideCreationDto;
-import com.alkemy.ong.dto.ImageSlideDto;
+import com.alkemy.ong.dto.request.ImageSlideCreationDto;
+import com.alkemy.ong.dto.response.ImageSlideResponseDto;
 import com.alkemy.ong.model.ImageSlide;
 
 import java.util.List;
 
 public interface IImgSlideService {
 
-    ImageSlideDto createSlide(ImageSlideCreationDto imageSlideCreationDto);
-    List<ImageSlide> getAll();
+    ImageSlideResponseDto createSlide(ImageSlideCreationDto imageSlideCreationDto);
+    List<ImageSlideResponseDto> getAll();
 
-    ImageSlideDto updateImage(Long id, ImageSlideCreationDto image);
+    ImageSlideResponseDto updateImage(Long id, ImageSlideCreationDto image);
     String deleteImage(Long id);
-    List<ImageSlideCreationDto> getAllSlidesByOrganization(Long organizationId);
-
-
+    List<ImageSlideResponseDto> getAllSlidesByOrganization(Long organizationId);
 
     ImageSlide getImageSlideById(Long id);
 }

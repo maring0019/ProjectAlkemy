@@ -4,15 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-@EqualsAndHashCode
+
 @Entity
 @Table(name ="comments")
+@Getter @Setter
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +29,19 @@ public class Comment {
     @JoinColumn(name = "news_id", nullable = false)
     private News news;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="created_date", nullable = false, updatable = false)
+    private Date created;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="edited_date")
+    private Date edited;
+
+    public Comment(User user, String body, News news) {
+        this.user = user;
+        this.body = body;
+        this.news = news;
+        this.created = new Date();
+    }
 }
 

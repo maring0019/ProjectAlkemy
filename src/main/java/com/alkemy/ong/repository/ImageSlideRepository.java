@@ -1,5 +1,6 @@
 package com.alkemy.ong.repository;
 
+import com.alkemy.ong.dto.response.ImageSlideResponseDto;
 import com.alkemy.ong.model.ImageSlide;
 import com.alkemy.ong.model.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public interface ImageSlideRepository extends JpaRepository<ImageSlide, Long> {
 
 
-    List<ImageSlide> findAllByOrganizationOrderByOrdered(Organization organization);
+    List<ImageSlideResponseDto> findAllByOrganizationOrderByOrdered(Organization organization);
 
     Optional<ImageSlide> findById(Long id);
+
+    List<ImageSlideResponseDto> findAllProjectedBy();
 
 
 }

@@ -1,69 +1,103 @@
 package com.alkemy.ong.service.impl;
 
-import com.alkemy.ong.dto.MemberDto;
+import com.alkemy.ong.dto.request.MemberCreationDto;
+import com.alkemy.ong.dto.response.MemberResponseDto;
 import com.alkemy.ong.model.Member;
 import com.alkemy.ong.repository.MemberRepository;
+import com.alkemy.ong.service.Interface.IFileStore;
 import com.alkemy.ong.service.Interface.IMemberService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.MessageSource;
+import org.springframework.data.projection.ProjectionFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+import java.util.Locale;
+
 
 @Service
 public class MemberServiceImpl implements IMemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final ProjectionFactory projectionFactory;
+    private final IFileStore fileStore;
+    private final MessageSource messageSource;
 
     @Autowired
-    private ModelMapper mapper;
+    public MemberServiceImpl(MemberRepository memberRepository, ProjectionFactory projectionFactory, IFileStore fileStore, MessageSource messageSource) {
+        this.memberRepository = memberRepository;
+        this.projectionFactory = projectionFactory;
+        this.fileStore = fileStore;
+        this.messageSource = messageSource;
+    }
 
     @Override
+    public MemberResponseDto createMember(MemberCreationDto memberCreationDto) {
+
+        Member member = Member.builder()
+                .description(memberCreationDto.getDescription())
+                .facebookUrl(memberCreationDto.getFacebookUrl())
+                .instagramUrl(memberCreationDto.getInstagramUrl())
+                .linkedinUrl(memberCreationDto.getLinkedinUrl())
+                .name(memberCreationDto.getName())
+                .build();
+
+        Member memberCreated = memberRepository.save(member);
+        memberCreated.setImage(fileStore.save(memberCreated, memberCreationDto.getImage()));
+        return projectionFactory.createProjection(MemberResponseDto.class, memberRepository.save(memberCreated));
+    }
+
     public Page<Member> showAllMembers(Pageable pageable) {
         return memberRepository.findAll(pageable);
     }
 
-    @Override
-    public Member createMember(Member member) {
-        member.setCreateDate(new Date());
-        return memberRepository.save(member);
-    } 
 
     @Override
-    public MemberDto updateMemberById(Long id, MemberDto dto) {
+    public MemberResponseDto updateMemberById(Long id, MemberCreationDto dto) {
 
-        Member member = getById(id);
+        Member member = getMemberById(id);
 
         if(!dto.getName().isBlank())
-		member.setName(dto.getName());
+		    member.setName(dto.getName());
 
-        if(!dto.getImage().isBlank())
-		member.setImage(dto.getImage());
+        if(dto.getImage() != null)
+		    member.setImage(fileStore.save(member, dto.getImage()));
 
         if(!dto.getDescription().isBlank())
-		member.setDescription(dto.getDescription());
+		    member.setDescription(dto.getDescription());
 
         if(!dto.getFacebookUrl().isBlank())
-		member.setFacebookUrl(dto.getFacebookUrl());
+		    member.setFacebookUrl(dto.getFacebookUrl());
 
         if(!dto.getInstagramUrl().isBlank())
-		member.setInstagramUrl(dto.getInstagramUrl());
+		    member.setInstagramUrl(dto.getInstagramUrl());
 
         if(!dto.getLinkedinUrl().isBlank())
-		member.setLinkedinUrl(dto.getLinkedinUrl());
+		    member.setLinkedinUrl(dto.getLinkedinUrl());
 
-		member.setEditDate(new Date());
-
-
-		return mapper.map(memberRepository.save(member), MemberDto.class);
-
+		member.setEdited(new Date());
+		return projectionFactory.createProjection(MemberResponseDto.class, memberRepository.save(member));
     }
 
     @Override
-    public Member getById(Long id) {
-        return memberRepository.findById(id).get();
+    public String deleteMember(Long id) {
+        Member member = getMemberById(id);
+        fileStore.deleteFilesFromS3Bucket(member);
+        return messageSource.getMessage("member.delete.successful", null, Locale.getDefault());
+    }
+
+    @Override
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        messageSource.getMessage("member.error.not.found", null, Locale.getDefault())
+                )
+        );
     }
 }
