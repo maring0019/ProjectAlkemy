@@ -1,13 +1,18 @@
 package com.alkemy.ong.service.impl;
 
+import com.alkemy.ong.dto.request.CommentDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.model.Comment;
+import com.alkemy.ong.model.Role;
 import com.alkemy.ong.repository.CommentRepository;
 import com.alkemy.ong.service.Interface.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 
 import com.alkemy.ong.service.Interface.INewsService;
@@ -34,6 +39,9 @@ public class CommentServiceImpl implements ICommentService{
 		this.repoComment = repoComment;
 	}
 
+	@Autowired
+	private MessageSource messageSource;
+
 	public List<CommentResponseDto> commentsOrderedByDate() {return (List<CommentResponseDto>) repoComment.findAllByOrderCreatedDesc();}
 
 	@Override
@@ -51,5 +59,38 @@ public class CommentServiceImpl implements ICommentService{
 		return projectionFactory.createProjection(CommentResponseDto.class, repoComment.save(comment));
 	}
 
-	
+	@Override
+	public String deleteComment(CommentDto dto, String email) {
+		User user = repoUser.findByEmail(email).get();
+		if(!repoComment.existsById(dto.getId())){
+			return messageSource.getMessage("comment.error.notFound",null,Locale.getDefault());
+		}
+		if(!role(user.getRoles()) || !creador(user.getId(), dto.getId())){
+			repoComment.deleteById(dto.getId());
+		}else{
+			return messageSource.getMessage("comment.error.invalid.user",null,Locale.getDefault());
+		}
+
+		return messageSource.getMessage("comment.delete.successful",null, Locale.getDefault());
+
+	}
+
+
+	public Boolean role(Set<Role> rol){
+		boolean resultado = false;
+		for(Role r : rol){
+			if(r.getId() == 2){
+				resultado = true;
+			}
+		}
+		return resultado;
+	}
+
+	public Boolean creador(long id, long commentId){
+		boolean resultado = false;
+		if(id == commentId){
+			resultado = true;
+		}
+		return resultado;
+	}
 }
