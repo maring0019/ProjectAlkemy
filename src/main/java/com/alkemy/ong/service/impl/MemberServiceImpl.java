@@ -49,7 +49,10 @@ public class MemberServiceImpl implements IMemberService {
                 .build();
 
         Member memberCreated = memberRepository.save(member);
-        memberCreated.setImage(fileStore.save(memberCreated, memberCreationDto.getImage()));
+        
+        if(!memberCreationDto.getImage().isEmpty())
+        	memberCreated.setImage(fileStore.save(memberCreated, memberCreationDto.getImage()));
+        
         return projectionFactory.createProjection(MemberResponseDto.class, memberRepository.save(memberCreated));
     }
 
@@ -66,7 +69,7 @@ public class MemberServiceImpl implements IMemberService {
         if(!dto.getName().isBlank())
 		    member.setName(dto.getName());
 
-        if(dto.getImage() != null)
+        if(!dto.getImage().isEmpty())
 		    member.setImage(fileStore.save(member, dto.getImage()));
 
         if(!dto.getDescription().isBlank())
