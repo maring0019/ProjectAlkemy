@@ -2,6 +2,7 @@ package com.alkemy.ong.controller;
 
 import com.alkemy.ong.dto.request.TestimonialsCreationDto;
 import com.alkemy.ong.service.Interface.ITestimonials;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import java.util.Locale;
 
 @RestController
+@Api(value = "Testimonial controller")
 @RequestMapping("/testimonials")
 public class TestimonialsController {
 
@@ -28,7 +30,12 @@ public class TestimonialsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTestimonials(@ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto) {
+    @ApiOperation("Crea un nuevo testimonio")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 400, message = "Solicitud incorrecta")
+    })
+    public ResponseEntity<?> createTestimonials(@ApiParam(value = "JSON con Testimonial para crear", required = true) @ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto) {
         try {
              return ResponseEntity.status(HttpStatus.CREATED).body(iTestimonials.createTestimonials(testimonialsCreationDto));
         } catch (Exception e) {
@@ -37,7 +44,12 @@ public class TestimonialsController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<?> Update(@ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto, @PathVariable Long id){
+    @ApiOperation("Actualiza un testimonio")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 404, message = "Testimonio no encontrado")
+    })
+    public ResponseEntity<?> Update(@ApiParam(value = "El id del testimonio", required = true, example = "1") @ModelAttribute(name = "testimonialsCreationDto") @Valid TestimonialsCreationDto testimonialsCreationDto, @PathVariable Long id){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.updateTestimonials(id, testimonialsCreationDto));
         } catch (Exception e){
@@ -48,7 +60,12 @@ public class TestimonialsController {
 
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<String> deleteTestimonialById(@PathVariable Long id) {
+    @ApiOperation("Elimina un testimonio")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 404, message = "Testimonio no encontrado")
+    })
+    public ResponseEntity<String> deleteTestimonialById(@ApiParam(value = "El id del testimonio", required = true, example = "1") @PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(iTestimonials.deleteById(id));
         } catch (Exception e) {
@@ -57,6 +74,12 @@ public class TestimonialsController {
     }
 
     @GetMapping
+    @ApiOperation("Buscar y paginar por el nombre  todos los testimonios")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Operación exitosa"),
+            @ApiResponse(code = 400, message = "Solicitud incorrecta")
+    })
+
     public  ResponseEntity<?> AllPagination(@PageableDefault(size = 10 , page = 0 ) Pageable pageable ,@RequestParam
             (value = "page" , defaultValue = "0") int page) {
 
