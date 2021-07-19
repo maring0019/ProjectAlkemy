@@ -1,5 +1,6 @@
 package com.alkemy.ong.service.impl;
 
+import com.alkemy.ong.Enum.ERole;
 import com.alkemy.ong.dto.request.CommentDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.model.Comment;
@@ -22,6 +23,9 @@ import com.alkemy.ong.dto.request.CommentCreationDto;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.model.User;
 import com.alkemy.ong.repository.UsersRepository;
+
+import javax.persistence.EntityNotFoundException;
+import javax.ws.rs.ForbiddenException;
 
 @Service
 public class CommentServiceImpl implements ICommentService{
@@ -63,12 +67,12 @@ public class CommentServiceImpl implements ICommentService{
 	public String deleteComment(CommentDto dto, String email) {
 		User user = repoUser.findByEmail(email).get();
 		if(!repoComment.existsById(dto.getId())){
-			return messageSource.getMessage("comment.error.notFound",null,Locale.getDefault());
+			throw new EntityNotFoundException("comment.error.notFound");
 		}
-		if(!role(user.getRoles()) || !creador(user.getId(), dto.getId())){
+		if(!role(user.getRoles()) || !isCreator(user.getId(), dto.getId())){
 			repoComment.deleteById(dto.getId());
 		}else{
-			return messageSource.getMessage("comment.error.invalid.user",null,Locale.getDefault());
+			throw new ForbiddenException("comment.error.invalid.user");
 		}
 
 		return messageSource.getMessage("comment.delete.successful",null, Locale.getDefault());
@@ -76,21 +80,16 @@ public class CommentServiceImpl implements ICommentService{
 	}
 
 
-	public Boolean role(Set<Role> rol){
-		boolean resultado = false;
-		for(Role r : rol){
-			if(r.getId() == 2){
-				resultado = true;
+	public Boolean role(Set<Role> role){
+		for(Role r : role){
+			if(r.getRoleName() == ERole.ROLE_USER){
+				return true;
 			}
 		}
-		return resultado;
+		return false;
 	}
 
-	public Boolean creador(long id, long commentId){
-		boolean resultado = false;
-		if(id == commentId){
-			resultado = true;
-		}
-		return resultado;
+	public Boolean isCreator(long id, long commentId){
+		return id == commentId;
 	}
 }
