@@ -1,6 +1,5 @@
 package com.alkemy.ong.controller;
 
-import com.alkemy.ong.dto.request.CommentDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.service.Interface.ICommentService;
 
@@ -58,13 +57,13 @@ public class CommentController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message.getMessage("comment.error.create", null, Locale.getDefault()));
 		}
 	}
-	
-	@DeleteMapping
-	public ResponseEntity<?> deleteComment(@RequestBody CommentDto dto, HttpServletRequest request){
+
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteComment(@PathVariable("id") Long id, HttpServletRequest request){
 		try{
 			String token = jwtFilter.getToken(request);
 			String email = jwtProvider.getEmailFromToken(token);
-			return ResponseEntity.status(HttpStatus.OK).body(iComment.deleteComment(dto,email));
+			return ResponseEntity.status(HttpStatus.OK).body(iComment.deleteComment(id,email));
 		}catch (NotAcceptableException e){
 			return ResponseEntity.badRequest().body(e);
 		}

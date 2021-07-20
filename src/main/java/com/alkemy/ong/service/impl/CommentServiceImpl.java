@@ -1,7 +1,6 @@
 package com.alkemy.ong.service.impl;
 
 import com.alkemy.ong.Enum.ERole;
-import com.alkemy.ong.dto.request.CommentDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.model.Comment;
 import com.alkemy.ong.model.Role;
@@ -23,9 +22,6 @@ import com.alkemy.ong.dto.request.CommentCreationDto;
 import com.alkemy.ong.model.News;
 import com.alkemy.ong.model.User;
 import com.alkemy.ong.repository.UsersRepository;
-
-import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.ForbiddenException;
 
 @Service
 public class CommentServiceImpl implements ICommentService{
@@ -64,15 +60,15 @@ public class CommentServiceImpl implements ICommentService{
 	}
 
 	@Override
-	public String deleteComment(CommentDto dto, String email) {
+	public String deleteComment(Long id, String email) {
 		User user = repoUser.findByEmail(email).get();
-		if(!repoComment.existsById(dto.getId())){
-			throw new EntityNotFoundException("comment.error.notFound");
+		if(!repoComment.existsById(id)){
+			return messageSource.getMessage("comment.error.notFound",null,Locale.getDefault());
 		}
-		if(!role(user.getRoles()) || !isCreator(user.getId(), dto.getId())){
-			repoComment.deleteById(dto.getId());
+		if(role(user.getRoles()) || isCreator(user.getId(), id)){
+			repoComment.deleteById(id);
 		}else{
-			throw new ForbiddenException("comment.error.invalid.user");
+			return messageSource.getMessage("comment.error.invalid.user",null, Locale.getDefault());
 		}
 
 		return messageSource.getMessage("comment.delete.successful",null, Locale.getDefault());
@@ -82,14 +78,17 @@ public class CommentServiceImpl implements ICommentService{
 
 	public Boolean role(Set<Role> role){
 		for(Role r : role){
-			if(r.getRoleName() == ERole.ROLE_USER){
+			if(r.getRoleName() == ERole.ROLE_ADMIN){
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public Boolean isCreator(long id, long commentId){
-		return id == commentId;
+	public Boolean isCreator(long id, Long commentId){
+		Comment comment = repoComment.getById(commentId);
+		if(comment.getUser().getId() == id)
+			return true;
+		return false;
 	}
 }

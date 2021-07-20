@@ -2,7 +2,6 @@ package com.alkemy.ong.exception;
 
 import com.alkemy.ong.util.CustomFieldError;
 import lombok.extern.java.Log;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -10,10 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.resource.spi.InvalidPropertyException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
@@ -70,14 +67,5 @@ public class AppExceptionsHandler {
 
         return ResponseEntity.badRequest().body(customFieldErrors);
     }
-
-    @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(code = HttpStatus.FORBIDDEN)
-    public void everyException(ForbiddenException e){
-        log.info(e.getMessage());
-    }
-
-
-
 
 }
