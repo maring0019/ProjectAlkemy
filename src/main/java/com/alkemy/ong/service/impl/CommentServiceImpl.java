@@ -23,6 +23,8 @@ import com.alkemy.ong.model.News;
 import com.alkemy.ong.model.User;
 import com.alkemy.ong.repository.UsersRepository;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class CommentServiceImpl implements ICommentService{
 
@@ -62,21 +64,25 @@ public class CommentServiceImpl implements ICommentService{
 	@Override
 	public String deleteComment(Long id, String email) {
 		User user = repoUser.findByEmail(email).get();
-		if(!repoComment.existsById(id)){
-			return messageSource.getMessage("comment.error.notFound",null,Locale.getDefault());
-		}
-		if(role(user.getRoles()) || isCreator(user.getId(), id)){
+		Comment comment = getCommentById(id);
+		if(isAdmin(user.getRoles()) || isCreator(user.getId(), comment.getId())){
 			repoComment.deleteById(id);
-		}else{
-			return messageSource.getMessage("comment.error.invalid.user",null, Locale.getDefault());
-		}
+		}else
+			throw new EntityNotFoundException(messageSource.getMessage("comment.error.invalid.user",null,Locale.getDefault()));
 
 		return messageSource.getMessage("comment.delete.successful",null, Locale.getDefault());
 
 	}
 
+	public Comment getCommentById(Long id){
+		return repoComment.findById(id).orElseThrow(
+				() -> new EntityNotFoundException(
+						messageSource.getMessage("comment.error.notFound",null,Locale.getDefault())
+				)
+		);
+	}
 
-	public Boolean role(Set<Role> role){
+	public Boolean isAdmin(Set<Role> role){
 		for(Role r : role){
 			if(r.getRoleName() == ERole.ROLE_ADMIN){
 				return true;

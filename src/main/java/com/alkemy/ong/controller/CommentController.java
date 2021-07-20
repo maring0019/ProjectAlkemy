@@ -64,8 +64,11 @@ public class CommentController {
 			String token = jwtFilter.getToken(request);
 			String email = jwtProvider.getEmailFromToken(token);
 			return ResponseEntity.status(HttpStatus.OK).body(iComment.deleteComment(id,email));
-		}catch (NotAcceptableException e){
-			return ResponseEntity.badRequest().body(e);
+		}catch (Exception e){
+			if(e.getMessage().equals(message.getMessage("comment.error.notFound",null,Locale.getDefault())))
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+			else
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 
 	}
