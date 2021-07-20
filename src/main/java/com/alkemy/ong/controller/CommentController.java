@@ -14,14 +14,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alkemy.ong.dto.request.CommentCreationDto;
 import com.alkemy.ong.security.JwtFilter;
@@ -61,6 +56,23 @@ public class CommentController {
 		}catch(NotAcceptableException e){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message.getMessage("comment.error.create", null, Locale.getDefault()));
 		}
-	}	
+	}
+
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deleteComment(@PathVariable("id") Long id, HttpServletRequest request){
+		try{
+			String token = jwtFilter.getToken(request);
+			String email = jwtProvider.getEmailFromToken(token);
+			return ResponseEntity.status(HttpStatus.OK).body(iComment.deleteComment(id,email));
+		}catch (Exception e){
+			if(e.getMessage().equals(message.getMessage("comment.error.notFound",null,Locale.getDefault())))
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+			else
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+
+	}
+
+
 
 }
