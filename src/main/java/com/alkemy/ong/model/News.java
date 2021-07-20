@@ -45,7 +45,7 @@ public class News {
     @Column(nullable = false)
     @NotBlank(message = "Completar el campo imagen")
     @ApiModelProperty(notes = "Imagen de la novedad")
-    private String image = "asdf";
+    private String image;
 
     @OneToOne
     @JoinColumn(name="category")
@@ -56,7 +56,7 @@ public class News {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date_time", nullable = false, updatable = false)
-    private Date created ;
+    private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date edited;
