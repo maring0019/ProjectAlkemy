@@ -76,7 +76,10 @@ public class NewsServiceImpl implements INewsService {
                 .category(categoryEntity)
                 .build();
         News newsCreated = newsRepository.save(newsEntity);
-        newsCreated.setImage(fileStore.save(newsEntity, newsCreationDto.getImage()));
+        
+        if(!newsCreationDto.getImage().isEmpty())
+        	newsCreated.setImage(fileStore.save(newsEntity, newsCreationDto.getImage()));
+        
         return projectionFactory.createProjection(NewsResponseDto.class, newsRepository.save(newsCreated));
     }
 
@@ -96,7 +99,7 @@ public class NewsServiceImpl implements INewsService {
         newsUpdated.setCategory(categoryEntity);
         newsUpdated.setContent(newsCreationDto.getContent());
         newsUpdated.setName(newsCreationDto.getName());
-        if(newsCreationDto.getImage() != null) {
+        if(!newsCreationDto.getImage().isEmpty()) {
             newsUpdated.setImage(fileStore.save(newsUpdated, newsCreationDto.getImage()));
         }
         newsUpdated.setEdited(new Date());

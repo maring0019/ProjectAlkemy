@@ -1,12 +1,23 @@
 package com.alkemy.ong.service.Interface;
 
+
+import java.util.List;
+
+
 import com.alkemy.ong.dto.request.CommentCreationDto;
 import com.alkemy.ong.dto.response.CommentResponseDto;
 import com.alkemy.ong.exception.CommentNotFoundException;
+import com.alkemy.ong.model.Comment;
 
 public interface ICommentService {
+    List<CommentResponseDto> commentsOrderedByDate();
 
-	CommentResponseDto createComment(String email,CommentCreationDto dto);
+    CommentResponseDto createComment(String email, CommentCreationDto dto);
 
-	CommentResponseDto updateComment(Long id, CommentCreationDto comment) throws CommentNotFoundException;
+    String deleteComment(Long id, String email);
+
+    Comment getCommentById(Long id);
+
+    CommentResponseDto updateComment(Long id, CommentCreationDto comment) throws CommentNotFoundException;
 }
+
